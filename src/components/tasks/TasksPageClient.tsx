@@ -68,14 +68,14 @@ export function TasksPageClient({
     setFilters({ setor: '', assigneeId: '', dashboardId: '', priority: '' });
   }
 
-  const selectCls = 'bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-transparent';
+  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50';
 
   return (
     <div className="relative">
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Tarefas</h1>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Tarefas</h1>
           <p className="text-sm text-zinc-500 mt-0.5">
             {tasks.length} {tasks.length === 1 ? 'tarefa' : 'tarefas'} na operação
           </p>
@@ -83,7 +83,7 @@ export function TasksPageClient({
         {canCreate && (
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors shadow-glow-violet"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -95,13 +95,13 @@ export function TasksPageClient({
 
       {/* Tabs */}
       {showBoard && (
-        <div className="flex gap-1 bg-zinc-800/60 rounded-lg p-1 w-fit mb-5">
+        <div className="flex gap-1 bg-white/[0.04] border border-white/[0.06] rounded-lg p-1 w-fit mb-5">
           {(['quadro', 'minha_lista'] as View[]).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                view === v ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-300'
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+                view === v ? 'bg-white/[0.08] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {v === 'quadro' ? 'Quadro Geral' : 'Minha Lista'}
@@ -112,7 +112,7 @@ export function TasksPageClient({
 
       {/* Filters */}
       {view === 'quadro' && (
-        <div className="flex flex-wrap items-center gap-2 mb-5">
+        <div className="flex flex-wrap items-center gap-2 mb-5 overflow-x-auto pb-1">
           {scope === 'todos' && (
             <select
               value={filters.setor}

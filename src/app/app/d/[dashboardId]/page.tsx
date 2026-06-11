@@ -57,7 +57,7 @@ export default async function DashboardPage({ params }: Props) {
     const demoDash = DEMO_DASHBOARDS.find(d => d.id === dashboardId) ?? DEMO_DASHBOARDS[0];
     const metrics = getDashboardMetrics(dashboardId);
     return (
-      <div className="p-6 max-w-5xl mx-auto">
+      <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <DashboardHeader dashboard={demoDash} canManage={true} />
         <SummaryStrip
           faturamento_dia={metrics.summary.faturamento_dia}
@@ -192,7 +192,7 @@ export default async function DashboardPage({ params }: Props) {
   const metrics = getDashboardMetrics(dashboardId);
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <DashboardHeader
         dashboard={dashboardRow}
         canManage={ctx.permissions.pode_criar_dashboard}

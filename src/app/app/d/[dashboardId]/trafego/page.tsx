@@ -10,7 +10,8 @@ import { FunilBlock } from '@/components/traffic/FunilBlock';
 import { ReconciliacaoBlock } from '@/components/traffic/ReconciliacaoBlock';
 import { SaudeContasBlock } from '@/components/traffic/SaudeContasBlock';
 import { TemporalChart } from '@/components/traffic/TemporalChart';
-import { PanelConfig, DEFAULT_ENABLED_BLOCKS, DEFAULT_BLOCK_ORDER } from '@/components/traffic/PanelConfig';
+import { PanelConfig } from '@/components/traffic/PanelConfig';
+import { DEFAULT_ENABLED_BLOCKS, DEFAULT_BLOCK_ORDER } from '@/lib/traffic/panelDefaults';
 import { getReconciliationData } from '@/lib/sales/attribution';
 import { monthStart, monthEnd } from '@/lib/finance/calc';
 import { fetchDashboardSpend } from '@/lib/traffic/spend';
@@ -77,9 +78,13 @@ export default async function TrafegoPanelPage({ params }: Props) {
   };
 
   const enabledBlocks: Record<string, boolean> =
-    (configRes.data?.enabled_blocks as Record<string, boolean>) ?? DEFAULT_ENABLED_BLOCKS;
+    (configRes.data?.enabled_blocks && typeof configRes.data.enabled_blocks === 'object' && !Array.isArray(configRes.data.enabled_blocks))
+      ? (configRes.data.enabled_blocks as Record<string, boolean>)
+      : DEFAULT_ENABLED_BLOCKS;
   const blockOrder: string[] =
-    (configRes.data?.block_order as string[]) ?? DEFAULT_BLOCK_ORDER;
+    Array.isArray(configRes.data?.block_order)
+      ? (configRes.data.block_order as string[])
+      : DEFAULT_BLOCK_ORDER;
 
   // ---------------------------------------------------------------
   // Dados REAIS: ad_spend + sales com UTM
@@ -146,9 +151,9 @@ export default async function TrafegoPanelPage({ params }: Props) {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+      <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Link href={`/app/d/${dashboardId}`}
             className="text-zinc-500 hover:text-white transition-colors">
@@ -194,7 +199,7 @@ export default async function TrafegoPanelPage({ params }: Props) {
 
       {/* Blocos na ordem configurada */}
       <div className="flex flex-col gap-4">
-        {blockOrder.filter(showBlock).map(blockId => {
+        {(Array.isArray(blockOrder) ? blockOrder : DEFAULT_BLOCK_ORDER).filter(showBlock).map(blockId => {
           switch (blockId) {
             case 'metas':
               return (

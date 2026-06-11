@@ -35,7 +35,7 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
   );
 
   return (
-    <div className="flex items-start justify-between mb-6 gap-4">
+    <div className="flex flex-wrap items-start justify-between mb-7 gap-3">
       <div className="flex-1 min-w-0">
         {mode === 'rename' ? (
           <form action={renameAction} className="flex items-center gap-2">
@@ -46,20 +46,17 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
               autoFocus
               required
               maxLength={50}
-              className="bg-zinc-800 border border-violet-600 text-white rounded-lg px-3 py-1.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-violet-500 w-full max-w-xs"
+              className="bg-white/[0.04] border border-violet-500/40 text-white rounded-lg px-3 py-1.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-violet-500/40 w-full max-w-xs placeholder-zinc-600"
             />
             <SaveBtn label="Salvar" />
-            <button
-              type="button"
-              onClick={() => setMode(null)}
-              className="text-xs text-zinc-500 hover:text-white px-2 transition-colors"
-            >
+            <button type="button" onClick={() => setMode(null)}
+              className="text-xs text-zinc-500 hover:text-white px-2 transition-colors">
               Cancelar
             </button>
           </form>
         ) : (
           <div>
-            <h1 className="text-2xl font-bold text-white leading-tight">{dashboard.name}</h1>
+            <h1 className="text-2xl font-bold text-white leading-tight tracking-tight">{dashboard.name}</h1>
             {renameState && 'error' in renameState && (
               <p className="text-xs text-red-400 mt-1">{renameState.error}</p>
             )}
@@ -70,10 +67,8 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
 
       {canManage && mode !== 'rename' && (
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={() => setMode('rename')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700 transition-colors"
-          >
+          <button onClick={() => setMode('rename')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-400 hover:text-white bg-white/[0.03] border border-white/[0.06] hover:border-white/10 transition-all">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -82,17 +77,14 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
           </button>
 
           {mode === 'delete' ? (
-            <div className="flex items-center gap-2 bg-red-950 border border-red-800 rounded-lg px-3 py-1.5">
+            <div className="flex items-center gap-2 bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-1.5">
               <span className="text-xs text-red-300">Confirmar exclusão?</span>
               <form action={deleteAction} className="flex gap-1.5">
                 <input type="hidden" name="dashboardId" value={dashboard.id} />
                 <SaveBtn label="Excluir" />
               </form>
-              <button
-                type="button"
-                onClick={() => setMode(null)}
-                className="text-xs text-zinc-500 hover:text-white transition-colors"
-              >
+              <button type="button" onClick={() => setMode(null)}
+                className="text-xs text-zinc-500 hover:text-white transition-colors">
                 Cancelar
               </button>
               {deleteState && 'error' in deleteState && (
@@ -100,10 +92,8 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
               )}
             </div>
           ) : (
-            <button
-              onClick={() => setMode('delete')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-red-400 border border-zinc-800 hover:border-red-900 transition-colors"
-            >
+            <button onClick={() => setMode('delete')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-500 hover:text-red-400 bg-white/[0.03] border border-white/[0.06] hover:border-red-500/20 transition-all">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="3 6 5 6 21 6" />
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />

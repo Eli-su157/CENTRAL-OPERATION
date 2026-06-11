@@ -65,6 +65,7 @@ export async function signUpOwner(prevState: ActionState, formData: FormData): P
     .single();
 
   if (opError || !operation) {
+    console.error('[signUpOwner] opError:', JSON.stringify(opError));
     await admin.auth.admin.deleteUser(userId);
     return { error: 'Erro ao criar operação. Tente novamente.' };
   }

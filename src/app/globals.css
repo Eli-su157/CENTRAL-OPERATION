@@ -1,3 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* ── Selection ── */
+::selection { background-color: rgba(124, 58, 237, 0.25); color: white; }
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ── Base body ── */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "ss01", "ss02", "cv01";
+}
+
+/* ── Premium card utility ── */
+@layer components {
+  .card {
+    @apply bg-[#161616] border border-white/[0.06] rounded-xl;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:border-white/10 hover:shadow-lg hover:shadow-black/40;
+  }
+  .stat-label {
+    @apply text-xs text-zinc-500 font-medium uppercase tracking-wide;
+  }
+  .stat-value {
+    @apply text-white font-bold tabular-nums;
+  }
+  .badge {
+    @apply text-xs px-1.5 py-0.5 rounded-md font-medium;
+  }
+  .section-title {
+    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold px-3 pt-5 pb-1.5;
+  }
+}
+
+/* ── Glow effect on KPI cards ── */
+.kpi-glow::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent);
+}
+
+/* ── Number font variant ── */
+.num { font-variant-numeric: tabular-nums; }

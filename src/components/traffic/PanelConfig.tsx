@@ -15,11 +15,7 @@ export const BLOCK_LABELS: Record<string, string> = {
   alertas:       'Alertas',
 };
 
-export const DEFAULT_BLOCK_ORDER = ['metas', 'decisao', 'funil', 'reconciliacao', 'saude', 'temporal', 'alertas'];
-export const DEFAULT_ENABLED_BLOCKS: Record<string, boolean> = {
-  metas: true, decisao: true, funil: true, reconciliacao: true,
-  saude: true, temporal: true, alertas: true,
-};
+export { DEFAULT_BLOCK_ORDER, DEFAULT_ENABLED_BLOCKS } from '@/lib/traffic/panelDefaults';
 
 interface Props {
   dashboardId: string;

@@ -20,7 +20,7 @@ export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFin
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-zinc-950 overflow-hidden">
+    <div className="flex h-screen bg-[#111111] overflow-hidden">
       {/* Overlay mobile */}
       {sidebarOpen && (
         <div
@@ -49,7 +49,7 @@ export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFin
       {/* Content area */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Mobile top bar */}
-        <div className="lg:hidden flex items-center gap-3 px-4 py-3 bg-zinc-900 border-b border-zinc-800 shrink-0">
+        <div className="lg:hidden flex items-center gap-3 px-4 py-3 bg-[#0e0e0e] border-b border-white/[0.05] shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-zinc-400 hover:text-white transition-colors p-1"

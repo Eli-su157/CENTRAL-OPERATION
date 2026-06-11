@@ -97,7 +97,7 @@ export async function EditorBlock({ dashboardId }: Props) {
       </div>
 
       {/* Contagens por status */}
-      <div className="grid grid-cols-4 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
         {(Object.entries(counts) as [MaterialStatus, number][])
           .filter(([, n]) => n > 0)
           .map(([status, count]) => (

@@ -29,7 +29,7 @@ interface Props {
 
 export function KanbanBoard({ tasks, currentUserId, onTaskClick }: Props) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {COLUMNS.map(col => {
         const colTasks = sortTasks(tasks.filter(t => t.status === col.status));
         return (

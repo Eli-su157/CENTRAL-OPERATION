@@ -55,36 +55,36 @@ export default async function RelatoriosPage({ searchParams }: Props) {
   const existingRefs = new Set(reports.map(r => `${r.period_type}:${r.period_ref}`));
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Relatórios da Operação</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Relatórios da Operação</h1>
         <p className="text-sm text-zinc-500 mt-1">
           {isDono ? 'Visualize relatórios gerados pelo Head' : 'Gere, edite e congele relatórios do período'}
         </p>
       </div>
 
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-5 items-start">
         {/* Coluna esquerda: gerar + lista */}
-        <div className="w-64 shrink-0 flex flex-col gap-4">
+        <div className="w-full lg:w-64 shrink-0 flex flex-col gap-4">
           {/* Form de geração (só head/dono) */}
           <GenerateReportForm existingRefs={existingRefs} />
 
           {/* Lista de relatórios */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-zinc-800">
-              <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Histórico</p>
+          <div className="bg-[#161616] border border-white/[0.06] rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-white/[0.06]">
+              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em]">Histórico</p>
             </div>
             {reports.length === 0 ? (
               <p className="text-xs text-zinc-600 p-4">Nenhum relatório ainda.</p>
             ) : (
-              <div className="overflow-y-auto max-h-96">
+              <div className="overflow-y-auto max-h-72 lg:max-h-96">
                 {reports.map(r => (
                   <Link
                     key={r.id}
                     href={`/app/relatorios?id=${r.id}`}
-                    className={`flex items-center gap-3 px-4 py-3 border-b border-zinc-800/50 last:border-0 hover:bg-zinc-800/50 transition-colors ${
-                      selected?.id === r.id ? 'bg-zinc-800/60' : ''
+                    className={`flex items-center gap-3 px-4 py-3 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.03] transition-colors ${
+                      selected?.id === r.id ? 'bg-white/[0.05]' : ''
                     }`}
                   >
                     <span className={`w-2 h-2 rounded-full shrink-0 ${
@@ -114,8 +114,8 @@ export default async function RelatoriosPage({ searchParams }: Props) {
               <ReportViewer report={selected} />
             )
           ) : (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-zinc-800 flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />

@@ -19,63 +19,80 @@ export function SalesBlock({ data, realSales }: Props) {
   const reembolsoHigh   = taxa_reembolso > 4;
 
   return (
-    <BlockCard label="Vendas" badge={useReal ? 'real' : 'demo'}>
-      {/* Main metric */}
+    <BlockCard label="Vendas" badge={useReal ? 'real' : 'demo'} icon={
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+    }>
       <div className="mb-5">
-        <p className="text-3xl font-bold text-white tabular-nums">{formatCurrency(aprovadas_valor)}</p>
-        <p className="text-sm text-zinc-500 mt-1">{formatNumber(aprovadas_qtd)} pedidos aprovados</p>
+        <p className="text-3xl sm:text-[2rem] font-bold text-white tabular-nums leading-none">
+          {formatCurrency(aprovadas_valor)}
+        </p>
+        <p className="text-sm text-zinc-500 mt-1.5">
+          {formatNumber(aprovadas_qtd)} pedidos aprovados
+        </p>
         {!useReal && (
           <p className={`text-xs mt-1.5 font-medium tabular-nums ${deltaColor(s.delta_valor)}`}>
             {formatDelta(s.delta_valor)} vs ontem
           </p>
         )}
         {useReal && realSales!.no_primary_provider_warning && (
-          <p className="text-xs mt-1.5 text-amber-500">Sem provider primário — somando todos</p>
+          <p className="text-xs mt-1.5 text-amber-400">Sem provider primário — somando todos</p>
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-800/60">
-        <Metric label="Ticket médio" value={formatCurrency(ticket_medio)} />
-        <Metric
+      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/[0.05]">
+        <MetricCell label="Ticket médio" value={formatCurrency(ticket_medio)} />
+        <MetricCell
           label="Reembolso"
           value={formatPercent(taxa_reembolso)}
           valueClass={reembolsoHigh ? 'text-red-400' : 'text-white'}
+          highlight={reembolsoHigh}
         />
-        <Metric
+        <MetricCell
           label="Conv. Pix"
           value={conversao_pix > 0 ? formatPercent(conversao_pix) : '—'}
           valueClass={conversao_pix >= 80 ? 'text-emerald-400' : conversao_pix > 0 ? 'text-amber-400' : 'text-zinc-600'}
         />
-        <Metric label="Pedidos" value={String(aprovadas_qtd)} />
+        <MetricCell label="Pedidos" value={String(aprovadas_qtd)} />
       </div>
     </BlockCard>
   );
 }
 
-function Metric({
-  label,
-  value,
-  valueClass = 'text-white',
+function MetricCell({
+  label, value, valueClass = 'text-white', highlight = false,
 }: {
-  label: string;
-  value: string;
-  valueClass?: string;
+  label: string; value: string; valueClass?: string; highlight?: boolean;
 }) {
   return (
-    <div>
-      <p className="text-xs text-zinc-500 mb-0.5">{label}</p>
-      <p className={`text-sm font-bold tabular-nums ${valueClass}`}>{value}</p>
+    <div className={`rounded-lg p-2.5 ${highlight ? 'bg-red-500/5' : 'bg-white/[0.02]'}`}>
+      <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-1">{label}</p>
+      <p className={`text-sm font-bold tabular-nums leading-tight ${valueClass}`}>{value}</p>
     </div>
   );
 }
 
-function BlockCard({ label, badge, children }: { label: string; badge: string; children: React.ReactNode }) {
+function BlockCard({
+  label, badge, icon, children,
+}: {
+  label: string; badge: string; icon?: React.ReactNode; children: React.ReactNode;
+}) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">{label}</p>
-        <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
-          badge === 'real' ? 'bg-emerald-950 text-emerald-600' : 'bg-zinc-800 text-zinc-700'
+    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 shadow-card overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-2">
+          {icon && (
+            <span className="text-zinc-500 bg-white/[0.04] rounded-lg p-1.5">{icon}</span>
+          )}
+          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.1em]">{label}</p>
+        </div>
+        <span className={`text-[10px] px-1.5 py-px rounded font-semibold ${
+          badge === 'real'
+            ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20'
+            : 'bg-zinc-500/10 text-zinc-500 ring-1 ring-zinc-500/15'
         }`}>
           {badge}
         </span>

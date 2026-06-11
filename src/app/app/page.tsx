@@ -56,7 +56,7 @@ export default async function AppPage() {
       a_receber: 0, a_pagar: 0,
     };
     return (
-      <div className="p-6 max-w-5xl mx-auto">
+      <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">Visão Geral</h1>
           <p className="text-sm text-zinc-500 mt-1">Modo demo — dados simulados</p>
@@ -211,7 +211,7 @@ export default async function AppPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Visão Geral</h1>
@@ -257,14 +257,14 @@ export default async function AppPage() {
         </div>
 
         {dashboards.length === 0 ? (
-          <div className="border border-dashed border-zinc-800 rounded-xl p-16 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-zinc-800 mb-4">
+          <div className="border border-dashed border-white/[0.06] rounded-xl p-16 text-center bg-white/[0.01]">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] mb-4">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
-                <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
+                <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
               </svg>
             </div>
-            <p className="text-zinc-400 font-medium mb-1">Nenhum dashboard criado</p>
+            <p className="text-zinc-300 font-semibold mb-1.5">Nenhum produto criado</p>
             {ctx.permissions.pode_criar_dashboard ? (
               <p className="text-zinc-600 text-sm">
                 Clique em <strong className="text-zinc-400">Novo Dashboard</strong> para começar.
@@ -302,10 +302,11 @@ function ConsolidatedKpi({
   sub?: string;
 }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-      <p className="text-xs text-zinc-500 uppercase tracking-widest font-medium mb-2">{label}</p>
-      <p className={`text-2xl font-bold tabular-nums ${valueClass}`}>{value}</p>
-      {sub && <p className="text-xs text-zinc-600 mt-1.5 tabular-nums">{sub}</p>}
+    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/6 to-transparent" />
+      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.1em] font-semibold mb-3">{label}</p>
+      <p className={`text-[1.7rem] font-bold tabular-nums leading-none ${valueClass}`}>{value}</p>
+      {sub && <p className="text-xs text-zinc-600 mt-2 tabular-nums">{sub}</p>}
     </div>
   );
 }
