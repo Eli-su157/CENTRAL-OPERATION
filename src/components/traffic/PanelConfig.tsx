@@ -4,6 +4,7 @@ import { useState, useActionState } from 'react';
 import { savePanelConfigAction } from '@/app/app/d/[dashboardId]/trafego/actions';
 import type { TrafficActionState } from '@/app/app/d/[dashboardId]/trafego/actions';
 import { useFormStatus } from 'react-dom';
+import { DEFAULT_BLOCK_ORDER } from '@/lib/traffic/panelDefaults';
 
 export const BLOCK_LABELS: Record<string, string> = {
   metas:         'Metas do Mês',
