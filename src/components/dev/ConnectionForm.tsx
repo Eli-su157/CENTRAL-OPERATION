@@ -163,7 +163,7 @@ export function ConnectionForm({ dashboardId, editConnection, onClose }: Props) 
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
               Cancelar
             </button>
-            <button type="submit" disabled={isPending} className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50">
+            <button type="submit" disabled={isPending} className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50">
               {isPending ? 'Salvando…' : isEditing ? 'Atualizar' : 'Conectar'}
             </button>
           </div>

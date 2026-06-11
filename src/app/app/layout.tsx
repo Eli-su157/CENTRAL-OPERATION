@@ -51,6 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       canManageTeam={ctx.permissions.pode_gerenciar_equipe}
       canSeeFinancial={ctx.permissions.pode_ver_financeiro}
       canSeeReports={ctx.profile.role === 'head' || ctx.profile.role === 'dono'}
+      canSeeIntegrations={ctx.profile.role === 'dono' || ctx.profile.role === 'head'}
     >
       {children}
     </AppShell>

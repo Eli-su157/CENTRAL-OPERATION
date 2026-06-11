@@ -57,19 +57,23 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
   const dre = calcDre(filtered);
   const allCategories = [...new Set(entries.map(e => e.category))];
 
-  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500/50';
+  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/50';
 
   return (
     <div>
       {/* Header */}
-      <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
+      <div className="flex items-start justify-between mb-8 pb-6 border-b border-white/[0.05] gap-4 flex-wrap relative">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Financeiro</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">Acesso restrito · fonte de dados real</p>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+            <h1 className="text-2xl font-bold text-white tracking-tight">Financeiro</h1>
+          </div>
+          <p className="text-sm text-zinc-500 pl-4">Acesso restrito · fonte de dados real</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors shadow-glow-violet"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors shadow-glow-orange"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />

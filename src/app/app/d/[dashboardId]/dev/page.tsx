@@ -152,21 +152,21 @@ export default async function DevPanelPage({ params }: Props) {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <Link href={`/app/d/${dashboardId}`} className="text-zinc-500 hover:text-white transition-colors">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </Link>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-white">{dashboardName}</h1>
-            <span className="text-xs bg-sky-950 text-sky-400 border border-sky-800 px-2 py-0.5 rounded-full font-medium">
-              Dev
-            </span>
-          </div>
-          <p className="text-sm text-zinc-500">Demandas técnicas · Monitoramento · Integrações</p>
+      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
+        <div className="flex items-center gap-3 mb-1">
+          <Link href={`/app/d/${dashboardId}`} className="text-zinc-600 hover:text-zinc-300 transition-colors shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </Link>
+          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">{dashboardName}</h1>
+          <span className="text-xs bg-sky-950 text-sky-400 border border-sky-800 px-2 py-0.5 rounded-full font-medium">
+            Dev
+          </span>
         </div>
+        <p className="text-sm text-zinc-500 pl-10">Demandas técnicas · Monitoramento · Integrações</p>
       </div>
 
       {/* Alertas de infra */}
@@ -187,7 +187,7 @@ export default async function DevPanelPage({ params }: Props) {
       {/* SEÇÃO 1: DEMANDAS TÉCNICAS */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-sky-500 rounded-full" />
+          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
           <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Demandas Técnicas</h2>
         </div>
         <TasksPageClient
@@ -205,7 +205,7 @@ export default async function DevPanelPage({ params }: Props) {
       {/* SEÇÃO 2: MONITORAMENTO */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-sky-500 rounded-full" />
+          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
           <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Monitoramento de Estrutura</h2>
         </div>
         <MonitoringClient
@@ -219,7 +219,7 @@ export default async function DevPanelPage({ params }: Props) {
       {/* SEÇÃO 3: CENTRO DE INTEGRAÇÕES */}
       <section>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-sky-500 rounded-full" />
+          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
           <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Centro de Integrações</h2>
         </div>
         <IntegrationCenterClient

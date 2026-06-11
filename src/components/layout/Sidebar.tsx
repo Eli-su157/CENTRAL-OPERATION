@@ -14,6 +14,7 @@ interface Props {
   canManageTeam: boolean;
   canSeeFinancial: boolean;
   canSeeReports: boolean;
+  canSeeIntegrations: boolean;
   onClose?: () => void;
 }
 
@@ -21,7 +22,7 @@ const roleLabels: Record<UserRole, string> = {
   dono: 'Dono', head: 'Head', lider: 'Líder', executor: 'Executor',
 };
 const roleBadge: Record<UserRole, string> = {
-  dono: 'bg-violet-500/10 text-violet-400 ring-1 ring-violet-500/20',
+  dono: 'bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20',
   head: 'bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20',
   lider: 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20',
   executor: 'bg-zinc-500/10 text-zinc-400 ring-1 ring-zinc-500/20',
@@ -41,7 +42,7 @@ function NavLink({
       onClick={onClick}
       className={`group flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
         active
-          ? 'bg-violet-500/10 text-violet-300 font-medium shadow-inner-top'
+          ? 'bg-orange-500/10 text-orange-400 font-medium'
           : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
       }`}
     >
@@ -50,21 +51,21 @@ function NavLink({
   );
 }
 
-export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFinancial, canSeeReports, onClose }: Props) {
+export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFinancial, canSeeReports, canSeeIntegrations, onClose }: Props) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-[#0e0e0e] border-r border-white/[0.05] flex flex-col h-full">
+    <aside className="w-64 bg-[#0A0A0A] border-r border-white/[0.05] flex flex-col h-full">
 
       {/* Brand */}
       <div className="px-4 py-4 border-b border-white/[0.05]">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-violet flex items-center justify-center shrink-0 shadow-glow-violet">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
+          <div className="w-8 h-8 bg-orange-500 flex items-center justify-center shrink-0">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="6" height="6" fill="white" />
+              <rect x="9" y="1" width="6" height="6" fill="white" />
+              <rect x="9" y="9" width="6" height="6" fill="white" />
+              <rect x="1" y="9" width="6" height="6" fill="white" />
             </svg>
           </div>
           <div className="min-w-0">
@@ -98,32 +99,17 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
                   onClick={onClose}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
                     active
-                      ? 'bg-violet-500/10 text-violet-300 font-medium'
+                      ? 'bg-orange-500/10 text-orange-400 font-medium'
                       : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
-                    active ? 'bg-violet-400' : 'bg-zinc-700 group-hover:bg-zinc-500'
+                    active ? 'bg-orange-400' : 'bg-zinc-700'
                   }`} />
                   <span className="truncate">{d.name}</span>
                 </Link>
               );
             })}
-          </>
-        )}
-
-        {canManageTeam && (
-          <>
-            <p className="section-title">Gestão</p>
-            <NavLink href="/app/equipe" onClick={onClose}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="shrink-0">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-              Equipe
-            </NavLink>
           </>
         )}
 
@@ -155,12 +141,39 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             Relatórios
           </NavLink>
         )}
+
+        {(canManageTeam || canSeeIntegrations) && (
+          <p className="section-title">Gestão</p>
+        )}
+        {canManageTeam && (
+          <NavLink href="/app/equipe" onClick={onClose}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="shrink-0">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Equipe
+          </NavLink>
+        )}
+        {canSeeIntegrations && (
+          <NavLink href="/app/integracoes" onClick={onClose}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="shrink-0">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            Integrações
+          </NavLink>
+        )}
       </nav>
 
       {/* User footer */}
       <div className="border-t border-white/[0.05] p-3 space-y-1">
         <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-violet-800 flex items-center justify-center shrink-0 text-xs font-bold text-white">
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shrink-0 text-xs font-bold text-white">
             {user.name[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">

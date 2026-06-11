@@ -10,10 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#7c3aed',
-          hover: '#6d28d9',
-          soft: 'rgba(124,58,237,0.12)',
-          border: 'rgba(124,58,237,0.25)',
+          DEFAULT: '#f97316',
+          hover: '#ea6c0a',
+          soft: 'rgba(249,115,22,0.12)',
+          border: 'rgba(249,115,22,0.25)',
         },
         surface: {
           DEFAULT: '#161616',
@@ -25,6 +25,7 @@ const config: Config = {
         'card': '0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)',
         'card-hover': '0 8px 30px rgba(0,0,0,0.5)',
         'glow-violet': '0 0 20px rgba(124,58,237,0.15)',
+        'glow-orange': '0 0 20px rgba(249,115,22,0.15)',
         'glow-emerald': '0 0 20px rgba(52,211,153,0.1)',
         'glow-red': '0 0 20px rgba(248,113,113,0.1)',
         'inner-top': 'inset 0 1px 0 rgba(255,255,255,0.04)',

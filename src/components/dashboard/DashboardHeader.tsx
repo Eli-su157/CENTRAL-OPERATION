@@ -16,7 +16,7 @@ function SaveBtn({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50"
+      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
     >
       {pending ? '...' : label}
     </button>
@@ -46,7 +46,7 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
               autoFocus
               required
               maxLength={50}
-              className="bg-white/[0.04] border border-violet-500/40 text-white rounded-lg px-3 py-1.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-violet-500/40 w-full max-w-xs placeholder-zinc-600"
+              className="bg-white/[0.04] border border-orange-500/40 text-white rounded-lg px-3 py-1.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-orange-500/40 w-full max-w-xs placeholder-zinc-600"
             />
             <SaveBtn label="Salvar" />
             <button type="button" onClick={() => setMode(null)}
@@ -55,14 +55,17 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
             </button>
           </form>
         ) : (
-          <div>
-            <h1 className="text-2xl font-bold text-white leading-tight tracking-tight">{dashboard.name}</h1>
-            {renameState && 'error' in renameState && (
-              <p className="text-xs text-red-400 mt-1">{renameState.error}</p>
-            )}
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+            <div>
+              <h1 className="text-2xl font-bold text-white leading-tight tracking-tight">{dashboard.name}</h1>
+              {renameState && 'error' in renameState && (
+                <p className="text-xs text-red-400 mt-1">{renameState.error}</p>
+              )}
+            </div>
           </div>
         )}
-        <p className="text-sm text-zinc-500 mt-1">Dashboard · dados de hoje</p>
+        <p className="text-sm text-zinc-500 mt-1 pl-4">Dashboard · dados de hoje</p>
       </div>
 
       {canManage && mode !== 'rename' && (

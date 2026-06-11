@@ -9,11 +9,11 @@
 ::-webkit-scrollbar-thumb:hover { background: #444; }
 
 /* ── Selection ── */
-::selection { background-color: rgba(124, 58, 237, 0.25); color: white; }
+::selection { background-color: rgba(249, 115, 22, 0.25); color: white; }
 
 /* ── Focus ring ── */
 *:focus-visible {
-  outline: 2px solid rgba(124, 58, 237, 0.5);
+  outline: 2px solid rgba(249, 115, 22, 0.5);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -53,7 +53,7 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(249,115,22,0.4), transparent);
 }
 
 /* ── Number font variant ── */

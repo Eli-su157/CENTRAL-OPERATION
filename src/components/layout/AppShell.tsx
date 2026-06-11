@@ -13,10 +13,11 @@ interface Props {
   canManageTeam: boolean;
   canSeeFinancial: boolean;
   canSeeReports: boolean;
+  canSeeIntegrations: boolean;
   children: React.ReactNode;
 }
 
-export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFinancial, canSeeReports, children }: Props) {
+export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFinancial, canSeeReports, canSeeIntegrations, children }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -42,6 +43,7 @@ export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFin
           canManageTeam={canManageTeam}
           canSeeFinancial={canSeeFinancial}
           canSeeReports={canSeeReports}
+          canSeeIntegrations={canSeeIntegrations}
           onClose={() => setSidebarOpen(false)}
         />
       </div>
@@ -62,10 +64,12 @@ export function AppShell({ user, operation, dashboards, canManageTeam, canSeeFin
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-violet-600 flex items-center justify-center">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
+            <div className="w-5 h-5 bg-orange-500 flex items-center justify-center">
+              <svg width="9" height="9" viewBox="0 0 16 16" fill="none">
+                <rect x="1" y="1" width="6" height="6" fill="white" />
+                <rect x="9" y="1" width="6" height="6" fill="white" />
+                <rect x="9" y="9" width="6" height="6" fill="white" />
+                <rect x="1" y="9" width="6" height="6" fill="white" />
               </svg>
             </div>
             <span className="text-sm font-semibold text-white">{operation.name}</span>
