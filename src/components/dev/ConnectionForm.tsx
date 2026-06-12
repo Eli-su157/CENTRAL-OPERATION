@@ -102,6 +102,7 @@ export function ConnectionForm({ dashboardId, editConnection, onClose }: Props) 
                     {Object.entries(CATEGORY_LABEL).map(([val, label]) => (
                       <option key={val} value={val}>{label}</option>
                     ))}
+                    <option value="" disabled>── Open Finance / Banco (Em breve) ──</option>
                   </select>
                 </div>
 

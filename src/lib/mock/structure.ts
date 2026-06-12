@@ -24,7 +24,7 @@ export interface MonitoredResource {
 export interface IntegrationConnection {
   id: string;
   provider: string;
-  category: 'venda' | 'atribuicao' | 'trafego';
+  category: 'venda' | 'atribuicao' | 'trafego' | 'tracker' | 'banco';
   status: IntegrationStatus;
   last_event_at: string | null;
   // config público (sem credenciais)

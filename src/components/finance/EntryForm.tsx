@@ -2,8 +2,9 @@
 
 import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { createEntryAction } from '@/app/app/financeiro/actions';
+import { createEntryAction, updateEntryAction } from '@/app/app/financeiro/actions';
 import type { FinanceActionState } from '@/app/app/financeiro/actions';
+import type { FinanceEntry } from '@/lib/finance/calc';
 
 interface Category { name: string; direction: 'entrada' | 'saida' }
 interface Dashboard { id: string; name: string }
@@ -14,6 +15,8 @@ interface Props {
   dashboards: Dashboard[];
   members: Member[];
   onClose: () => void;
+  /** Se fornecido, abre o form em modo edição */
+  editEntry?: FinanceEntry | null;
 }
 
 function SubmitBtn() {
@@ -29,12 +32,14 @@ function SubmitBtn() {
 const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30';
 const labelCls = 'text-xs font-medium text-zinc-400 uppercase tracking-wide';
 
-export function EntryForm({ categories, dashboards, members, onClose }: Props) {
+export function EntryForm({ categories, dashboards, members, onClose, editEntry }: Props) {
+  const isEditing = !!editEntry;
+  const serverAction = isEditing ? updateEntryAction : createEntryAction;
   const [state, action] = useActionState(
-    createEntryAction as (s: FinanceActionState, f: FormData) => Promise<FinanceActionState>,
+    serverAction as (s: FinanceActionState, f: FormData) => Promise<FinanceActionState>,
     null
   );
-  const [direction, setDirection] = useState<'entrada' | 'saida'>('entrada');
+  const [direction, setDirection] = useState<'entrada' | 'saida'>(editEntry?.direction ?? 'entrada');
   const [recurring, setRecurring] = useState(false);
   const [showCommission, setShowCommission] = useState(false);
 
@@ -48,7 +53,7 @@ export function EntryForm({ categories, dashboards, members, onClose }: Props) {
     <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center pt-12 px-4">
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 sticky top-0 bg-zinc-900 z-10">
-          <h2 className="text-base font-bold text-white">Novo Lançamento</h2>
+          <h2 className="text-base font-bold text-white">{isEditing ? 'Editar Lançamento' : 'Novo Lançamento'}</h2>
           <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -57,6 +62,7 @@ export function EntryForm({ categories, dashboards, members, onClose }: Props) {
         </div>
 
         <form action={action} className="px-6 py-5 flex flex-col gap-4">
+          {isEditing && <input type="hidden" name="entryId" value={editEntry!.id} />}
           {state && 'error' in state && (
             <div className="bg-red-950 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
               {state.error}

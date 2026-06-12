@@ -15,8 +15,10 @@ import {
 
 const CATEGORY_LABEL: Record<string, string> = {
   venda:      'Vendas',
-  atribuicao: 'Atribuição',
+  tracker:    'Tracker de Atribuição',
+  atribuicao: 'Atribuição (legado)',
   trafego:    'Tráfego',
+  banco:      'Open Finance / Banco',
 };
 
 const CATEGORY_ICON: Record<string, React.ReactNode> = {
@@ -24,6 +26,12 @@ const CATEGORY_ICON: Record<string, React.ReactNode> = {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <line x1="12" y1="1" x2="12" y2="23" />
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    </svg>
+  ),
+  tracker: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
     </svg>
   ),
   atribuicao: (
@@ -35,6 +43,11 @@ const CATEGORY_ICON: Record<string, React.ReactNode> = {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
       <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  ),
+  banco: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" />
     </svg>
   ),
 };
@@ -193,8 +206,10 @@ export function IntegrationCenterClient({ connections, dashboardId, canManage, c
 
   const byCategory = {
     venda:      connections.filter(c => c.category === 'venda'),
+    tracker:    connections.filter(c => c.category === 'tracker'),
     atribuicao: connections.filter(c => c.category === 'atribuicao'),
     trafego:    connections.filter(c => c.category === 'trafego'),
+    banco:      connections.filter(c => c.category === 'banco'),
   };
 
   const totalConectadas = connections.filter(c => c.status === 'conectada').length;
@@ -242,6 +257,23 @@ export function IntegrationCenterClient({ connections, dashboardId, canManage, c
       <div className="flex flex-col gap-3">
         {(Object.keys(byCategory) as Array<keyof typeof byCategory>).map(cat => {
           const items = byCategory[cat];
+
+          // Open Finance / Banco: sempre exibe como "Em breve"
+          if (cat === 'banco') {
+            return (
+              <div key="banco" className="bg-zinc-900/60 border border-dashed border-zinc-800 rounded-xl p-4 opacity-60">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-zinc-600">{CATEGORY_ICON['banco']}</span>
+                  <p className="text-xs font-semibold text-zinc-600 uppercase tracking-widest">Open Finance / Banco</p>
+                  <span className="ml-auto text-[10px] bg-zinc-800 text-zinc-600 px-1.5 py-px rounded font-semibold">Em breve</span>
+                </div>
+                <p className="text-xs text-zinc-700">
+                  Conecte sua conta bancária (Pluggy, Belvo, Klavi) para conciliação automática.
+                </p>
+              </div>
+            );
+          }
+
           if (items.length === 0 && !canManage) return null;
           const vendaProviders = cat === 'venda' ? items.map(c => c.provider) : [];
           const showPrimarySelector = cat === 'venda' && canDelete && vendaProviders.length > 0;
