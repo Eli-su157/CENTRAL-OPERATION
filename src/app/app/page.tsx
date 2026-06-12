@@ -3,6 +3,8 @@ import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import { CreateDashboardButton } from '@/components/dashboard/CreateDashboardButton';
+import { ActivityFeed, type FeedEvent } from '@/components/home/ActivityFeed';
+import { PendingActions, type PendingActionItem } from '@/components/home/PendingActions';
 import { formatCurrency } from '@/lib/utils/format';
 import {
   calcDre,
@@ -98,7 +100,7 @@ export default async function AppPage() {
     query = query.eq('id', ctx.permissions.restrito_a_dashboard);
   }
 
-  const [dashboardsRes, operationRes, financeRes, salesRes, spendRes] = await Promise.all([
+  const [dashboardsRes, operationRes, financeRes, salesRes, spendRes, eventsRes, pendingRes] = await Promise.all([
     query,
     supabase
       .from('operations')
@@ -122,9 +124,33 @@ export default async function AppPage() {
     canSeeFinancial
       ? fetchOperationSpend(supabase, ctx.profile.operation_id, monthStart(), monthEnd())
       : Promise.resolve([] as RawSpend[]),
+    // Feed de atividade — últimos 20 eventos da operação
+    supabase
+      .from('events')
+      .select('id, type, payload, dashboard_id, created_at')
+      .eq('operation_id', ctx.profile.operation_id)
+      .order('created_at', { ascending: false })
+      .limit(20),
+    // Ações pendentes — só para dono/head
+    (ctx.profile.role === 'dono' || ctx.profile.role === 'head')
+      ? supabase
+          .from('pending_actions')
+          .select('id, type, title, description, link, target_sector, target_role, created_at')
+          .eq('operation_id', ctx.profile.operation_id)
+          .eq('status', 'pendente')
+          .order('created_at', { ascending: false })
+          .limit(10)
+      : Promise.resolve({ data: [] }),
   ]);
 
   const dashboards = (dashboardsRes.data ?? []) as { id: string; name: string; primary_sale_provider: string | null }[];
+  const feedEvents: FeedEvent[] = (eventsRes.data ?? []).map(e => ({
+    id: e.id, type: e.type, payload: e.payload, dashboard_id: e.dashboard_id, created_at: e.created_at,
+  }));
+  const pendingActions: PendingActionItem[] = (pendingRes.data ?? []).map(a => ({
+    id: a.id, type: a.type, title: a.title, description: a.description,
+    link: a.link, target_sector: a.target_sector, target_role: a.target_role, created_at: a.created_at,
+  }));
   const maxDashboards = operationRes.data?.max_dashboards ?? 5;
   const maxReached = dashboards.length >= maxDashboards;
 
@@ -246,6 +272,13 @@ export default async function AppPage() {
         </div>
       )}
 
+      {/* Ações Pendentes (só dono/head, quando há ações) */}
+      {pendingActions.length > 0 && (
+        <div className="mb-8">
+          <PendingActions actions={pendingActions} />
+        </div>
+      )}
+
       {/* Dashboards */}
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -290,6 +323,13 @@ export default async function AppPage() {
           </div>
         )}
       </div>
+
+      {/* Feed de Atividade */}
+      {feedEvents.length > 0 && (
+        <div className="mt-10">
+          <ActivityFeed events={feedEvents} />
+        </div>
+      )}
     </div>
   );
 }

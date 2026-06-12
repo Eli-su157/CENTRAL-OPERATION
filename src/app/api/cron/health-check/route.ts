@@ -16,6 +16,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { evaluateOperationAlerts } from '@/lib/alerts/engine';
+import { publishEvent } from '@/lib/events/publish';
 
 const HEARTBEAT_THRESHOLDS: Record<string, number> = {
   venda:      6 * 3600_000,
@@ -89,12 +90,29 @@ export async function GET(request: NextRequest) {
   });
 
   const heartbeatResults = await Promise.allSettled(
-    expiredConnections.map(conn =>
-      admin
+    expiredConnections.map(async conn => {
+      await admin
         .from('integration_connections')
         .update({ status: 'desconectada' })
+        .eq('id', conn.id);
+
+      // Busca operation_id e dashboard_id para o evento
+      const { data: connRow } = await admin
+        .from('integration_connections')
+        .select('operation_id, dashboard_id')
         .eq('id', conn.id)
-    )
+        .maybeSingle();
+
+      if (connRow) {
+        const isTracker = conn.category === 'tracker';
+        await publishEvent(admin, {
+          operation_id: connRow.operation_id,
+          dashboard_id: connRow.dashboard_id,
+          type: isTracker ? 'tracker_desconectado' : 'plataforma_desconectada',
+          payload: { provider: conn.provider, category: conn.category },
+        });
+      }
+    })
   );
   const updatedConnections = heartbeatResults.filter(r => r.status === 'fulfilled').length;
 

@@ -10,6 +10,10 @@
 //
 // Em caso de erro por conexão: marca status='erro' na conexão e continua com as outras.
 
+// DISABLE_DIRECT_AD_PULL=true desativa este cron globalmente.
+// Use quando todas as operações usam tracker (UTMify/Hyros) como fonte de verdade.
+// Default: false (pull direto continua rodando, compatibilidade retroativa).
+
 import { type NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { decryptCredentials } from '@/lib/crypto/credentials';
@@ -24,12 +28,16 @@ const ADAPTERS: Record<string, SpendAdapter> = {
 };
 
 export async function GET(request: NextRequest) {
-  // Valida segredo do cron (Vercel envia Authorization: Bearer <CRON_SECRET>)
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = request.headers.get('authorization') ?? '';
 
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Flag de desativação: quando todas as operações usam tracker como fonte primária
+  if (process.env.DISABLE_DIRECT_AD_PULL === 'true') {
+    return NextResponse.json({ skipped: true, reason: 'DISABLE_DIRECT_AD_PULL=true' });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

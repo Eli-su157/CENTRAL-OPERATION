@@ -13,6 +13,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { decryptCredentials } from '@/lib/crypto/credentials';
 import { getAdapter, SALE_PROVIDERS } from '@/lib/integrations/registry';
 import { checkDuplicate } from '@/lib/integrations/dedup';
+import { publishEvent } from '@/lib/events/publish';
 
 interface RouteParams { params: Promise<{ provider: string }> }
 
@@ -114,6 +115,20 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         isDupConstraint ? 'UNIQUE constraint (idempotente)' : insertError.message);
       continue;
     }
+
+    // Publica evento no ERP
+    await publishEvent(admin, {
+      operation_id: conn.operation_id,
+      dashboard_id: conn.dashboard_id,
+      type: event.status === 'reembolsado' ? 'reembolso'
+         : event.status === 'chargeback'   ? 'chargeback'
+         : 'venda_aprovada',
+      payload: {
+        external_id: event.external_id,
+        amount:      event.amount,
+        provider:    event.provider,
+      },
+    });
 
     // Drena a fila UTMify: se houver evento de atribuição aguardando, aplica agora.
     // Prioridade: external_id exato → fuzzy (email + janela de 10 min).

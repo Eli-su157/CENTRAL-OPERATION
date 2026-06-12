@@ -10,13 +10,15 @@ import type { IntegrationConnection } from '@/lib/mock/structure';
 
 const PROVIDERS_BY_CATEGORY = {
   venda:      ['hotmart', 'paradise', 'vega', 'shopify'],
+  tracker:    ['utmify'],
   atribuicao: ['utmify'],
   trafego:    ['meta_ads', 'google_ads'],
 } as const;
 
 const CATEGORY_LABEL = {
   venda:      'Venda',
-  atribuicao: 'Atribuição',
+  tracker:    'Tracker de Atribuição (recomendado)',
+  atribuicao: 'Atribuição (legado)',
   trafego:    'Tráfego',
 };
 
