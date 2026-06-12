@@ -19,15 +19,14 @@ type CachedAuth = {
   rawOverrides: { type: string; value: Record<string, unknown> | null }[];
 };
 
-// profiles + permission_overrides em paralelo — cached por user_id, TTL 60s
-// Invalidado via revalidateTag('auth-profile') quando um admin muda papel/override
+// Usa SOMENTE o admin client (não usa cookies) — compatível com unstable_cache.
+// Ambas as queries rodam em paralelo, resultado cacheado por user_id por 60s.
 const getCachedProfileAndOverrides = unstable_cache(
   async (userId: string): Promise<CachedAuth> => {
-    const supabase = await createClient();
     const admin = createAdminClient();
 
     const [profileRes, overridesRes] = await Promise.all([
-      supabase.from('profiles').select('*').eq('id', userId).single(),
+      admin.from('profiles').select('*').eq('id', userId).single(),
       admin.from('permission_overrides').select('type, value').eq('user_id', userId),
     ]);
 
@@ -40,16 +39,20 @@ const getCachedProfileAndOverrides = unstable_cache(
   { revalidate: 60, tags: ['auth-profile'] }
 );
 
+// React.cache() deduplica dentro do mesmo request (layout + page não chamam 2x)
+// unstable_cache persiste entre requests por 60s, invalidado por revalidateTag
 export const getAuthContext = cache(async (): Promise<AuthContext | null> => {
   if (process.env.NEXT_PUBLIC_DEMO === 'true') {
     const { DEMO_AUTH_CONTEXT } = await import('@/lib/demo');
     return DEMO_AUTH_CONTEXT;
   }
 
+  // auth.getUser() usa cookies — fica FORA da cache (validação de sessão sempre fresca)
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // Profile + overrides: cacheados por 60s via unstable_cache (sem cookies dentro)
   const { profile, rawOverrides } = await getCachedProfileAndOverrides(user.id);
   if (!profile) return null;
 

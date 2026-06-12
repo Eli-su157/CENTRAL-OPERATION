@@ -2,30 +2,32 @@ import { redirect } from 'next/navigation';
 import { unstable_cache } from 'next/cache';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { AppShell } from '@/components/layout/AppShell';
 import type { NotificationItem } from '@/components/layout/NotificationBell';
 
 type NavData = { dashboards: { id: string; name: string }[]; operationName: string };
 
+// Admin client não usa cookies — compatível com unstable_cache
 function getNavData(operationId: string) {
   return unstable_cache(
     async (): Promise<NavData> => {
-      const supabase = await createClient();
+      const admin = createAdminClient();
       const [dashboardsRes, operationRes] = await Promise.all([
-        supabase
+        admin
           .from('dashboards')
           .select('id, name')
           .eq('operation_id', operationId)
           .order('created_at'),
-        supabase
+        admin
           .from('operations')
           .select('name')
           .eq('id', operationId)
           .single(),
       ]);
       return {
-        dashboards: dashboardsRes.data ?? [],
-        operationName: operationRes.data?.name ?? '',
+        dashboards: (dashboardsRes.data ?? []) as { id: string; name: string }[],
+        operationName: (operationRes.data as { name: string } | null)?.name ?? '',
       };
     },
     [`nav-data-${operationId}`],
@@ -45,15 +47,17 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     dashboards = DEMO_DASHBOARDS;
     operationName = 'Central Demo';
   } else {
+    // Nav data (cacheado) + notificações (não cacheado — tempo-real) em paralelo
     const [nav, notifRes] = await Promise.all([
       getNavData(ctx.profile.operation_id),
-      // Notificações do usuário atual — últimas 30, não cacheadas (tempo-real)
-      (await createClient())
-        .from('notifications')
-        .select('id, type, title, body, link, read, created_at')
-        .eq('user_id', ctx.userId)
-        .order('created_at', { ascending: false })
-        .limit(30),
+      createClient().then(sb =>
+        sb
+          .from('notifications')
+          .select('id, type, title, body, link, read, created_at')
+          .eq('user_id', ctx.userId)
+          .order('created_at', { ascending: false })
+          .limit(30)
+      ),
     ]);
 
     dashboards = nav.dashboards;
