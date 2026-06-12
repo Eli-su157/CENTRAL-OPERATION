@@ -5,6 +5,7 @@ import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import { CreateDashboardButton } from '@/components/dashboard/CreateDashboardButton';
 import { ActivityFeed, type FeedEvent } from '@/components/home/ActivityFeed';
 import { PendingActions, type PendingActionItem } from '@/components/home/PendingActions';
+import { KPICard, EmptyState } from '@/components/ui';
 import { formatCurrency } from '@/lib/utils/format';
 import {
   calcDre,
@@ -65,9 +66,10 @@ export default async function AppPage() {
         </div>
         {canSeeFinancial && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-            <ConsolidatedKpi label="Faturamento" value={formatCurrency(consolidated.faturamento)} />
-            <ConsolidatedKpi label="Lucro Líquido" value={formatCurrency(consolidated.lucro_liquido)} valueClass={consolidated.lucro_liquido >= 0 ? 'text-emerald-400' : 'text-red-400'} />
-            <ConsolidatedKpi label="Produtos" value={String(DEMO_DASHBOARDS.length)} />
+            <KPICard label="Faturamento" value={formatCurrency(consolidated.faturamento)} accent="brand" />
+            <KPICard label="Lucro Líquido" value={formatCurrency(consolidated.lucro_liquido)}
+              accent={consolidated.lucro_liquido >= 0 ? 'positive' : 'negative'} />
+            <KPICard label="Produtos" value={String(DEMO_DASHBOARDS.length)} />
           </div>
         )}
         <div>
@@ -238,7 +240,7 @@ export default async function AppPage() {
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      {/* Page header */}
+      {/* Page header via SectionHeader */}
       <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
         <div className="flex items-center gap-3 mb-1">
@@ -250,21 +252,22 @@ export default async function AppPage() {
         </p>
       </div>
 
-      {/* KPIs consolidados — só para quem pode ver financeiro */}
+      {/* KPIs consolidados — KPICard da camada ui/ */}
       {dashboards.length > 0 && canSeeFinancial && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-          <ConsolidatedKpi
+          <KPICard
             label="Faturamento"
             value={formatCurrency(consolidated.faturamento)}
+            accent="brand"
             sub={`A receber: ${formatCurrency(consolidated.a_receber)}`}
           />
-          <ConsolidatedKpi
+          <KPICard
             label="Lucro Líquido"
             value={formatCurrency(consolidated.lucro_liquido)}
-            valueClass={consolidated.lucro_liquido >= 0 ? 'text-emerald-400' : 'text-red-400'}
+            accent={consolidated.lucro_liquido >= 0 ? 'positive' : 'negative'}
             sub={`A pagar: ${formatCurrency(consolidated.a_pagar)}`}
           />
-          <ConsolidatedKpi
+          <KPICard
             label="Produtos ativos"
             value={String(dashboards.length)}
             sub="Mês atual · lançamentos manuais"
@@ -294,31 +297,14 @@ export default async function AppPage() {
         </div>
 
         {dashboards.length === 0 ? (
-          <div className="border border-white/[0.05] rounded-xl p-12 text-center bg-[#0D0D0D] relative overflow-hidden">
-            {/* Decorativo */}
-            <div className="absolute inset-0 bg-gradient-to-b from-orange-500/[0.02] to-transparent pointer-events-none" />
-            <div className="relative z-10">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/15 mb-5">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-orange-400">
-                  <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-                  <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
-                </svg>
-              </div>
-              <p className="text-zinc-200 font-semibold mb-2">Nenhum produto cadastrado</p>
-              {ctx.permissions.pode_criar_dashboard ? (
-                <>
-                  <p className="text-zinc-600 text-sm mb-5 max-w-xs mx-auto">
-                    Crie seu primeiro dashboard para começar a monitorar vendas, tráfego e resultado financeiro.
-                  </p>
-                  <p className="text-xs text-zinc-700">Use o botão <span className="text-zinc-500 font-medium">Novo Dashboard</span> acima.</p>
-                </>
-              ) : (
-                <p className="text-zinc-600 text-sm max-w-xs mx-auto">
-                  O Dono da operação ainda não criou nenhum dashboard. Aguarde ou solicite acesso.
-                </p>
-              )}
-            </div>
-          </div>
+          <EmptyState
+            title="Nenhum produto cadastrado"
+            description={
+              ctx.permissions.pode_criar_dashboard
+                ? 'Crie seu primeiro dashboard para começar a monitorar vendas, tráfego e resultado financeiro.'
+                : 'O Dono da operação ainda não criou nenhum dashboard. Aguarde ou solicite acesso.'
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {dashboardsWithSummary.map(d => (
@@ -343,23 +329,3 @@ export default async function AppPage() {
   );
 }
 
-function ConsolidatedKpi({
-  label,
-  value,
-  valueClass = 'text-white',
-  sub,
-}: {
-  label: string;
-  value: string;
-  valueClass?: string;
-  sub?: string;
-}) {
-  return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/6 to-transparent" />
-      <p className="text-[10px] text-zinc-500 uppercase tracking-[0.1em] font-semibold mb-3">{label}</p>
-      <p className={`text-[1.75rem] num font-bold leading-none ${valueClass}`}>{value}</p>
-      {sub && <p className="text-xs text-zinc-600 mt-2 tabular-nums">{sub}</p>}
-    </div>
-  );
-}

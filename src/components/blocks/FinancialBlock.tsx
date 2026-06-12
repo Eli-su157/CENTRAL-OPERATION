@@ -1,4 +1,5 @@
 import { formatCurrency } from '@/lib/utils/format';
+import { MetricBlock } from '@/components/ui';
 import type { DashboardMetrics } from '@/lib/mock/metrics';
 import type { AccountSummary } from '@/lib/finance/calc';
 
@@ -51,23 +52,11 @@ export function FinancialBlock({ data, realFinance }: Props) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <StatCell
-          label={isReal ? 'Receita bruta' : 'Saldo'}
-          value={formatCurrency(saldo)}
-          valueClass="text-emerald-400"
-        />
-        <StatCell label="A receber" value={formatCurrency(aReceber)} valueClass="text-zinc-200" />
-        <StatCell label="A pagar"   value={formatCurrency(aPagar)}   valueClass="text-red-400" />
+        <MetricBlock label={isReal ? 'Receita bruta' : 'Saldo'} value={formatCurrency(saldo)} valueClass="text-emerald-400" />
+        <MetricBlock label="A receber" value={formatCurrency(aReceber)} valueClass="text-zinc-200" />
+        <MetricBlock label="A pagar"   value={formatCurrency(aPagar)}   valueClass="text-red-400" />
       </div>
     </div>
   );
 }
 
-function StatCell({ label, value, valueClass = 'text-zinc-200' }: { label: string; value: string; valueClass?: string }) {
-  return (
-    <div className="bg-white/[0.02] rounded-md p-2.5">
-      <p className="text-[9px] text-zinc-700 uppercase tracking-[0.1em] font-semibold mb-1">{label}</p>
-      <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>
-    </div>
-  );
-}

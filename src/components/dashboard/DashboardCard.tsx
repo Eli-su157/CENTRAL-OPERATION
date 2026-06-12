@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils/format';
+import { MetricBlock } from '@/components/ui';
 
 interface Props {
   dashboard: { id: string; name: string };
@@ -37,17 +38,11 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
 
       {canSeeFinancial ? (
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-          <StatCell label="Faturamento" value={formatCurrency(summary.faturamento)} />
-          <StatCell
-            label="Lucro"
-            value={formatCurrency(summary.lucro_liquido)}
-            valueClass={lucroOk ? 'text-emerald-400' : 'text-red-400'}
-          />
-          <StatCell
-            label="ROAS"
-            value={roasDisplay}
-            valueClass={summary.roas === null ? 'text-zinc-600' : roasOk ? 'text-emerald-400' : 'text-red-400'}
-          />
+          <MetricBlock label="Faturamento" value={formatCurrency(summary.faturamento)} />
+          <MetricBlock label="Lucro" value={formatCurrency(summary.lucro_liquido)}
+            valueClass={lucroOk ? 'text-emerald-400' : 'text-red-400'} />
+          <MetricBlock label="ROAS" value={roasDisplay}
+            valueClass={summary.roas === null ? 'text-zinc-600' : roasOk ? 'text-emerald-400' : 'text-red-400'} />
         </div>
       ) : (
         <div className="flex items-center gap-2 py-2">
@@ -67,11 +62,3 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
   );
 }
 
-function StatCell({ label, value, valueClass = 'text-zinc-200' }: { label: string; value: string; valueClass?: string }) {
-  return (
-    <div className="bg-white/[0.025] rounded-md p-2.5">
-      <p className="text-[9px] text-zinc-700 uppercase tracking-[0.1em] font-semibold mb-1">{label}</p>
-      <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>
-    </div>
-  );
-}

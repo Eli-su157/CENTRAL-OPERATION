@@ -1,4 +1,5 @@
 import { formatCurrency, formatPercent, formatDelta, formatNumber, deltaColor } from '@/lib/utils/format';
+import { MetricBlock } from '@/components/ui';
 import type { DashboardMetrics } from '@/lib/mock/metrics';
 import type { SalesMetrics } from '@/lib/sales/metrics';
 
@@ -43,36 +44,24 @@ export function SalesBlock({ data, realSales }: Props) {
       </div>
 
       <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/[0.05]">
-        <MetricCell label="Ticket médio" value={formatCurrency(ticket_medio)} />
-        <MetricCell
+        <MetricBlock label="Ticket médio" value={formatCurrency(ticket_medio)} />
+        <MetricBlock
           label="Reembolso"
           value={formatPercent(taxa_reembolso)}
-          valueClass={reembolsoHigh ? 'text-red-400' : 'text-white'}
+          valueClass={reembolsoHigh ? 'text-red-400' : 'text-zinc-200'}
           highlight={reembolsoHigh}
         />
-        <MetricCell
+        <MetricBlock
           label="Conv. Pix"
           value={conversao_pix > 0 ? formatPercent(conversao_pix) : '—'}
           valueClass={conversao_pix >= 80 ? 'text-emerald-400' : conversao_pix > 0 ? 'text-amber-400' : 'text-zinc-600'}
         />
-        <MetricCell label="Pedidos" value={String(aprovadas_qtd)} />
+        <MetricBlock label="Pedidos" value={String(aprovadas_qtd)} />
       </div>
     </BlockCard>
   );
 }
 
-function MetricCell({
-  label, value, valueClass = 'text-white', highlight = false,
-}: {
-  label: string; value: string; valueClass?: string; highlight?: boolean;
-}) {
-  return (
-    <div className={`rounded-lg p-2.5 ${highlight ? 'bg-red-500/5' : 'bg-white/[0.02]'}`}>
-      <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-1">{label}</p>
-      <p className={`text-sm font-bold tabular-nums leading-tight ${valueClass}`}>{value}</p>
-    </div>
-  );
-}
 
 function BlockCard({
   label, badge, icon, children,
