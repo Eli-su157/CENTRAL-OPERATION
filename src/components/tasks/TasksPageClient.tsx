@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { KanbanBoard } from './KanbanBoard';
 import { MyTasksList } from './MyTasksList';
+import { TeamView } from './TeamView';
 import { TaskDetail } from './TaskDetail';
 import { CreateTaskForm } from './CreateTaskForm';
 import type { Task, TaskMember } from '@/lib/types/tasks';
@@ -21,7 +22,7 @@ interface Props {
   canCreate: boolean;
 }
 
-type View = 'quadro' | 'minha_lista';
+type View = 'quadro' | 'minha_lista' | 'equipe';
 
 interface Filters {
   setor: string;
@@ -95,7 +96,7 @@ export function TasksPageClient({
       {/* Tabs */}
       {showBoard && (
         <div className="flex gap-1 bg-white/[0.04] border border-white/[0.06] rounded-lg p-1 w-fit mb-5">
-          {(['quadro', 'minha_lista'] as View[]).map(v => (
+          {(['quadro', 'equipe', 'minha_lista'] as View[]).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
@@ -103,14 +104,14 @@ export function TasksPageClient({
                 view === v ? 'bg-white/[0.08] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
-              {v === 'quadro' ? 'Quadro Geral' : 'Minha Lista'}
+              {v === 'quadro' ? 'Quadro' : v === 'equipe' ? 'Equipe Agora' : 'Minha Lista'}
             </button>
           ))}
         </div>
       )}
 
       {/* Filters */}
-      {view === 'quadro' && (
+      {(view === 'quadro' || view === 'equipe') && (
         <div className="flex flex-wrap items-center gap-2 mb-5 overflow-x-auto pb-1">
           {scope === 'todos' && (
             <select
@@ -168,13 +169,22 @@ export function TasksPageClient({
       )}
 
       {/* Views */}
-      {view === 'quadro' ? (
+      {view === 'quadro' && (
         <KanbanBoard
           tasks={filteredTasks}
           currentUserId={currentUserId}
           onTaskClick={setSelectedTaskId}
         />
-      ) : (
+      )}
+      {view === 'equipe' && (
+        <TeamView
+          tasks={filteredTasks}
+          members={members}
+          currentUserId={currentUserId}
+          onTaskClick={setSelectedTaskId}
+        />
+      )}
+      {view === 'minha_lista' && (
         <MyTasksList
           tasks={myTasks}
           currentUserId={currentUserId}
