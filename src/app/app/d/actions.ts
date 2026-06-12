@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 
@@ -47,6 +47,7 @@ export async function createDashboardAction(
 
   if (error || !dashboard) return { error: 'Erro ao criar dashboard.' };
 
+  revalidateTag('nav-dashboards');
   redirect(`/app/d/${dashboard.id}`);
 }
 
@@ -74,6 +75,7 @@ export async function renameDashboardAction(
 
   if (error) return { error: 'Erro ao renomear.' };
 
+  revalidateTag('nav-dashboards');
   revalidatePath(`/app/d/${dashboardId}`);
   revalidatePath('/app');
   return null;
@@ -100,5 +102,6 @@ export async function deleteDashboardAction(
 
   if (error) return { error: 'Erro ao excluir.' };
 
+  revalidateTag('nav-dashboards');
   redirect('/app');
 }

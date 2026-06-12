@@ -34,8 +34,16 @@ export default async function DevPanelPage({ params }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = (await createClient()) as any;
 
-  // Buscar dashboard, membros, dashboards e dados de monitoramento em paralelo
-  const [dashboardRes, membersRes, dashboardsRes, resourcesRes, connectionsRes] = await Promise.all([
+  // Constrói promise de tarefas antes do Promise.all para incluí-la no mesmo round
+  const tasksPromise = supabase
+    .from('tasks')
+    .select('*, task_comments(id, body, created_at, user_id), task_attachments(*)')
+    .eq('operation_id', ctx.profile.operation_id)
+    .eq('sector', 'dev')
+    .order('created_at', { ascending: false });
+
+  // Todas as queries em um único round
+  const [dashboardRes, membersRes, dashboardsRes, resourcesRes, connectionsRes, tasksRes] = await Promise.all([
     supabase
       .from('dashboards')
       .select('id, name, primary_sale_provider')
@@ -69,6 +77,8 @@ export default async function DevPanelPage({ params }: Props) {
       .eq('operation_id', ctx.profile.operation_id)
       .eq('dashboard_id', dashboardId)
       .order('category'),
+
+    tasksPromise,
   ]);
 
   if (!dashboardRes.data) redirect('/app');
@@ -88,14 +98,6 @@ export default async function DevPanelPage({ params }: Props) {
 
   const dashboards: { id: string; name: string }[] = (dashboardsRes.data ?? []) as { id: string; name: string }[];
   const membersMap = Object.fromEntries(allMembers.map(m => [m.id, m]));
-
-  // Tarefas do setor dev
-  const tasksRes = await supabase
-    .from('tasks')
-    .select('*, task_comments(id, body, created_at, user_id), task_attachments(*)')
-    .eq('operation_id', ctx.profile.operation_id)
-    .eq('sector', 'dev')
-    .order('created_at', { ascending: false });
 
   const tasks: Task[] = ((tasksRes.data ?? []) as Record<string, unknown>[]).map(t => ({
     id: t.id as string,

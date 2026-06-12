@@ -1,15 +1,42 @@
 import { redirect } from 'next/navigation';
+import { unstable_cache } from 'next/cache';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
 import { AppShell } from '@/components/layout/AppShell';
+
+type NavData = { dashboards: { id: string; name: string }[]; operationName: string };
+
+// Cached por operation_id — TTL 30s + invalidado por tag 'nav-dashboards' nos actions de dashboard
+function getNavData(operationId: string) {
+  return unstable_cache(
+    async (): Promise<NavData> => {
+      const supabase = await createClient();
+      const [dashboardsRes, operationRes] = await Promise.all([
+        supabase
+          .from('dashboards')
+          .select('id, name')
+          .eq('operation_id', operationId)
+          .order('created_at'),
+        supabase
+          .from('operations')
+          .select('name')
+          .eq('id', operationId)
+          .single(),
+      ]);
+      return {
+        dashboards: dashboardsRes.data ?? [],
+        operationName: operationRes.data?.name ?? '',
+      };
+    },
+    [`nav-data-${operationId}`],
+    { revalidate: 30, tags: ['nav-dashboards'] }
+  )();
+}
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const ctx = await getAuthContext();
   if (!ctx) redirect('/');
 
-  const supabase = await createClient();
-
-  // Modo demo: usa dashboards e operação fixos
   let dashboards: { id: string; name: string }[];
   let operationName: string;
 
@@ -18,21 +45,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     dashboards = DEMO_DASHBOARDS;
     operationName = 'Central Demo';
   } else {
-    const [dashboardsRes, operationRes] = await Promise.all([
-      supabase
-        .from('dashboards')
-        .select('id, name')
-        .eq('operation_id', ctx.profile.operation_id)
-        .order('created_at'),
-      supabase
-        .from('operations')
-        .select('name')
-        .eq('id', ctx.profile.operation_id)
-        .single(),
-    ]);
-
-    dashboards = dashboardsRes.data ?? [];
-    operationName = operationRes.data?.name ?? '';
+    const nav = await getNavData(ctx.profile.operation_id);
+    dashboards = nav.dashboards;
+    operationName = nav.operationName;
 
     if (ctx.permissions.restrito_a_dashboard) {
       dashboards = dashboards.filter(d => d.id === ctx.permissions.restrito_a_dashboard);

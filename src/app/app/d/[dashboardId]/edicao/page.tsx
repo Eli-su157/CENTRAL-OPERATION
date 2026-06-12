@@ -20,13 +20,12 @@ interface Props {
   params: Promise<{ dashboardId: string }>;
 }
 
-// Tipo dos dados de membro vindo do Supabase
-interface RawMember {
-  id: string;
-  full_name: string;
-  email: string;
-  role: string;
-  sector: string | null;
+interface RawMember { id: string; full_name: string; email: string; role: string; sector: string | null }
+interface RawMaterial {
+  id: string; title: string; type: string; status: string;
+  storage_kind: string; storage_path: string | null;
+  external_url: string | null; ad_reference: string | null;
+  dashboard_id: string | null;
 }
 
 export default async function EdicaoPanelPage({ params }: Props) {
@@ -45,58 +44,61 @@ export default async function EdicaoPanelPage({ params }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = (await createClient()) as any;
 
-  const [dashboardRes, membersRes, dashboardsRes, materialsRes, adPerfRows, salesUtmRes] = await Promise.all([
-    supabase
-      .from('dashboards')
-      .select('id, name')
-      .eq('id', dashboardId)
-      .eq('operation_id', ctx.profile.operation_id)
-      .maybeSingle(),
-
-    supabase
-      .from('profiles')
-      .select('id, full_name, email, role, sector')
-      .eq('operation_id', ctx.profile.operation_id)
-      .order('full_name'),
-
-    supabase
-      .from('dashboards')
-      .select('id, name')
-      .eq('operation_id', ctx.profile.operation_id)
-      .order('created_at'),
-
-    supabase
-      .from('materials')
-      .select('id, title, type, status, storage_kind, storage_path, external_url, ad_reference, dashboard_id')
-      .eq('operation_id', ctx.profile.operation_id)
-      .eq('dashboard_id', dashboardId)
-      .order('created_at', { ascending: false }),
-
-    // Desempenho de anúncios do mês atual (para cruzar com materials.ad_reference)
-    fetchAdPerformance(supabase, dashboardId, monthStart(), monthEnd()),
-
-    // Vendas do mês com UTM para atribuição de receita por criativo
-    supabase
-      .from('sales')
-      .select('amount, utm')
-      .eq('dashboard_id', dashboardId)
-      .eq('status', 'aprovado')
-      .gte('occurred_at', monthStart())
-      .lte('occurred_at', `${monthEnd()}T23:59:59.999Z`)
-      .then((r: { data: { amount: number; utm: Record<string, string | null> | null }[] | null }) => r.data ?? []),
-  ]);
-
-  // Tarefas separado para aplicar filtro de setor sem quebrar o tuple inference
-  const tasksQuery = supabase
+  // Constrói a promise de tarefas antes do Promise.all para incluí-la no mesmo round
+  const tasksBaseQuery = supabase
     .from('tasks')
     .select('*, task_comments(id, body, created_at, user_id), task_attachments(*)')
     .eq('operation_id', ctx.profile.operation_id)
     .eq('sector', 'edicao')
     .order('created_at', { ascending: false });
 
-  const tasksRes = ctx.permissions.pode_atribuir_tarefa === 'nenhum'
-    ? await tasksQuery.eq('assignee_user_id', ctx.userId)
-    : await tasksQuery;
+  const tasksPromise =
+    ctx.permissions.pode_atribuir_tarefa === 'nenhum'
+      ? tasksBaseQuery.eq('assignee_user_id', ctx.userId)
+      : tasksBaseQuery;
+
+  // Round único — 7 queries em paralelo (tasks entra aqui, não em round separado)
+  const [dashboardRes, membersRes, dashboardsRes, materialsRes, adPerfRows, salesUtmRes, tasksRes] =
+    await Promise.all([
+      supabase
+        .from('dashboards')
+        .select('id, name')
+        .eq('id', dashboardId)
+        .eq('operation_id', ctx.profile.operation_id)
+        .maybeSingle(),
+
+      supabase
+        .from('profiles')
+        .select('id, full_name, email, role, sector')
+        .eq('operation_id', ctx.profile.operation_id)
+        .order('full_name'),
+
+      supabase
+        .from('dashboards')
+        .select('id, name')
+        .eq('operation_id', ctx.profile.operation_id)
+        .order('created_at'),
+
+      supabase
+        .from('materials')
+        .select('id, title, type, status, storage_kind, storage_path, external_url, ad_reference, dashboard_id')
+        .eq('operation_id', ctx.profile.operation_id)
+        .eq('dashboard_id', dashboardId)
+        .order('created_at', { ascending: false }),
+
+      fetchAdPerformance(supabase, dashboardId, monthStart(), monthEnd()),
+
+      supabase
+        .from('sales')
+        .select('amount, utm')
+        .eq('dashboard_id', dashboardId)
+        .eq('status', 'aprovado')
+        .gte('occurred_at', monthStart())
+        .lte('occurred_at', `${monthEnd()}T23:59:59.999Z`)
+        .then((r: { data: { amount: number; utm: Record<string, string | null> | null }[] | null }) => r.data ?? []),
+
+      tasksPromise,
+    ]);
 
   if (!dashboardRes.data) redirect('/app');
 
@@ -136,27 +138,41 @@ export default async function EdicaoPanelPage({ params }: Props) {
     task_attachments: (t.task_attachments ?? []) as TaskAttachment[],
   }));
 
-  // Signed URLs para anexos de tarefas
+  // ----- MATERIAIS -----
+  const rawMaterials: RawMaterial[] = (materialsRes.data ?? []) as RawMaterial[];
+  const uploadPaths = rawMaterials
+    .filter(m => m.storage_kind === 'upload' && m.storage_path)
+    .map(m => m.storage_path as string);
+
   const filePaths = tasks
     .flatMap(t => t.task_attachments)
     .filter(a => a.type === 'arquivo')
     .map(a => a.url);
 
-  if (filePaths.length > 0) {
-    const admin = createAdminClient();
-    const { data: signedData } = await admin.storage
-      .from('task-attachments')
-      .createSignedUrls(filePaths, 3600);
+  // Signed URLs para tasks e materials em paralelo (um único round adicional, condicional)
+  const admin = createAdminClient();
+  const [taskSignedData, materialSignedData] = await Promise.all([
+    filePaths.length > 0
+      ? admin.storage.from('task-attachments').createSignedUrls(filePaths, 3600)
+      : Promise.resolve({ data: [] }),
+    uploadPaths.length > 0
+      ? admin.storage.from('materials').createSignedUrls(uploadPaths, 3600)
+      : Promise.resolve({ data: [] }),
+  ]);
 
-    const signedMap: Record<string, string> = {};
-    for (const item of signedData ?? []) {
-      if (!item.error && item.signedUrl && item.path) signedMap[item.path] = item.signedUrl;
+  const taskSignedMap: Record<string, string> = {};
+  for (const item of taskSignedData.data ?? []) {
+    if (!item.error && item.signedUrl && item.path) taskSignedMap[item.path] = item.signedUrl;
+  }
+  for (const task of tasks) {
+    for (const att of task.task_attachments) {
+      if (att.type === 'arquivo' && taskSignedMap[att.url]) att.url = taskSignedMap[att.url];
     }
-    for (const task of tasks) {
-      for (const att of task.task_attachments) {
-        if (att.type === 'arquivo' && signedMap[att.url]) att.url = signedMap[att.url];
-      }
-    }
+  }
+
+  const signedUrlMap: Record<string, string> = {};
+  for (const item of materialSignedData.data ?? []) {
+    if (!item.error && item.signedUrl && item.path) signedUrlMap[item.path] = item.signedUrl;
   }
 
   const scope = ctx.permissions.pode_atribuir_tarefa;
@@ -169,32 +185,6 @@ export default async function EdicaoPanelPage({ params }: Props) {
       : scope === 'meu_setor'
       ? edicaoMembers
       : [];
-
-  // ----- MATERIAIS -----
-  interface RawMaterial {
-    id: string; title: string; type: string; status: string;
-    storage_kind: string; storage_path: string | null;
-    external_url: string | null; ad_reference: string | null;
-    dashboard_id: string | null;
-  }
-
-  const rawMaterials: RawMaterial[] = (materialsRes.data ?? []) as RawMaterial[];
-
-  const uploadPaths = rawMaterials
-    .filter(m => m.storage_kind === 'upload' && m.storage_path)
-    .map(m => m.storage_path as string);
-
-  const signedUrlMap: Record<string, string> = {};
-  if (uploadPaths.length > 0) {
-    const admin = createAdminClient();
-    const { data: signedData } = await admin.storage
-      .from('materials')
-      .createSignedUrls(uploadPaths, 3600);
-
-    for (const item of signedData ?? []) {
-      if (!item.error && item.signedUrl && item.path) signedUrlMap[item.path] = item.signedUrl;
-    }
-  }
 
   const materials: MaterialData[] = rawMaterials.map(m => ({
     id: m.id,
@@ -209,8 +199,6 @@ export default async function EdicaoPanelPage({ params }: Props) {
     signedUrl: m.storage_path ? signedUrlMap[m.storage_path] : undefined,
   }));
 
-  // Computar desempenho real por criativo (cruzando ad_performance + sales UTM)
-  // roasAlvo = 3.0 por padrão; pode ser personalizado pela traffic_goals no futuro
   const salesForPerf = (salesUtmRes as { amount: number; utm: Record<string, string | null> | null }[]);
   const performances = new Map<string, RealMaterialPerformance>();
   for (const m of materials) {
@@ -220,43 +208,35 @@ export default async function EdicaoPanelPage({ params }: Props) {
     }
   }
 
-  // Anúncios disponíveis para vínculo manual (da ad_performance deste dashboard)
   const availableAds = getAvailableAds(adPerfRows);
-
   const dashboardName = (dashboardRes.data as { id: string; name: string } | null)?.name ?? '';
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <Link
-          href={`/app/d/${dashboardId}`}
-          className="text-zinc-500 hover:text-white transition-colors"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </Link>
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-white">{dashboardName}</h1>
-            <span className="text-xs bg-violet-950 text-violet-400 border border-violet-800 px-2 py-0.5 rounded-full font-medium">
-              Edição
-            </span>
-          </div>
-          <p className="text-sm text-zinc-500">Tarefas de criação + Biblioteca de materiais</p>
+      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
+        <div className="flex items-center gap-3 mb-1">
+          <Link href={`/app/d/${dashboardId}`} className="text-zinc-600 hover:text-zinc-300 transition-colors shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </Link>
+          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">{dashboardName}</h1>
+          <span className="text-xs bg-violet-950 text-violet-400 border border-violet-800 px-2 py-0.5 rounded-full font-medium">
+            Edição
+          </span>
         </div>
+        <p className="text-sm text-zinc-500 pl-10">Tarefas de criação + Biblioteca de materiais</p>
       </div>
 
-      {/* ===== SEÇÃO 1: TAREFAS DE CRIAÇÃO ===== */}
+      {/* TAREFAS DE CRIAÇÃO */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-violet-500 rounded-full" />
-          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">
-            Tarefas de Criação
-          </h2>
+          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
+          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Tarefas de Criação</h2>
         </div>
-
         <TasksPageClient
           tasks={tasks}
           members={edicaoMembers}
@@ -269,15 +249,12 @@ export default async function EdicaoPanelPage({ params }: Props) {
         />
       </section>
 
-      {/* ===== SEÇÃO 2: BIBLIOTECA DE MATERIAIS ===== */}
+      {/* BIBLIOTECA DE MATERIAIS */}
       <section>
         <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-violet-500 rounded-full" />
-          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">
-            Biblioteca de Materiais
-          </h2>
+          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
+          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Biblioteca de Materiais</h2>
         </div>
-
         <MaterialsLibraryClient
           materials={materials}
           dashboardId={dashboardId}

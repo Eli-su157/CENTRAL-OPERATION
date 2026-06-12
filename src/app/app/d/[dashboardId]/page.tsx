@@ -51,7 +51,7 @@ export default async function DashboardPage({ params }: Props) {
     redirect(`/app/d/${ctx.permissions.restrito_a_dashboard}`);
   }
 
-  // Modo demo: usa dados fixos sem Supabase
+  // Modo demo
   if (process.env.NEXT_PUBLIC_DEMO === 'true') {
     const { DEMO_DASHBOARDS } = await import('@/lib/demo');
     const demoDash = DEMO_DASHBOARDS.find(d => d.id === dashboardId) ?? DEMO_DASHBOARDS[0];
@@ -82,8 +82,20 @@ export default async function DashboardPage({ params }: Props) {
   }
 
   const supabase = await createClient();
+  const canSeeFinancial = ctx.permissions.pode_ver_financeiro;
+  const today = new Date().toISOString().split('T')[0];
 
-  const [dashboardRes, overdueRes, pendingRes, membersCountRes, financeRes] = await Promise.all([
+  // Round único: dashboard + contagens + finance_entries + spend + alerts
+  // fetchDashboardSales fica fora pois precisa de primaryProvider (resultado do dashboard query)
+  const [
+    dashboardRes,
+    overdueRes,
+    pendingRes,
+    membersCountRes,
+    financeRes,
+    rawSpendData,
+    alertsData,
+  ] = await Promise.all([
     supabase
       .from('dashboards')
       .select('*')
@@ -95,7 +107,7 @@ export default async function DashboardPage({ params }: Props) {
       .select('sector')
       .eq('operation_id', ctx.profile.operation_id)
       .neq('status', 'concluida')
-      .lt('due_date', new Date().toISOString().split('T')[0]),
+      .lt('due_date', today),
     supabase
       .from('tasks')
       .select('id', { count: 'exact', head: true })
@@ -105,7 +117,7 @@ export default async function DashboardPage({ params }: Props) {
       .from('profiles')
       .select('id', { count: 'exact', head: true })
       .eq('operation_id', ctx.profile.operation_id),
-    ctx.permissions.pode_ver_financeiro
+    canSeeFinancial
       ? supabase
           .from('finance_entries')
           .select('id, direction, category, amount, entry_date, status, dashboard_id')
@@ -113,6 +125,14 @@ export default async function DashboardPage({ params }: Props) {
           .gte('entry_date', monthStart())
           .lte('entry_date', monthEnd())
       : Promise.resolve({ data: null, error: null }),
+    // fetchDashboardSpend não depende de primaryProvider — entra no Promise.all
+    canSeeFinancial
+      ? fetchDashboardSpend(supabase, dashboardId, monthStart(), monthEnd())
+      : Promise.resolve([]),
+    // fetchActiveAlerts também independente — entra no Promise.all
+    canSeeFinancial
+      ? fetchActiveAlerts(supabase, dashboardId, true)
+      : Promise.resolve([] as AlertBarItem[]),
   ]);
 
   if (!dashboardRes.data) redirect('/app');
@@ -133,19 +153,13 @@ export default async function DashboardPage({ params }: Props) {
     membros_ativos: membersCountRes.count ?? 0,
   };
 
-  // ---------------------------------------------------------------
-  // FINANCEIRO + VENDAS — fonte única da verdade via calc.ts
-  // ---------------------------------------------------------------
   let realFinance: AccountSummary | null = null;
   let realRoas: number | null = null;
   let realSales: SalesMetrics | null = null;
   let realTraffic: RealTrafficSummary | null = null;
-  let realAlerts: AlertBarItem[] = [];
+  let realAlerts: AlertBarItem[] = alertsData as AlertBarItem[];
 
-  if (ctx.permissions.pode_ver_financeiro) {
-    const today = new Date().toISOString().split('T')[0];
-
-    // 1. Finance entries manuais do mês
+  if (canSeeFinancial) {
     const allFinanceEntries: FinanceEntry[] = ((financeRes.data ?? []) as {
       id: string; direction: string; category: string; amount: number;
       entry_date: string; status: string; dashboard_id: string | null;
@@ -159,36 +173,26 @@ export default async function DashboardPage({ params }: Props) {
       dashboard_id: e.dashboard_id,
     }));
 
-    // 2. Vendas + gasto em paralelo
-    const [{ sales: rawSales, noPrimaryWarning }, rawSpend] = await Promise.all([
-      fetchDashboardSales(supabase, dashboardId, primaryProvider, monthStart(), monthEnd()),
-      fetchDashboardSpend(supabase, dashboardId, monthStart(), monthEnd()),
-    ]);
+    // Vendas: único round que ainda precisa esperar (requer primaryProvider do dashboard)
+    const { sales: rawSales, noPrimaryWarning } = await fetchDashboardSales(
+      supabase, dashboardId, primaryProvider, monthStart(), monthEnd()
+    );
 
-    // 3. Converter sales/spend → FinanceEntry e mesclar
-    //    — sales substitui venda/taxa/reembolso; spend substitui trafego
+    const rawSpend = rawSpendData as Awaited<ReturnType<typeof fetchDashboardSpend>>;
+
     const dashFinanceEntries = filterByDashboard(allFinanceEntries, dashboardId);
     const salesEntries  = salesToFinanceEntries(rawSales);
     const spendEntries  = spendToFinanceEntries(rawSpend);
     const afterSales    = mergeEntriesWithSales(dashFinanceEntries, salesEntries, dashboardId);
     const mergedEntries = mergeEntriesWithSpend(afterSales, spendEntries, dashboardId);
 
-    // 4. DRE e resumo via calc.ts — THE source of truth
     const dre   = calcDre(mergedEntries);
     realFinance = calcAccountSummary(mergedEntries);
     realRoas    = calcRoas(dre);
-
-    // 5. Métricas de vendas para o SalesBlock
-    realSales = computeSalesMetrics(rawSales, noPrimaryWarning);
-
-    // 6. Resumo de tráfego para o TrafficBlock (gasto de hoje + ROAS)
+    realSales   = computeSalesMetrics(rawSales, noPrimaryWarning);
     realTraffic = computeTrafficSummary(rawSpend, rawSales, today);
-
-    // 7. Alertas reais do banco (visibilidade filtrada por permissão)
-    realAlerts = await fetchActiveAlerts(supabase, dashboardId, ctx.permissions.pode_ver_financeiro);
   }
 
-  // Mock: fallback visual quando não há dados reais (mantido para campos de tráfego/equipe)
   const metrics = getDashboardMetrics(dashboardId);
 
   return (
@@ -198,10 +202,8 @@ export default async function DashboardPage({ params }: Props) {
         canManage={ctx.permissions.pode_criar_dashboard}
       />
 
-      {/* Alertas reais do banco; fallback para mock quando sem dados (demo mode) */}
       <AlertsBar alerts={realAlerts.length > 0 ? realAlerts : metrics.alerts} />
 
-      {/* SummaryStrip: real (de sales+calc.ts) substitui mock quando há dados */}
       <SummaryStrip
         faturamento_dia={metrics.summary.faturamento_dia}
         lucro_liquido={metrics.summary.lucro_liquido}
@@ -211,7 +213,7 @@ export default async function DashboardPage({ params }: Props) {
         delta_roas={metrics.summary.delta_roas}
         real={realFinance ? {
           faturamento: realFinance.faturamento,
-          lucro_liquido: realFinance.lucro_liquido, // THE number — mesmo do DRE e do card
+          lucro_liquido: realFinance.lucro_liquido,
           roas: realRoas,
         } : null}
       />

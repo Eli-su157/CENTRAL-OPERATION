@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import type { UserRole, UserSector } from '@/lib/types/database';
@@ -125,6 +125,7 @@ export async function updateMemberAction(
 
   if (error) return { error: 'Erro ao atualizar membro.' };
 
+  revalidateTag('auth-profile');
   revalidatePath('/app/equipe');
   return { success: 'Papel atualizado com sucesso.' };
 }
@@ -162,6 +163,7 @@ export async function addOverrideAction(
 
   if (error) return { error: 'Erro ao adicionar exceção.' };
 
+  revalidateTag('auth-profile');
   revalidatePath('/app/equipe');
   return { success: 'Exceção adicionada.' };
 }
@@ -189,6 +191,7 @@ export async function removeOverrideAction(
 
   if (error) return { error: 'Erro ao remover exceção.' };
 
+  revalidateTag('auth-profile');
   revalidatePath('/app/equipe');
   return { success: 'Exceção removida.' };
 }
@@ -218,6 +221,7 @@ export async function removeMemberAction(
 
   await admin.auth.admin.deleteUser(memberId);
 
+  revalidateTag('auth-profile');
   revalidatePath('/app/equipe');
   return { success: 'Membro removido.' };
 }

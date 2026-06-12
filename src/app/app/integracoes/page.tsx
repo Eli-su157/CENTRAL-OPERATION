@@ -251,16 +251,17 @@ export default async function IntegracoesPage() {
 
   const supabase = await createClient();
 
-  const { data: connections } = await supabase
-    .from('integration_connections')
-    .select('provider, status, dashboard_id')
-    .eq('operation_id', ctx.profile.operation_id);
-
-  const { data: dashboards } = await supabase
-    .from('dashboards')
-    .select('id, name')
-    .eq('operation_id', ctx.profile.operation_id)
-    .order('created_at');
+  const [{ data: connections }, { data: dashboards }] = await Promise.all([
+    supabase
+      .from('integration_connections')
+      .select('provider, status, dashboard_id')
+      .eq('operation_id', ctx.profile.operation_id),
+    supabase
+      .from('dashboards')
+      .select('id, name')
+      .eq('operation_id', ctx.profile.operation_id)
+      .order('created_at'),
+  ]);
 
   const connByProvider: Record<string, { count: number; dashboardIds: string[] }> = {};
   for (const c of connections ?? []) {
