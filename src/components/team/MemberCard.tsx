@@ -38,7 +38,7 @@ const roleLabels: Record<UserRole, string> = {
   dono: 'Dono', head: 'Head', lider: 'Líder', executor: 'Executor',
 };
 const roleBadge: Record<UserRole, string> = {
-  dono: 'bg-violet-600', head: 'bg-blue-600', lider: 'bg-emerald-600', executor: 'bg-zinc-600',
+  dono: 'bg-orange-500', head: 'bg-blue-600', lider: 'bg-emerald-600', executor: 'bg-zinc-600',
 };
 const sectorLabels: Record<UserSector, string> = {
   trafego: 'Tráfego', edicao: 'Edição', dev: 'Dev', financeiro: 'Financeiro',
@@ -63,7 +63,7 @@ function SaveButton({ label = 'Salvar' }: { label?: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50"
+      className="px-3 py-1.5 rounded-md text-xs font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
     >
       {pending ? '...' : label}
     </button>
@@ -104,7 +104,7 @@ export function MemberCard({ member, currentUserId }: Props) {
   const toggle = (s: typeof section) => setSection(prev => prev === s ? null : s);
 
   const inputCls =
-    'bg-zinc-800 border border-zinc-700 text-white rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent';
+    'bg-[#0D0D0D] border border-white/[0.08] text-white rounded-md px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30';
 
   return (
     <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">

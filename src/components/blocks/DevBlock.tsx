@@ -48,7 +48,7 @@ export async function DevBlock({ dashboardId }: Props) {
             </span>
           )}
         </div>
-        <Link href={`/app/d/${dashboardId}/dev`} className="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+        <Link href={`/app/d/${dashboardId}/dev`} className="text-xs link-action transition-colors">
           Painel dev →
         </Link>
       </div>

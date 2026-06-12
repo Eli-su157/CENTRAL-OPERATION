@@ -26,7 +26,7 @@ export function SalesBlock({ data, realSales }: Props) {
       </svg>
     }>
       <div className="mb-5">
-        <p className="text-3xl sm:text-[2rem] font-bold text-white tabular-nums leading-none">
+        <p className="text-3xl sm:text-[2rem] num font-bold text-white leading-none">
           {formatCurrency(aprovadas_valor)}
         </p>
         <p className="text-sm text-zinc-500 mt-1.5">

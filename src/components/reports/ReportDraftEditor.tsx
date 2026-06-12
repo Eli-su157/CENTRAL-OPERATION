@@ -66,22 +66,22 @@ export function ReportDraftEditor({ report, isHead, isDono }: Props) {
     <div>
       {/* Comentário do Head (edição ou leitura) */}
       {canEdit && (
-        <div className="bg-zinc-900 border border-violet-800/40 rounded-xl p-5 mb-5">
-          <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
-            Análise do Head <span className="text-violet-600 font-normal">(editável)</span>
+        <div className="bg-zinc-900 border border-white/[0.08] rounded-xl p-5 mb-5">
+          <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-3">
+            Análise do Head <span className="text-zinc-600 font-normal">(editável)</span>
           </p>
           <textarea
             value={comment}
             onChange={e => { setComment(e.target.value); setSaved(false); }}
             rows={6}
             placeholder="Escreva sua análise do período, destaques, pontos de atenção e direcionamentos para a equipe..."
-            className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 placeholder-zinc-600 resize-none"
+            className="w-full bg-[#0D0D0D] border border-white/[0.08] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 placeholder-zinc-600 resize-none"
           />
           <div className="flex items-center gap-3 mt-3">
             <button
               onClick={handleSaveComment}
               disabled={isPending}
-              className="px-4 py-1.5 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50"
+              className="px-4 py-1.5 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
             >
               {isPending ? 'Salvando…' : 'Salvar análise'}
             </button>

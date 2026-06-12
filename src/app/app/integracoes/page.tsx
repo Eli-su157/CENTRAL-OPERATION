@@ -171,7 +171,7 @@ const CATALOG: {
     name: 'UTMify',
     description: 'Atribuição multi-touch por UTM. API key para leitura de conversões.',
     category: 'Atribuição',
-    categoryColor: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
+    categoryColor: 'text-orange-400 bg-orange-500/10 border-orange-500/15',
     status: 'disponivel',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -185,7 +185,7 @@ const CATALOG: {
     name: 'Google Analytics 4',
     description: 'Eventos de comportamento, sessões e taxa de conversão.',
     category: 'Atribuição',
-    categoryColor: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
+    categoryColor: 'text-orange-400 bg-orange-500/10 border-orange-500/15',
     status: 'em_breve',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

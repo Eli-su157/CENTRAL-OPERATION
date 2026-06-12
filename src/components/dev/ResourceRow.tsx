@@ -99,12 +99,12 @@ export function ResourceRow({ resource, dashboardId, canManage }: Props) {
               value={note}
               onChange={e => setNote(e.target.value)}
               placeholder="Nota manual..."
-              className="flex-1 bg-zinc-800 border border-zinc-700 text-white rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="flex-1 bg-[#0D0D0D] border border-white/[0.08] text-white rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40"
             />
             <button
               onClick={saveNote}
               disabled={isPending}
-              className="text-xs px-2 py-1 bg-violet-600 hover:bg-violet-500 text-white rounded transition-colors"
+              className="text-xs px-2 py-1 bg-orange-500 hover:bg-orange-400 text-white rounded transition-colors"
             >
               Salvar
             </button>

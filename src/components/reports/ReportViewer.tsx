@@ -76,8 +76,8 @@ export function ReportViewer({ report }: Props) {
 
       {/* Análise do Head */}
       {report.head_comment && (
-        <div className="bg-violet-950/30 border border-violet-800/40 rounded-xl p-5 mb-5">
-          <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-2">Análise do Head</p>
+        <div className="bg-white/[0.02] border border-white/[0.08] rounded-xl p-5 mb-5">
+          <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-2">Análise do Head</p>
           <p className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">{report.head_comment}</p>
         </div>
       )}

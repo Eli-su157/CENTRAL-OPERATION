@@ -28,7 +28,7 @@ interface Props {
   onClose: () => void;
 }
 
-const inputCls = 'w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-transparent placeholder-zinc-600';
+const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 focus:border-orange-500/30 placeholder-zinc-600';
 const selectCls = `${inputCls} cursor-pointer`;
 
 export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }: Props) {
@@ -166,7 +166,7 @@ export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }
                       type="file"
                       name="file"
                       accept="image/*,video/*,.pdf,.zip,.mp4,.mov"
-                      className="w-full text-sm text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-violet-600 file:text-white hover:file:bg-violet-500 file:cursor-pointer cursor-pointer"
+                      className="w-full text-sm text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-orange-500 file:text-white hover:file:bg-orange-400 file:cursor-pointer cursor-pointer"
                     />
                   </div>
                 ) : (
@@ -226,7 +226,7 @@ export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading
                 ? uploading ? 'Enviando arquivo…' : 'Salvando…'

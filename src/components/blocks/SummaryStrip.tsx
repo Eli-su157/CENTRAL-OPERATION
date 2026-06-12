@@ -28,71 +28,78 @@ export function SummaryStrip({
   const roasValue  = showReal ? (real.roas ?? null) : roas;
   const roasDisplay = roasValue !== null ? formatROAS(roasValue) : '—';
 
+  const lucroPositive = lucroValue >= 0;
+  const roasOk = roasValue !== null && roasValue >= 3;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      {/* Faturamento — acento laranja (número principal) */}
       <Kpi
-        label={showReal ? 'Faturamento (mês)' : 'Faturamento do Dia'}
+        label={showReal ? 'Faturamento · mês' : 'Faturamento · dia'}
         value={formatCurrency(fatValue)}
         delta={showReal ? undefined : formatDelta(delta_faturamento)}
         deltaClass={deltaColor(delta_faturamento)}
-        badge={showReal ? 'real' : 'mock'}
-        accentColor="violet"
+        badge={showReal ? 'real' : 'demo'}
+        topBar="orange"
+        valueClass="text-white"
       />
+      {/* Lucro Líquido — verde/vermelho conforme sinal */}
       <Kpi
         label="Lucro Líquido"
         value={formatCurrency(lucroValue)}
         delta={showReal ? undefined : formatDelta(delta_lucro)}
-        deltaClass={lucroValue >= 0 ? 'text-emerald-400' : 'text-red-400'}
-        badge={showReal ? 'real' : 'mock'}
-        accentColor={lucroValue >= 0 ? 'emerald' : 'red'}
+        deltaClass={lucroPositive ? 'text-emerald-400' : 'text-red-400'}
+        badge={showReal ? 'real' : 'demo'}
+        topBar={lucroPositive ? 'emerald' : 'red'}
+        valueClass={lucroPositive ? 'text-emerald-300' : 'text-red-300'}
       />
+      {/* ROAS */}
       <Kpi
         label="ROAS"
         value={roasDisplay}
         delta={showReal ? undefined : formatDelta(delta_roas, 'pts')}
-        deltaClass={roasValue === null ? 'text-zinc-600' : roasValue >= 3 ? 'text-emerald-400' : 'text-red-400'}
-        badge={showReal ? (real.roas !== null ? 'real' : 'sem dados') : 'mock'}
-        accentColor={roasValue === null ? 'neutral' : roasValue >= 3 ? 'emerald' : 'red'}
+        deltaClass={roasValue === null ? 'text-zinc-600' : roasOk ? 'text-emerald-400' : 'text-red-400'}
+        badge={showReal ? (real.roas !== null ? 'real' : 'sem dados') : 'demo'}
+        topBar={roasValue === null ? 'neutral' : roasOk ? 'emerald' : 'red'}
+        valueClass={roasValue === null ? 'text-zinc-600' : roasOk ? 'text-emerald-300' : 'text-red-300'}
       />
     </div>
   );
 }
 
-const accentMap = {
-  violet:  { bar: 'from-violet-500/60 via-violet-500/20 to-transparent', text: 'text-white' },
-  emerald: { bar: 'from-emerald-500/50 via-emerald-500/15 to-transparent', text: 'text-emerald-300' },
-  red:     { bar: 'from-red-500/50 via-red-500/15 to-transparent', text: 'text-red-300' },
-  neutral: { bar: 'from-zinc-600/40 via-zinc-600/10 to-transparent', text: 'text-zinc-500' },
+type TopBar = 'orange' | 'emerald' | 'red' | 'neutral';
+
+const topBarClass: Record<TopBar, string> = {
+  orange:  'bg-gradient-to-r from-transparent via-orange-500/35 to-transparent',
+  emerald: 'bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent',
+  red:     'bg-gradient-to-r from-transparent via-red-500/30 to-transparent',
+  neutral: 'bg-gradient-to-r from-transparent via-white/[0.05] to-transparent',
 };
 
-const badgeMap: Record<string, string> = {
-  real:      'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20',
-  'sem dados': 'bg-zinc-500/10 text-zinc-500 ring-1 ring-zinc-500/15',
-  mock:      'bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/10',
+const badgeClass: Record<string, string> = {
+  real:        'badge-positive',
+  'sem dados': 'badge-neutral',
+  demo:        'badge-neutral',
 };
 
 function Kpi({
-  label, value, delta, deltaClass, badge, accentColor,
+  label, value, delta, deltaClass, badge, topBar, valueClass,
 }: {
   label: string; value: string; delta?: string; deltaClass: string;
-  badge: string; accentColor: keyof typeof accentMap;
+  badge: string; topBar: TopBar; valueClass: string;
 }) {
-  const accent = accentMap[accentColor];
-
   return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
-      {/* Top gradient accent bar */}
-      <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${accent.bar}`} />
+    <div className="relative bg-[#111111] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
+      <div className={`absolute top-0 left-0 right-0 h-px ${topBarClass[topBar]}`} />
 
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] text-zinc-500 uppercase tracking-[0.1em] font-semibold">{label}</p>
-        <span className={`text-[10px] px-1.5 py-px rounded font-semibold ${badgeMap[badge] ?? badgeMap.mock}`}>
-          {badge}
-        </span>
+        <p className="kpi-label">{label}</p>
+        <span className={badgeClass[badge] ?? 'badge-neutral'}>{badge}</span>
       </div>
 
-      <p className={`text-2xl sm:text-[1.6rem] font-bold tabular-nums leading-none ${
-        value === '—' ? 'text-zinc-600' : accent.text
+      {/* Número principal — tipografia financeira */}
+      <p className={`text-2xl sm:text-[1.65rem] font-bold num leading-none ${
+        value === '—' ? 'text-zinc-700' : valueClass
       }`}>
         {value}
       </p>

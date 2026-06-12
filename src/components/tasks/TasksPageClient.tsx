@@ -68,24 +68,23 @@ export function TasksPageClient({
     setFilters({ setor: '', assigneeId: '', dashboardId: '', priority: '' });
   }
 
-  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500/50';
+  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40';
 
   return (
     <div className="relative">
-      {/* Page header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Tarefas</h1>
-          <p className="text-sm text-zinc-500 mt-0.5">
-            {tasks.length} {tasks.length === 1 ? 'tarefa' : 'tarefas'} na operação
-          </p>
+      {/* Toolbar — botão Nova Tarefa alinhado com as tabs */}
+      <div className="flex items-center justify-between mb-5 gap-3">
+        <div className="flex items-center gap-1 text-xs text-zinc-600">
+          <span className="tabular-nums">{tasks.length}</span>
+          <span>{tasks.length === 1 ? 'tarefa' : 'tarefas'}</span>
+          {hasFilters && <span className="text-zinc-700">· filtros ativos</span>}
         </div>
         {canCreate && (
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors shadow-glow-violet"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors shrink-0"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             Nova Tarefa

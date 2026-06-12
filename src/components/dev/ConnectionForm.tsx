@@ -38,7 +38,7 @@ interface Props {
   onClose: () => void;
 }
 
-const inputCls = 'w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 placeholder-zinc-600';
+const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 placeholder-zinc-600';
 
 export function ConnectionForm({ dashboardId, editConnection, onClose }: Props) {
   const isEditing = !!editConnection;

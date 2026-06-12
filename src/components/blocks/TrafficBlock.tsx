@@ -42,7 +42,7 @@ export function TrafficBlock({ data, real }: Props) {
         </div>
         {real && (
           <Link href={`/app/d/${real.dashboardId}/trafego`}
-            className="text-[11px] text-violet-400 hover:text-violet-300 transition-colors font-medium">
+            className="text-[11px] link-action transition-colors font-medium">
             Painel completo →
           </Link>
         )}

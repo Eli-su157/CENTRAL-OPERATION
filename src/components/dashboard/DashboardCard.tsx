@@ -15,22 +15,22 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
   return (
     <Link
       href={`/app/d/${dashboard.id}`}
-      className="group relative bg-[#161616] border border-white/[0.06] hover:border-violet-500/20 rounded-xl p-5 transition-all duration-200 hover:shadow-card-hover hover:shadow-violet-500/5 cursor-pointer block overflow-hidden"
+      className="group relative bg-[#161616] border border-white/[0.06] hover:border-orange-500/20 rounded-xl p-5 transition-all duration-200 hover:shadow-card-hover hover:shadow-orange-500/5 cursor-pointer block overflow-hidden"
     >
       {/* Top shimmer on hover */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/0 group-hover:via-violet-500/30 to-transparent transition-all duration-300" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/0 group-hover:via-orange-500/20 to-transparent transition-all duration-300" />
 
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/15 flex items-center justify-center shrink-0">
-            <span className="text-violet-400 font-bold text-sm">{dashboard.name[0]?.toUpperCase()}</span>
+          <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/15 flex items-center justify-center shrink-0">
+            <span className="text-orange-400 font-bold text-sm">{dashboard.name[0]?.toUpperCase()}</span>
           </div>
           <h3 className="font-semibold text-zinc-200 group-hover:text-white transition-colors leading-tight">
             {dashboard.name}
           </h3>
         </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-          className="text-zinc-700 group-hover:text-violet-400 transition-colors shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform">
+          className="text-zinc-700 group-hover:text-orange-400 transition-colors shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform">
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </div>
@@ -61,17 +61,17 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
 
       <div className="mt-4 pt-3.5 border-t border-white/[0.04] flex items-center justify-between">
         <span className="text-[10px] text-zinc-600 tracking-wide">Mês atual</span>
-        <span className="text-[10px] text-zinc-600 group-hover:text-violet-500 transition-colors">Abrir →</span>
+        <span className="text-[10px] text-zinc-600 group-hover:text-orange-500 transition-colors">Abrir →</span>
       </div>
     </Link>
   );
 }
 
-function StatCell({ label, value, valueClass = 'text-white' }: { label: string; value: string; valueClass?: string }) {
+function StatCell({ label, value, valueClass = 'text-zinc-200' }: { label: string; value: string; valueClass?: string }) {
   return (
-    <div className="bg-white/[0.025] rounded-lg p-2.5">
-      <p className="text-[10px] text-zinc-600 uppercase tracking-wide font-medium mb-1">{label}</p>
-      <p className={`text-sm font-bold tabular-nums leading-tight ${valueClass}`}>{value}</p>
+    <div className="bg-white/[0.025] rounded-md p-2.5">
+      <p className="text-[9px] text-zinc-700 uppercase tracking-[0.1em] font-semibold mb-1">{label}</p>
+      <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>
     </div>
   );
 }

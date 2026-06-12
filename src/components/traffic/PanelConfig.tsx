@@ -28,7 +28,7 @@ function SaveBtn() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}
-      className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50">
+      className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50">
       {pending ? 'Salvando...' : 'Salvar configuração'}
     </button>
   );
@@ -45,7 +45,7 @@ export function PanelConfig({ dashboardId, enabled, order }: Props) {
   if (!open) {
     return (
       <button onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-violet-400 transition-colors">
+        className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-orange-400 transition-colors">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="3" />
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
@@ -80,7 +80,7 @@ export function PanelConfig({ dashboardId, enabled, order }: Props) {
                 type="checkbox"
                 checked={!!localEnabled[blockId]}
                 onChange={e => setLocalEnabled(prev => ({ ...prev, [blockId]: e.target.checked }))}
-                className="w-4 h-4 rounded bg-zinc-800 border-zinc-600 text-violet-500 focus:ring-violet-500"
+                className="w-4 h-4 rounded bg-zinc-800 border-zinc-600 text-orange-500 focus:ring-orange-500/40"
               />
               <span className="text-sm text-zinc-300">{BLOCK_LABELS[blockId]}</span>
             </label>

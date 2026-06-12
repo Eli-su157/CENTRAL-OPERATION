@@ -7,6 +7,7 @@ import { TasksPageClient } from '@/components/tasks/TasksPageClient';
 import { MonitoringClient } from '@/components/dev/MonitoringClient';
 import { IntegrationCenterClient } from '@/components/dev/IntegrationCenterClient';
 import { buildStructureHealth } from '@/lib/mock/structure';
+import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import type { Task, TaskMember, TaskComment, TaskAttachment } from '@/lib/types/tasks';
 import type { UserSector } from '@/lib/types/database';
 import type { MonitoredResource, IntegrationConnection } from '@/lib/mock/structure';
@@ -153,22 +154,23 @@ export default async function DevPanelPage({ params }: Props) {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      {/* Header */}
+      <Breadcrumb
+        items={[
+          { label: 'Visão Geral', href: '/app' },
+          { label: dashboardName, href: `/app/d/${dashboardId}` },
+          { label: 'Dev' },
+        ]}
+      />
       <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
         <div className="flex items-center gap-3 mb-1">
-          <Link href={`/app/d/${dashboardId}`} className="text-zinc-600 hover:text-zinc-300 transition-colors shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </Link>
           <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
           <h1 className="text-2xl font-bold text-white tracking-tight">{dashboardName}</h1>
-          <span className="text-xs bg-sky-950 text-sky-400 border border-sky-800 px-2 py-0.5 rounded-full font-medium">
+          <span className="text-xs bg-zinc-900/80 text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded font-semibold">
             Dev
           </span>
         </div>
-        <p className="text-sm text-zinc-500 pl-10">Demandas técnicas · Monitoramento · Integrações</p>
+        <p className="text-sm text-zinc-600 pl-4">Demandas técnicas · Monitoramento · Integrações</p>
       </div>
 
       {/* Alertas de infra */}

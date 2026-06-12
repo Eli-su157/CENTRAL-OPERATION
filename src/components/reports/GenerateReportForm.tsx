@@ -38,7 +38,7 @@ export function GenerateReportForm({ existingRefs }: Props) {
     });
   }
 
-  const selectCls = 'bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer';
+  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 cursor-pointer';
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
@@ -78,7 +78,7 @@ export function GenerateReportForm({ existingRefs }: Props) {
         <button
           onClick={handleGenerate}
           disabled={isPending}
-          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
         >
           {isPending ? (
             <span className="animate-pulse">Gerando…</span>

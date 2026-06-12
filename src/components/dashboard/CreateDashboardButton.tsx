@@ -16,7 +16,7 @@ function SubmitBtn() {
     <button
       type="submit"
       disabled={pending}
-      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50"
+      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
     >
       {pending ? 'Criando...' : 'Criar'}
     </button>
@@ -52,7 +52,7 @@ export function CreateDashboardButton({ maxReached, maxDashboards }: Props) {
             autoFocus
             maxLength={50}
             placeholder="Nome do produto/dashboard"
-            className="bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 w-52"
+            className="bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 w-52"
           />
           <SubmitBtn />
           <button
@@ -66,7 +66,7 @@ export function CreateDashboardButton({ maxReached, maxDashboards }: Props) {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-violet-600 hover:bg-violet-500 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-orange-500 hover:bg-orange-400 transition-colors"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="12" y1="5" x2="12" y2="19" />

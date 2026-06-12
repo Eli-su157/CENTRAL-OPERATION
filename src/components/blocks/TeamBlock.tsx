@@ -33,7 +33,7 @@ export function TeamBlock({ data, realTeam }: Props) {
           <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.1em]">Equipe</p>
         </div>
         {isRealData && (
-          <Link href="/app/tarefas" className="text-[11px] text-violet-400 hover:text-violet-300 transition-colors font-medium">
+          <Link href="/app/tarefas" className="text-[11px] link-action transition-colors font-medium">
             Ver quadro →
           </Link>
         )}

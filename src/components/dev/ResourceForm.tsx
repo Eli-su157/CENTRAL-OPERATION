@@ -8,7 +8,7 @@ interface Props {
   onClose: () => void;
 }
 
-const inputCls = 'w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500 placeholder-zinc-600';
+const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 placeholder-zinc-600';
 
 export function ResourceForm({ dashboardId, onClose }: Props) {
   const [isPending, startTransition] = useTransition();
@@ -63,7 +63,7 @@ export function ResourceForm({ dashboardId, onClose }: Props) {
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
               Cancelar
             </button>
-            <button type="submit" disabled={isPending} className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50">
+            <button type="submit" disabled={isPending} className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50">
               {isPending ? 'Salvando…' : 'Adicionar'}
             </button>
           </div>

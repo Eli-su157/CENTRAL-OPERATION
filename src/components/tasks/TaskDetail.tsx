@@ -105,7 +105,7 @@ export function TaskDetail({ task, currentUserId, canManage, onClose, onDelete }
     e.target.value = '';
   }
 
-  const inputCls = 'w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent';
+  const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30';
 
   return (
     <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-[500px] bg-zinc-900 border-l border-zinc-800 flex flex-col shadow-2xl">
@@ -160,7 +160,7 @@ export function TaskDetail({ task, currentUserId, canManage, onClose, onDelete }
                     <input type="hidden" name="status" value={nextStatus} />
                     <Btn
                       label={`${STATUS_LABELS[nextStatus]} →`}
-                      className="text-xs text-violet-400 hover:text-violet-300 px-2 py-1 rounded border border-violet-900 hover:border-violet-700 transition-colors"
+                      className="text-xs link-action px-2 py-1 rounded border border-zinc-800 hover:border-zinc-700 transition-colors"
                     />
                   </form>
                 )}
@@ -283,7 +283,7 @@ export function TaskDetail({ task, currentUserId, canManage, onClose, onDelete }
             )}
             <Btn
               label="Comentar"
-              className="self-start px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors"
+              className="self-start px-3 py-1.5 rounded-lg text-xs font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors"
             />
           </form>
         </div>

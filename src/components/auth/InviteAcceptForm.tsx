@@ -6,7 +6,7 @@ import { SubmitButton } from './SubmitButton';
 import type { UserRole, UserSector } from '@/lib/types/database';
 
 const inputCls =
-  'w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-colors';
+  'w-full bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30 transition-colors';
 
 const roleLabels: Record<UserRole, string> = {
   dono: 'Dono',
@@ -51,7 +51,7 @@ export function InviteAcceptForm({ token, email, operationName, role, sector }: 
         </div>
         <div className="flex justify-between">
           <span className="text-zinc-400">Papel</span>
-          <span className="text-violet-400 font-medium">{roleLabels[role]}</span>
+          <span className="text-orange-400 font-medium">{roleLabels[role]}</span>
         </div>
         {sector && (
           <div className="flex justify-between">

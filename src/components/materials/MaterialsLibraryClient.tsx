@@ -69,7 +69,7 @@ export function MaterialsLibraryClient({ materials, dashboardId, operationId, ca
     });
   }
 
-  const selectCls = 'bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500 cursor-pointer';
+  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40 cursor-pointer';
 
   const statsTotal = materials.length;
   const statsNoAr  = materials.filter(m => m.status === 'no_ar').length;
@@ -115,7 +115,7 @@ export function MaterialsLibraryClient({ materials, dashboardId, operationId, ca
         {canManage && (
           <button
             onClick={openCreate}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />

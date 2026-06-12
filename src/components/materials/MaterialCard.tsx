@@ -169,7 +169,7 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
         ) : canLink && !showLinkPicker ? (
           <button
             onClick={() => setShowLinkPicker(true)}
-            className="text-xs text-violet-500 hover:text-violet-400 transition-colors text-left"
+            className="text-xs text-orange-500 hover:text-orange-400 transition-colors text-left"
           >
             + Vincular anúncio
           </button>
@@ -178,7 +178,7 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
             <select
               value={selectedAdId}
               onChange={e => setSelectedAdId(e.target.value)}
-              className="flex-1 text-xs bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-1.5 py-1 focus:outline-none focus:border-violet-500 min-w-0"
+              className="flex-1 text-xs bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-1.5 py-1 focus:outline-none focus:border-orange-500/30 min-w-0"
             >
               <option value="">— selecionar anúncio</option>
               {availableAds.map(ad => (
@@ -190,7 +190,7 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
             <button
               onClick={handleLinkAd}
               disabled={!selectedAdId || isPending}
-              className="text-xs px-2 py-1 bg-violet-700 hover:bg-violet-600 text-white rounded-lg disabled:opacity-40"
+              className="text-xs px-2 py-1 bg-orange-500 hover:bg-orange-400 text-white rounded-lg disabled:opacity-40"
             >
               OK
             </button>

@@ -54,11 +54,11 @@ export function FunilBlock({ funil }: { funil: Funil }) {
               <div className="flex-1 flex items-center gap-2">
                 <div className="flex-1 h-5 bg-zinc-800 rounded overflow-hidden">
                   <div
-                    className={`h-full rounded transition-all ${step.highlight ? 'bg-violet-600' : 'bg-zinc-600'}`}
+                    className={`h-full rounded transition-all ${step.highlight ? 'bg-orange-500' : 'bg-zinc-600'}`}
                     style={{ width }}
                   />
                 </div>
-                <span className={`text-sm tabular-nums font-medium w-14 text-right ${step.highlight ? 'text-violet-300' : 'text-zinc-300'}`}>
+                <span className={`text-sm tabular-nums font-medium w-14 text-right ${step.highlight ? 'text-zinc-200' : 'text-zinc-300'}`}>
                   {formatNumber(step.value)}
                 </span>
               </div>

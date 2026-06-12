@@ -294,21 +294,30 @@ export default async function AppPage() {
         </div>
 
         {dashboards.length === 0 ? (
-          <div className="border border-dashed border-white/[0.06] rounded-xl p-16 text-center bg-white/[0.01]">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] mb-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
-                <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
-              </svg>
+          <div className="border border-white/[0.05] rounded-xl p-12 text-center bg-[#0D0D0D] relative overflow-hidden">
+            {/* Decorativo */}
+            <div className="absolute inset-0 bg-gradient-to-b from-orange-500/[0.02] to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/15 mb-5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-orange-400">
+                  <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+                </svg>
+              </div>
+              <p className="text-zinc-200 font-semibold mb-2">Nenhum produto cadastrado</p>
+              {ctx.permissions.pode_criar_dashboard ? (
+                <>
+                  <p className="text-zinc-600 text-sm mb-5 max-w-xs mx-auto">
+                    Crie seu primeiro dashboard para começar a monitorar vendas, tráfego e resultado financeiro.
+                  </p>
+                  <p className="text-xs text-zinc-700">Use o botão <span className="text-zinc-500 font-medium">Novo Dashboard</span> acima.</p>
+                </>
+              ) : (
+                <p className="text-zinc-600 text-sm max-w-xs mx-auto">
+                  O Dono da operação ainda não criou nenhum dashboard. Aguarde ou solicite acesso.
+                </p>
+              )}
             </div>
-            <p className="text-zinc-300 font-semibold mb-1.5">Nenhum produto criado</p>
-            {ctx.permissions.pode_criar_dashboard ? (
-              <p className="text-zinc-600 text-sm">
-                Clique em <strong className="text-zinc-400">Novo Dashboard</strong> para começar.
-              </p>
-            ) : (
-              <p className="text-zinc-600 text-sm">Aguarde o dono criar um dashboard para você.</p>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -349,7 +358,7 @@ function ConsolidatedKpi({
     <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/6 to-transparent" />
       <p className="text-[10px] text-zinc-500 uppercase tracking-[0.1em] font-semibold mb-3">{label}</p>
-      <p className={`text-[1.7rem] font-bold tabular-nums leading-none ${valueClass}`}>{value}</p>
+      <p className={`text-[1.75rem] num font-bold leading-none ${valueClass}`}>{value}</p>
       {sub && <p className="text-xs text-zinc-600 mt-2 tabular-nums">{sub}</p>}
     </div>
   );

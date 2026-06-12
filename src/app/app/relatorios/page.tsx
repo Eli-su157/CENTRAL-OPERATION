@@ -118,21 +118,22 @@ export default async function RelatoriosPage({ searchParams }: Props) {
               <ReportViewer report={selected} />
             )
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/15 flex items-center justify-center mb-5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-orange-400">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
                   <line x1="16" y1="13" x2="8" y2="13" />
                   <line x1="16" y1="17" x2="8" y2="17" />
-                  <polyline points="10 9 9 9 8 9" />
                 </svg>
               </div>
-              <p className="text-zinc-400 font-medium mb-2">Nenhum relatório selecionado</p>
+              <p className="text-zinc-300 font-semibold mb-2">
+                {isDono || isHead ? 'Selecione ou gere um relatório' : 'Aguardando relatórios'}
+              </p>
               <p className="text-zinc-600 text-sm max-w-xs">
                 {isDono || isHead
-                  ? 'Gere um relatório usando o painel à esquerda ou selecione um do histórico.'
-                  : 'Nenhum relatório disponível ainda.'}
+                  ? 'Use o painel à esquerda para gerar um novo relatório do período.'
+                  : 'Nenhum relatório disponível. O Head ainda não gerou um.'}
               </p>
             </div>
           )}

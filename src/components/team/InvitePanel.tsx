@@ -7,7 +7,7 @@ import type { InviteState, ActionState } from '@/app/app/equipe/actions';
 import type { UserRole, UserSector } from '@/lib/types/database';
 
 const inputCls =
-  'w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent';
+  'w-full bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30';
 const labelCls = 'text-xs font-medium text-zinc-400 uppercase tracking-wide';
 
 interface PendingInvite {
@@ -37,7 +37,7 @@ function InviteSubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {pending ? 'Criando...' : 'Criar convite'}
     </button>
@@ -98,7 +98,7 @@ export function InvitePanel({ pendingInvites }: Props) {
         {!open && (
           <button
             onClick={() => setOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-600 hover:bg-violet-500 text-white transition-colors"
+            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-400 text-white transition-colors"
           >
             + Convidar
           </button>
@@ -119,7 +119,7 @@ export function InvitePanel({ pendingInvites }: Props) {
                 <input
                   readOnly
                   value={inviteState.link}
-                  className="flex-1 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-lg px-3 py-2 text-xs font-mono truncate"
+                  className="flex-1 bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-2 text-xs font-mono truncate"
                 />
                 <CopyButton text={inviteState.link} />
               </div>

@@ -12,6 +12,7 @@ import { ReconciliacaoBlock } from '@/components/traffic/ReconciliacaoBlock';
 import { SaudeContasBlock } from '@/components/traffic/SaudeContasBlock';
 import { TemporalChartLazy } from '@/components/traffic/TemporalChartLazy';
 import { PanelConfig } from '@/components/traffic/PanelConfig';
+import { Breadcrumb } from '@/components/layout/Breadcrumb';
 import { DEFAULT_ENABLED_BLOCKS, DEFAULT_BLOCK_ORDER } from '@/lib/traffic/panelDefaults';
 import { getReconciliationData } from '@/lib/sales/attribution';
 import { monthStart, monthEnd } from '@/lib/finance/calc';
@@ -219,23 +220,22 @@ export default async function TrafegoPanelPage({ params }: Props) {
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      {/* Header — renderiza imediatamente com dados do Round 2 */}
+      {/* Breadcrumb + Header */}
+      <Breadcrumb
+        items={[
+          { label: 'Visão Geral', href: '/app' },
+          { label: dashboardRow.name, href: `/app/d/${dashboardId}` },
+          { label: 'Tráfego' },
+        ]}
+        badge={{ label: period, color: 'zinc' }}
+      />
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <Link href={`/app/d/${dashboardId}`} className="text-zinc-500 hover:text-white transition-colors">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white">{dashboardRow.name}</h1>
-              <span className="text-xs bg-orange-950 text-orange-400 border border-orange-800 px-2 py-0.5 rounded-full font-medium">
-                Tráfego
-              </span>
-            </div>
-            <p className="text-sm text-zinc-500">{period}</p>
-          </div>
+          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">{dashboardRow.name}</h1>
+          <span className="text-xs bg-orange-500/10 text-orange-400 border border-orange-500/20 px-2 py-0.5 rounded font-semibold">
+            Tráfego
+          </span>
         </div>
         <PanelConfig
           dashboardId={dashboardId}

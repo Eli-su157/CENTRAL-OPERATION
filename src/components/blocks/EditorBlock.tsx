@@ -56,7 +56,7 @@ export async function EditorBlock({ dashboardId }: Props) {
         <div className="flex items-center justify-between mb-4">
           <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Edição</p>
           <Link href={`/app/d/${dashboardId}/edicao`}
-            className="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+            className="text-xs link-action transition-colors">
             Painel completo →
           </Link>
         </div>
@@ -91,7 +91,7 @@ export async function EditorBlock({ dashboardId }: Props) {
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Edição & Materiais</p>
         <Link href={`/app/d/${dashboardId}/edicao`}
-          className="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+          className="text-xs link-action transition-colors">
           Biblioteca →
         </Link>
       </div>

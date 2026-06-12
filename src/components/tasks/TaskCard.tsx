@@ -24,8 +24,8 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left bg-zinc-800/50 hover:bg-zinc-800 border rounded-lg p-3.5 transition-all group ${
-        overdue ? 'border-red-900 hover:border-red-800' : 'border-zinc-700/50 hover:border-zinc-600'
+      className={`w-full text-left bg-[#111111] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-150 group ${
+        overdue ? 'border-red-900/50 hover:border-red-800/70' : 'border-white/[0.06] hover:border-white/[0.10]'
       }`}
     >
       {/* Priority + sector */}
@@ -41,7 +41,7 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
       </div>
 
       {/* Title */}
-      <p className="text-sm text-white font-medium leading-snug mb-2.5 line-clamp-2 group-hover:text-violet-200 transition-colors">
+      <p className="text-sm text-zinc-200 font-medium leading-snug mb-2.5 line-clamp-2 group-hover:text-white transition-colors">
         {task.title}
       </p>
 
@@ -53,7 +53,7 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
               <span className="w-4 h-4 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-300 shrink-0">
                 {task.assignee.full_name[0]?.toUpperCase()}
               </span>
-              <span className={`text-xs truncate ${isAssignee ? 'text-violet-400' : 'text-zinc-500'}`}>
+              <span className={`text-xs truncate ${isAssignee ? 'text-orange-400' : 'text-zinc-500'}`}>
                 {isAssignee ? 'Você' : task.assignee.full_name.split(' ')[0]}
               </span>
             </>

@@ -31,7 +31,7 @@ const TYPE_COLOR: Record<string, string> = {
   meta_em_risco:           'text-amber-400',
   plataforma_desconectada: 'text-red-400',
   tracker_desconectado:    'text-amber-400',
-  criativo_vencedor:       'text-violet-400',
+  criativo_vencedor:       'text-orange-400',
   conta_bloqueada:         'text-red-400',
   recurso_caiu:            'text-red-400',
   comissao_lancada:        'text-blue-400',

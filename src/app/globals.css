@@ -2,59 +2,142 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
+/* ── Scrollbar — fino, discreto ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #444; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
 
-/* ── Selection ── */
-::selection { background-color: rgba(249, 115, 22, 0.25); color: white; }
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+::selection { background-color: rgba(249,115,22,0.20); color: white; }
 
-/* ── Focus ring ── */
+/* ── Focus ring — laranja suave ────────────────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid rgba(249, 115, 22, 0.5);
+  outline: 1.5px solid rgba(249,115,22,0.45);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 5px;
 }
 
-/* ── Base body ── */
+/* ── Base ──────────────────────────────────────────────────────────────────── */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "ss01", "ss02", "cv01";
+  font-feature-settings: "ss01", "cv01";
+  background: #0A0A0A;
+  color: #d4d4d8; /* zinc-300 — não pure white, mais confortável em terminal */
 }
 
-/* ── Premium card utility ── */
+/* ── Sistema de componentes ────────────────────────────────────────────────── */
 @layer components {
+
+  /* Cards */
   .card {
-    @apply bg-[#161616] border border-white/[0.06] rounded-xl;
+    @apply bg-[#111111] border border-white/[0.06] rounded-xl;
   }
   .card-hover {
-    @apply transition-all duration-200 hover:border-white/10 hover:shadow-lg hover:shadow-black/40;
+    @apply transition-colors duration-150 hover:border-white/[0.10] hover:bg-[#131313];
   }
-  .stat-label {
-    @apply text-xs text-zinc-500 font-medium uppercase tracking-wide;
+
+  /* Inputs — todos os forms do app */
+  .inp {
+    @apply w-full bg-[#0D0D0D] border border-white/[0.08] text-zinc-200
+           placeholder-zinc-700 rounded-lg px-3 py-2 text-sm
+           focus:outline-none focus:ring-1 focus:ring-orange-500/40
+           focus:border-orange-500/30 transition-colors;
   }
-  .stat-value {
-    @apply text-white font-bold tabular-nums;
+  .inp-sm {
+    @apply w-full bg-[#0D0D0D] border border-white/[0.08] text-zinc-300
+           placeholder-zinc-700 rounded-md px-2.5 py-1.5 text-xs
+           focus:outline-none focus:ring-1 focus:ring-orange-500/30
+           focus:border-orange-500/25 transition-colors;
   }
-  .badge {
-    @apply text-xs px-1.5 py-0.5 rounded-md font-medium;
+
+  /* Botões */
+  .btn-primary {
+    @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold
+           bg-orange-500 hover:bg-orange-400 text-white
+           transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed;
   }
+  .btn-primary-sm {
+    @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold
+           bg-orange-500 hover:bg-orange-400 text-white
+           transition-colors duration-150 disabled:opacity-40;
+  }
+  .btn-secondary {
+    @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
+           bg-white/[0.05] hover:bg-white/[0.08] text-zinc-300
+           border border-white/[0.08] hover:border-white/[0.12]
+           transition-all duration-150 disabled:opacity-40;
+  }
+  .btn-secondary-sm {
+    @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
+           bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400
+           border border-white/[0.07] hover:text-zinc-200
+           transition-all duration-150;
+  }
+  .btn-ghost {
+    @apply text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]
+           px-2 py-1.5 rounded-md text-xs transition-all duration-150;
+  }
+
+  /* Labels de seção — estilo terminal */
   .section-title {
-    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold px-3 pt-5 pb-1.5;
+    @apply text-[10px] text-zinc-700 uppercase tracking-[0.15em]
+           font-semibold px-3 pt-5 pb-1.5;
   }
+  .section-label {
+    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold;
+  }
+
+  /* Valores de KPI — tipografia financeira */
+  .kpi-value {
+    @apply text-white font-bold tabular-nums leading-none;
+    font-feature-settings: "tnum", "lnum";
+    letter-spacing: -0.025em;
+  }
+  .kpi-label {
+    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold;
+  }
+
+  /* Badge de status — só positivo/negativo/neutro */
+  .badge-positive  { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/15; }
+  .badge-negative  { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-red-500/10 text-red-400 ring-1 ring-red-500/15; }
+  .badge-warning   { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/15; }
+  .badge-neutral   { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-zinc-800 text-zinc-500 ring-1 ring-zinc-700/50; }
+  .badge-brand     { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20; }
+
+  /* Acento top de card KPI */
+  .card-kpi-top {
+    @apply absolute top-0 left-0 right-0 h-px
+           bg-gradient-to-r from-transparent via-orange-500/30 to-transparent;
+  }
+  .card-kpi-top-positive {
+    @apply absolute top-0 left-0 right-0 h-px
+           bg-gradient-to-r from-transparent via-emerald-500/25 to-transparent;
+  }
+  .card-kpi-top-negative {
+    @apply absolute top-0 left-0 right-0 h-px
+           bg-gradient-to-r from-transparent via-red-500/25 to-transparent;
+  }
+  .card-kpi-top-neutral {
+    @apply absolute top-0 left-0 right-0 h-px
+           bg-gradient-to-r from-transparent via-white/[0.05] to-transparent;
+  }
+
+  /* Link inline de ação (ex: "Ver todos →") */
+  .link-action {
+    @apply text-xs text-zinc-500 hover:text-orange-400 transition-colors font-medium;
+  }
+
+  /* Stat genérico */
+  .stat-label { @apply text-xs text-zinc-500 font-medium uppercase tracking-wide; }
+  .stat-value { @apply text-white font-bold tabular-nums; }
+  .badge      { @apply text-xs px-1.5 py-0.5 rounded-md font-medium; }
 }
 
-/* ── Glow effect on KPI cards ── */
-.kpi-glow::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(249,115,22,0.4), transparent);
+/* ── Número de terminal — usado em grandes KPIs ─────────────────────────────── */
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.025em;
 }
-
-/* ── Number font variant ── */
-.num { font-variant-numeric: tabular-nums; }

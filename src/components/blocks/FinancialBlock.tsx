@@ -38,8 +38,8 @@ export function FinancialBlock({ data, realFinance }: Props) {
         <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-2">
           Lucro líquido {isReal ? '' : '(estimado)'}
         </p>
-        <p className={`text-3xl sm:text-[2rem] font-bold tabular-nums leading-none ${
-          lucro >= 0 ? 'text-emerald-400' : 'text-red-400'
+        <p className={`text-3xl sm:text-[2rem] num font-bold leading-none ${
+          lucro >= 0 ? 'text-emerald-300' : 'text-red-300'
         }`}>
           {formatCurrency(lucro)}
         </p>
@@ -56,18 +56,18 @@ export function FinancialBlock({ data, realFinance }: Props) {
           value={formatCurrency(saldo)}
           valueClass="text-emerald-400"
         />
-        <StatCell label="A receber" value={formatCurrency(aReceber)} valueClass="text-blue-400" />
+        <StatCell label="A receber" value={formatCurrency(aReceber)} valueClass="text-zinc-200" />
         <StatCell label="A pagar"   value={formatCurrency(aPagar)}   valueClass="text-red-400" />
       </div>
     </div>
   );
 }
 
-function StatCell({ label, value, valueClass = 'text-white' }: { label: string; value: string; valueClass?: string }) {
+function StatCell({ label, value, valueClass = 'text-zinc-200' }: { label: string; value: string; valueClass?: string }) {
   return (
-    <div className="bg-white/[0.02] rounded-lg p-2.5">
-      <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-1">{label}</p>
-      <p className={`text-sm font-bold tabular-nums leading-tight ${valueClass}`}>{value}</p>
+    <div className="bg-white/[0.02] rounded-md p-2.5">
+      <p className="text-[9px] text-zinc-700 uppercase tracking-[0.1em] font-semibold mb-1">{label}</p>
+      <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>
     </div>
   );
 }

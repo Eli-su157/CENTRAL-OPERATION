@@ -20,13 +20,13 @@ function SubmitBtn() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}
-      className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50">
+      className="px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50">
       {pending ? 'Salvando...' : 'Salvar lançamento'}
     </button>
   );
 }
 
-const inputCls = 'w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent';
+const inputCls = 'w-full bg-[#0D0D0D] border border-white/[0.08] text-white placeholder-zinc-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500/30';
 const labelCls = 'text-xs font-medium text-zinc-400 uppercase tracking-wide';
 
 export function EntryForm({ categories, dashboards, members, onClose }: Props) {
@@ -148,7 +148,7 @@ export function EntryForm({ categories, dashboards, members, onClose }: Props) {
                 type="checkbox"
                 checked={recurring}
                 onChange={e => setRecurring(e.target.checked)}
-                className="w-4 h-4 rounded bg-zinc-800 border-zinc-600 text-violet-500 focus:ring-violet-500"
+                className="w-4 h-4 rounded bg-zinc-800 border-zinc-600 text-orange-500 focus:ring-orange-500/40"
               />
               <input type="hidden" name="recurring" value={recurring ? 'true' : 'false'} />
               <span className="text-sm text-zinc-300">Lançamento recorrente</span>

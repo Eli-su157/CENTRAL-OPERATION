@@ -30,10 +30,10 @@ const alertStyle = {
     ),
   },
   info: {
-    wrap: 'border-l-2 border-l-blue-500 bg-blue-500/5 border border-blue-500/10',
-    icon: 'text-blue-400 bg-blue-500/10 rounded-lg p-1.5',
-    text: 'text-blue-200/90',
-    dot: 'bg-blue-400',
+    wrap: 'border-l-2 border-l-zinc-600 bg-white/[0.02] border border-white/[0.06]',
+    icon: 'text-zinc-400 bg-white/[0.04] rounded-lg p-1.5',
+    text: 'text-zinc-300',
+    dot: 'bg-zinc-500',
     svg: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" />

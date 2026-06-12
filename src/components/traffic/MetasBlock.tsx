@@ -51,13 +51,13 @@ function SaveBtn() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}
-      className="text-xs px-3 py-1.5 rounded-md bg-violet-600 hover:bg-violet-500 text-white transition-colors disabled:opacity-50">
+      className="text-xs px-3 py-1.5 rounded-md bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50">
       {pending ? '...' : 'Salvar'}
     </button>
   );
 }
 
-const inputCls = 'bg-zinc-800 border border-zinc-700 text-white rounded-md px-2.5 py-1.5 text-sm w-28 focus:outline-none focus:ring-1 focus:ring-violet-500';
+const inputCls = 'bg-[#0D0D0D] border border-white/[0.08] text-white rounded-md px-2.5 py-1.5 text-sm w-28 focus:outline-none focus:ring-1 focus:ring-orange-500/40';
 
 export function MetasBlock({ dashboardId, period, goals, actual, diasNoMes, diaAtual }: Props) {
   const [editing, setEditing] = useState(false);
@@ -83,7 +83,7 @@ export function MetasBlock({ dashboardId, period, goals, actual, diasNoMes, diaA
           <p className="text-xs text-zinc-600 mt-0.5">{period} · dia {diaAtual}/{diasNoMes}</p>
         </div>
         <button onClick={() => setEditing(e => !e)}
-          className="text-xs text-zinc-500 hover:text-violet-400 transition-colors">
+          className="text-xs text-zinc-500 hover:text-orange-400 transition-colors">
           {editing ? 'Cancelar' : 'Editar metas'}
         </button>
       </div>
