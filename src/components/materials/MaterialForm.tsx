@@ -195,6 +195,28 @@ export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }
               </select>
             </div>
 
+            {/* Versão + Campanha */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-zinc-400 mb-1.5 block font-medium">Versão</label>
+                <input
+                  name="version"
+                  defaultValue={editMaterial?.version ?? 'v1'}
+                  placeholder="v1"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-zinc-400 mb-1.5 block font-medium">Campanha</label>
+                <input
+                  name="campaign_ref"
+                  defaultValue={editMaterial?.campaign_ref ?? ''}
+                  placeholder="Nome da campanha (opcional)"
+                  className={inputCls}
+                />
+              </div>
+            </div>
+
             {/* Referência do anúncio */}
             <div>
               <label className="text-xs text-zinc-400 mb-1.5 block font-medium">Referência do anúncio</label>
@@ -204,7 +226,7 @@ export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }
                 placeholder="ID ou nome do anúncio na plataforma (opcional)"
                 className={inputCls}
               />
-              <p className="text-xs text-zinc-600 mt-1">Usado para casar com o criativo no Meta Ads (Fase de integração)</p>
+              <p className="text-xs text-zinc-600 mt-1">Usado para casar com o criativo no Meta Ads</p>
             </div>
 
             {error && (

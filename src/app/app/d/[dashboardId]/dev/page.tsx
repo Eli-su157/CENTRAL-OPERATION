@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
@@ -6,8 +5,12 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { TasksPageClient } from '@/components/tasks/TasksPageClient';
 import { MonitoringClient } from '@/components/dev/MonitoringClient';
 import { IntegrationCenterClient } from '@/components/dev/IntegrationCenterClient';
+import { IntegrationsPanel } from '@/components/dev/IntegrationsPanel';
+import { TechEventsLog, type WebhookLogRow } from '@/components/dev/TechEventsLog';
+import { UTMifyQueuePanel, type UTMifyQueueItem } from '@/components/dev/UTMifyQueuePanel';
 import { buildStructureHealth } from '@/lib/mock/structure';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
+import { SectionHeader } from '@/components/ui';
 import type { Task, TaskMember, TaskComment, TaskAttachment } from '@/lib/types/tasks';
 import type { UserSector } from '@/lib/types/database';
 import type { MonitoredResource, IntegrationConnection } from '@/lib/mock/structure';
@@ -44,7 +47,7 @@ export default async function DevPanelPage({ params }: Props) {
     .order('created_at', { ascending: false });
 
   // Todas as queries em um único round
-  const [dashboardRes, membersRes, dashboardsRes, resourcesRes, connectionsRes, tasksRes] = await Promise.all([
+  const [dashboardRes, membersRes, dashboardsRes, resourcesRes, connectionsRes, tasksRes, webhookLogsRes, utmifyQueueRes] = await Promise.all([
     supabase
       .from('dashboards')
       .select('id, name, primary_sale_provider')
@@ -80,6 +83,22 @@ export default async function DevPanelPage({ params }: Props) {
       .order('category'),
 
     tasksPromise,
+
+    // Webhook logs (últimos 30) — somente dono/head via RLS
+    supabase
+      .from('webhook_logs')
+      .select('id, provider, status, error_msg, received_at')
+      .eq('operation_id', ctx.profile.operation_id)
+      .order('received_at', { ascending: false })
+      .limit(30),
+
+    // Fila UTMify pendente
+    supabase
+      .from('utmify_queue')
+      .select('id, external_id, buyer_email, amount, occurred_at, utm, created_at')
+      .eq('operation_id', ctx.profile.operation_id)
+      .order('created_at', { ascending: false })
+      .limit(20),
   ]);
 
   if (!dashboardRes.data) redirect('/app');
@@ -151,6 +170,8 @@ export default async function DevPanelPage({ params }: Props) {
 
   const canManage = canAccess;
   const canDelete = ctx.profile.role === 'dono' || ctx.profile.role === 'head';
+  const webhookLogs = (webhookLogsRes.data ?? []) as WebhookLogRow[];
+  const utmifyQueue = (utmifyQueueRes.data ?? []) as UTMifyQueueItem[];
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -208,10 +229,7 @@ export default async function DevPanelPage({ params }: Props) {
 
       {/* SEÇÃO 2: MONITORAMENTO */}
       <section className="mb-10">
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
-          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Monitoramento de Estrutura</h2>
-        </div>
+        <SectionHeader variant="section" title="Monitoramento de Estrutura" />
         <MonitoringClient
           pages={health.pages}
           domains={health.domains}
@@ -220,12 +238,36 @@ export default async function DevPanelPage({ params }: Props) {
         />
       </section>
 
-      {/* SEÇÃO 3: CENTRO DE INTEGRAÇÕES */}
+      {/* SEÇÃO 3: SAÚDE DAS INTEGRAÇÕES — painel técnico com DenseTable */}
+      <section className="mb-10">
+        <SectionHeader variant="section" title="Saúde das Integrações"
+          badge={`${health.connections.length} conexões`} />
+        <IntegrationsPanel
+          connections={health.connections}
+          canManage={canManage}
+          onManage={() => {}}
+        />
+      </section>
+
+      {/* SEÇÃO 4: LOG DE EVENTOS TÉCNICOS */}
+      <section className="mb-10">
+        <SectionHeader variant="section" title="Log de Eventos Técnicos"
+          badge={`${webhookLogs.length} recentes`} />
+        <TechEventsLog logs={webhookLogs} />
+      </section>
+
+      {/* SEÇÃO 5: FILA UTMIFY */}
+      {utmifyQueue.length > 0 && (
+        <section className="mb-10">
+          <SectionHeader variant="section" title="Fila UTMify"
+            badge={`${utmifyQueue.length} pendentes`} />
+          <UTMifyQueuePanel items={utmifyQueue} />
+        </section>
+      )}
+
+      {/* SEÇÃO 6: CONFIGURAÇÃO DE INTEGRAÇÕES (credenciais, edição) */}
       <section>
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-0.5 h-4 bg-orange-500 rounded-full" />
-          <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">Centro de Integrações</h2>
-        </div>
+        <SectionHeader variant="section" title="Configurar Integrações" />
         <IntegrationCenterClient
           connections={health.connections}
           dashboardId={dashboardId}

@@ -27,6 +27,9 @@ interface RawMaterial {
   storage_kind: string; storage_path: string | null;
   external_url: string | null; ad_reference: string | null;
   dashboard_id: string | null;
+  // Campos v2
+  version: string | null; task_id: string | null;
+  campaign_ref: string | null; created_by: string | null;
 }
 
 export default async function EdicaoPanelPage({ params }: Props) {
@@ -82,7 +85,7 @@ export default async function EdicaoPanelPage({ params }: Props) {
 
       supabase
         .from('materials')
-        .select('id, title, type, status, storage_kind, storage_path, external_url, ad_reference, dashboard_id')
+        .select('id, title, type, status, storage_kind, storage_path, external_url, ad_reference, dashboard_id, version, task_id, campaign_ref, created_by')
         .eq('operation_id', ctx.profile.operation_id)
         .eq('dashboard_id', dashboardId)
         .order('created_at', { ascending: false }),
@@ -187,6 +190,11 @@ export default async function EdicaoPanelPage({ params }: Props) {
       ? edicaoMembers
       : [];
 
+  // Mapa de perfis para enriquecer creator_name
+  const profilesMap = Object.fromEntries(
+    ((membersRes.data ?? []) as { id: string; full_name: string }[]).map(p => [p.id, p.full_name])
+  );
+
   const materials: MaterialData[] = rawMaterials.map(m => ({
     id: m.id,
     title: m.title,
@@ -198,6 +206,11 @@ export default async function EdicaoPanelPage({ params }: Props) {
     ad_reference: m.ad_reference,
     dashboard_id: m.dashboard_id,
     signedUrl: m.storage_path ? signedUrlMap[m.storage_path] : undefined,
+    // Campos v2
+    version:      m.version ?? 'v1',
+    task_id:      m.task_id ?? null,
+    campaign_ref: m.campaign_ref ?? null,
+    creator_name: m.created_by ? (profilesMap[m.created_by] ?? null) : null,
   }));
 
   const salesForPerf = (salesUtmRes as { amount: number; utm: Record<string, string | null> | null }[]);

@@ -22,10 +22,12 @@ export interface MemberOverride {
 }
 
 export interface MemberStats {
-  a_fazer:       number;
-  fazendo:       number;
-  atrasadas:     number;
-  concluida_mes: number;
+  a_fazer:          number;
+  fazendo:          number;
+  atrasadas:        number;
+  concluida_mes:    number;
+  /** Materiais no ar criados por este membro — ativado pela Fase D */
+  criativos_no_ar?: number;
 }
 
 export interface Member {
@@ -246,12 +248,17 @@ export function MemberCard({ member, currentUserId, stats, custoMes, dashboards 
           </div>
         )}
 
-        {/* Performance por setor — estrutura preparada, implementação Fase D */}
+        {/* Performance por setor — editor tem dado real; demais em breve */}
         {perf && (
           <div className="flex items-center gap-2 pt-2 border-t border-white/[0.04] mt-2">
-            <span className="text-[10px] text-zinc-700 uppercase tracking-[0.1em] font-semibold">{perf.label}</span>
-            <span className="badge-neutral">Em breve</span>
-            <span className="text-[10px] text-zinc-800 hidden sm:inline">{perf.hint}</span>
+            <span className="text-[10px] text-zinc-600 uppercase tracking-[0.1em] font-semibold">{perf.label}</span>
+            {member.sector === 'edicao' && stats.criativos_no_ar !== undefined ? (
+              <span className="text-xs font-semibold text-emerald-400">
+                {stats.criativos_no_ar} no ar
+              </span>
+            ) : (
+              <span className="badge-neutral">Em breve</span>
+            )}
           </div>
         )}
       </div>

@@ -54,8 +54,10 @@ export async function createMaterialAction(
   const storageKind = formData.get('storage_kind') as 'upload' | 'link';
   const storagePath = (formData.get('storage_path') as string) || null;
   const externalUrl = (formData.get('external_url') as string)?.trim() || null;
-  const status = (formData.get('status') as string) || 'em_producao';
+  const status      = (formData.get('status') as string) || 'em_producao';
   const adReference = (formData.get('ad_reference') as string)?.trim() || null;
+  const version     = (formData.get('version') as string)?.trim() || 'v1';
+  const campaignRef = (formData.get('campaign_ref') as string)?.trim() || null;
 
   if (!type || !title) return { error: 'Título e tipo são obrigatórios.' };
   if (storageKind === 'upload' && !storagePath) return { error: 'Faça o upload do arquivo antes de salvar.' };
@@ -73,6 +75,8 @@ export async function createMaterialAction(
     external_url: storageKind === 'link' ? externalUrl : null,
     status,
     ad_reference: adReference,
+    version,
+    campaign_ref: campaignRef,
     created_by: ctx.userId,
   });
 

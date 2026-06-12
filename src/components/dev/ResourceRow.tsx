@@ -60,12 +60,10 @@ export function ResourceRow({ resource, dashboardId, canManage }: Props) {
 
   return (
     <div className={`flex items-start gap-3 py-3 border-b border-zinc-800/50 last:border-0 ${isPending ? 'opacity-50' : ''}`}>
-      {/* Status dot */}
-      <button
-        onClick={canManage ? cycleStatus : undefined}
-        disabled={!canManage || isPending}
-        className={`mt-1 w-2.5 h-2.5 rounded-full shrink-0 ${STATUS_DOT[resource.status]} ${canManage ? 'cursor-pointer hover:opacity-70 transition-opacity' : 'cursor-default'}`}
-        title={canManage ? 'Clique para alterar status' : STATUS_LABEL[resource.status]}
+      {/* Status dot — lido do banco, atualizado pelo health-check automático */}
+      <span
+        className={`mt-1 w-2.5 h-2.5 rounded-full shrink-0 ${STATUS_DOT[resource.status]} ${resource.status === 'fora' ? 'animate-pulse' : ''}`}
+        title={STATUS_LABEL[resource.status]}
       />
 
       <div className="flex-1 min-w-0">

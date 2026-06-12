@@ -21,6 +21,11 @@ export interface MaterialData {
   ad_reference: string | null;
   dashboard_id: string | null;
   signedUrl?: string;
+  // Campos adicionados em 0016_materials_v2
+  version?: string | null;
+  task_id?: string | null;
+  campaign_ref?: string | null;
+  creator_name?: string | null;  // joined de profiles.full_name
 }
 
 interface Props {
@@ -143,11 +148,26 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
         <span className="absolute top-2 left-2 text-xs bg-zinc-900/80 text-zinc-400 px-2 py-0.5 rounded-full border border-zinc-700/60">
           {TYPE_ICON[material.type]} {TYPE_LABEL[material.type]}
         </span>
+        {/* Version badge */}
+        {material.version && (
+          <span className="absolute top-2 right-2 text-[10px] bg-zinc-900/80 text-zinc-500 px-1.5 py-px rounded font-mono border border-zinc-700/40">
+            {material.version}
+          </span>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-3 flex flex-col gap-2 flex-1">
         <p className="text-sm font-medium text-white leading-snug line-clamp-2">{material.title}</p>
+        {/* Criador + campanha */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {material.creator_name && (
+            <span className="text-[10px] text-zinc-700">por {material.creator_name}</span>
+          )}
+          {material.campaign_ref && (
+            <span className="text-[10px] text-zinc-700 font-mono truncate">↗ {material.campaign_ref.slice(0, 20)}</span>
+          )}
+        </div>
 
         {/* Ad reference / link */}
         {material.ad_reference ? (

@@ -30,7 +30,7 @@ export default async function EquipePage() {
   const baseUrl = `${protocol}://${host}`;
 
   // Busca tudo em paralelo
-  const [operationRes, membersResult, overridesResult, invitesResult, tasksResult, dashboardsResult, financeResult] = await Promise.all([
+  const [operationRes, membersResult, overridesResult, invitesResult, tasksResult, dashboardsResult, materialsResult, financeResult] = await Promise.all([
     supabase.from('operations').select('name').eq('id', ctx.profile.operation_id).single(),
 
     supabase.from('profiles').select('*')
@@ -56,6 +56,12 @@ export default async function EquipePage() {
     supabase.from('dashboards').select('id, name')
       .eq('operation_id', ctx.profile.operation_id),
 
+    // Materiais no ar por criador — para acender "criativos vencedores por editor"
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (supabase as any).from('materials')
+      .select('created_by, status, ad_reference')
+      .eq('operation_id', ctx.profile.operation_id),
+
     // Custo do mês por pessoa (comissões/pagamentos com related_user_id)
     // Só buscado se canSeeCost — proteção adicional no servidor
     canSeeCost
@@ -77,11 +83,23 @@ export default async function EquipePage() {
     status: string; due_date: string | null; created_at: string;
   }[];
   const dashboards = (dashboardsResult.data ?? []) as { id: string; name: string }[];
+  const materialsRows = (materialsResult.data ?? []) as {
+    created_by: string | null; status: string; ad_reference: string | null;
+  }[];
+
   const financeRows = (financeResult.data ?? []) as {
     related_user_id: string; amount: number; direction: string; status: string;
   }[];
 
   // ── Computa stats por membro ──────────────────────────────────────────────
+
+  // Mapa de criativos no_ar por criador (para exibir na Equipe)
+  const criativosNoArByMember: Record<string, number> = {};
+  for (const m of materialsRows) {
+    if (m.created_by && m.status === 'no_ar') {
+      criativosNoArByMember[m.created_by] = (criativosNoArByMember[m.created_by] ?? 0) + 1;
+    }
+  }
 
   function getStats(memberId: string): MemberStats {
     const mine = tasks.filter(t => t.assignee_user_id === memberId);
@@ -96,6 +114,7 @@ export default async function EquipePage() {
       a_fazer:       mine.filter(t => t.status === 'a_fazer').length,
       atrasadas,
       concluida_mes,
+      criativos_no_ar: criativosNoArByMember[memberId] ?? 0,
     };
   }
 
