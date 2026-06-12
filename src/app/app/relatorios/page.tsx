@@ -7,6 +7,7 @@ import { GenerateReportForm } from '@/components/reports/GenerateReportForm';
 import { formatPeriodLabel } from '@/lib/reports/periods';
 import type { ReportData } from '@/lib/reports/types';
 import Link from 'next/link';
+import { ExportPDFButton } from '@/components/reports/ExportPDFButton';
 
 interface Props {
   searchParams: Promise<{ id?: string }>;
@@ -51,6 +52,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     ? (reports.find(r => r.id === selectedId) ?? null)
     : (reports[0] ?? null);
 
+  // Relatório anterior (mesmo type, imediatamente anterior ao selecionado na lista ordenada por created_at desc)
+  const prevReport: ReportRow | null = selected
+    ? (reports.find(r => r.period_type === selected.period_type && r.id !== selected.id) ?? null)
+    : null;
+
   // Set de refs existentes para o form de geração
   const existingRefs = new Set(reports.map(r => `${r.period_type}:${r.period_ref}`));
 
@@ -59,9 +65,12 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       {/* Header */}
       <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-          <h1 className="text-2xl font-bold text-white tracking-tight">Relatórios</h1>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+            <h1 className="text-2xl font-bold text-white tracking-tight">Relatórios</h1>
+          </div>
+          {selected && <ExportPDFButton />}
         </div>
         <p className="text-sm text-zinc-500 pl-4">
           {isDono ? 'Visualize relatórios gerados pelo Head' : 'Gere, edite e congele relatórios do período'}
@@ -113,9 +122,14 @@ export default async function RelatoriosPage({ searchParams }: Props) {
         <div className="flex-1 min-w-0">
           {selected ? (
             selected.status === 'rascunho' ? (
-              <ReportDraftEditor report={selected} isHead={isHead} isDono={isDono} />
+              <ReportDraftEditor
+                report={selected}
+                isHead={isHead}
+                isDono={isDono}
+                prevData={prevReport?.generated_data}
+              />
             ) : (
-              <ReportViewer report={selected} />
+              <ReportViewer report={selected} prevData={prevReport?.generated_data} />
             )
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">

@@ -20,9 +20,10 @@ interface Props {
   report: Report;
   isHead: boolean;
   isDono: boolean;
+  prevData?: import('@/lib/reports/types').ReportData;
 }
 
-export function ReportDraftEditor({ report, isHead, isDono }: Props) {
+export function ReportDraftEditor({ report, isHead, isDono, prevData }: Props) {
   const [isPending, startTransition] = useTransition();
   const [comment, setComment] = useState(report.head_comment ?? '');
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +93,10 @@ export function ReportDraftEditor({ report, isHead, isDono }: Props) {
       )}
 
       {/* Conteúdo do relatório */}
-      <ReportViewer report={{ ...report, head_comment: canEdit ? comment : report.head_comment }} />
+      <ReportViewer
+        report={{ ...report, head_comment: canEdit ? comment : report.head_comment }}
+        prevData={prevData}
+      />
 
       {/* Ações do rascunho */}
       {report.status === 'rascunho' && (isHead || isDono) && (

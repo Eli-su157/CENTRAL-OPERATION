@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { generateReportData } from '@/lib/reports/generate';
 
@@ -154,5 +155,57 @@ export async function deleteReportAction(
 
   if (error) return { error: 'Erro ao excluir relatório.' };
   revalidatePath('/app/relatorios');
+  return { success: true };
+}
+
+// ── AÇÕES SUGERIDAS PELA IA ──────────────────────────────────────────────────
+// A IA SUGERE → entra em pending_actions → usuário confirma com 1 clique
+// Nunca executa diretamente.
+
+export interface AISuggestedAction {
+  type: 'criar_tarefa' | 'marcar_alerta';
+  title: string;
+  description: string;
+  target_sector?: string;
+  priority?: 'alta' | 'media' | 'baixa';
+}
+
+export async function createAISuggestedActionAction(
+  prevState: ReportActionState,
+  formData: FormData
+): Promise<ReportActionState> {
+  const ctx = await getAuthContext();
+  if (!ctx || (ctx.profile.role !== 'dono' && ctx.profile.role !== 'head')) {
+    return { error: 'Sem permissão.' };
+  }
+
+  const type        = formData.get('type')         as string;
+  const title       = formData.get('title')        as string;
+  const description = formData.get('description')  as string;
+  const targetSector = (formData.get('target_sector') as string) || null;
+  const priority    = (formData.get('priority')    as string) || 'media';
+
+  if (!type || !title) return { error: 'Dados inválidos.' };
+
+  const admin = createAdminClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (admin as any)
+    .from('pending_actions')
+    .insert({
+      operation_id:   ctx.profile.operation_id,
+      dashboard_id:   null,
+      event_id:       null,
+      type,
+      title,
+      description,
+      target_sector:  targetSector,
+      target_role:    null,
+      link:           '/app/tarefas',
+      task_payload:   { priority, origin: 'ai_suggestion' },
+      status:         'pendente',
+    });
+
+  if (error) return { error: 'Erro ao criar ação sugerida.' };
+  revalidatePath('/app');
   return { success: true };
 }
