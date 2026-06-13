@@ -9,6 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // ── Hierarquia de texto ────────────────────────────────────────
+        // Piso mínimo: #71717A. Nunca usar cinza abaixo disso para texto.
+        text: {
+          primary:   '#FFFFFF',  // títulos, valores de KPI
+          secondary: '#A1A1AA',  // descrições, subtítulos
+          tertiary:  '#71717A',  // labels, texto de apoio — piso mínimo
+        },
         // ── Acento único de marca ──────────────────────────────────────
         brand: {
           DEFAULT: '#f97316',   // orange-500
@@ -18,13 +25,14 @@ const config: Config = {
           border:  'rgba(249,115,22,0.20)',
           glow:    'rgba(249,115,22,0.12)',
         },
-        // ── Superfícies (preto terminal) ───────────────────────────────
-        // base: #0A0A0A, surface1: #0D0D0D, surface2: #111111, surface3: #161616
+        // ── Superfícies — sistema 3 camadas ───────────────────────────
+        // layer0: #09090B (fundo), layer1: #121214 (nav/sidebar), layer2: #18181B (cards)
         surface: {
-          DEFAULT: '#111111',     // cards base
-          elevated: '#161616',    // inputs, elevated cards
-          overlay:  '#1a1a1a',    // modal backgrounds
-          border:   'rgba(255,255,255,0.06)',
+          DEFAULT: '#18181B',     // camada 2 — cards / containers
+          nav:     '#121214',     // camada 1 — sidebar / barras de navegação
+          elevated: '#18181B',    // camada 2 — mantido por compatibilidade
+          overlay:  '#121214',    // camada 1 — modal backgrounds
+          border:   '#27272A',    // borda padrão de cards (camada 2)
         },
       },
       boxShadow: {

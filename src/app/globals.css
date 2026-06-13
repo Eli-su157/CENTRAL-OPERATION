@@ -23,8 +23,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv01";
-  background: #0A0A0A;
-  color: #d4d4d8; /* zinc-300 — não pure white, mais confortável em terminal */
+  background: #09090B;
+  color: #FFFFFF;
 }
 
 /* ── Sistema de componentes ────────────────────────────────────────────────── */
@@ -82,11 +82,11 @@ body {
 
   /* Labels de seção — estilo terminal */
   .section-title {
-    @apply text-[10px] text-zinc-700 uppercase tracking-[0.15em]
+    @apply text-[10px] text-zinc-500 uppercase tracking-[0.15em]
            font-semibold px-3 pt-5 pb-1.5;
   }
   .section-label {
-    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold;
+    @apply text-[10px] text-zinc-500 uppercase tracking-[0.12em] font-semibold;
   }
 
   /* Valores de KPI — tipografia financeira */
@@ -96,7 +96,7 @@ body {
     letter-spacing: -0.025em;
   }
   .kpi-label {
-    @apply text-[10px] text-zinc-600 uppercase tracking-[0.12em] font-semibold;
+    @apply text-[10px] text-zinc-500 uppercase tracking-[0.12em] font-semibold;
   }
 
   /* Badge de status — só positivo/negativo/neutro */
@@ -137,6 +137,7 @@ body {
 
 /* ── Número de terminal — usado em grandes KPIs ─────────────────────────────── */
 .num {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "tnum", "lnum";
   letter-spacing: -0.025em;

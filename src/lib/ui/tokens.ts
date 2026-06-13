@@ -3,15 +3,16 @@
 // Para classes Tailwind, veja globals.css e tailwind.config.ts.
 
 export const SURFACE = {
-  base:     '#0A0A0A',   // fundo da página
-  card:     '#111111',   // cards padrão
-  elevated: '#161616',   // cards elevados, modais
-  input:    '#0D0D0D',   // campos de formulário
-  overlay:  '#1a1a1a',   // overlays e drawers
+  base:     '#09090B',   // camada 0 — fundo da app
+  card:     '#18181B',   // camada 2 — cards / containers
+  elevated: '#18181B',   // camada 2 — mantido por compatibilidade
+  input:    '#121214',   // camada 1 — campos de formulário
+  overlay:  '#121214',   // camada 1 — overlays e drawers
+  nav:      '#121214',   // camada 1 — sidebar / barras de navegação
 } as const;
 
 export const BORDER = {
-  default: 'rgba(255,255,255,0.06)',
+  default: '#27272A',               // borda padrão de cards (camada 2)
   subtle:  'rgba(255,255,255,0.04)',
   strong:  'rgba(255,255,255,0.10)',
 } as const;
@@ -24,6 +25,13 @@ export const COLOR = {
   warning:  '#fbbf24',  // amber-400 — atenção, em andamento
   neutral:  '#71717a',  // zinc-500 — neutro, dados secundários
   muted:    '#3f3f46',  // zinc-700 — placeholders, texto muito discreto
+} as const;
+
+// Hierarquia de texto — MÍNIMO #71717A para texto visível
+export const TEXT = {
+  primary:   '#FFFFFF',  // títulos, valores de KPI
+  secondary: '#A1A1AA',  // descrições, subtítulos (zinc-400)
+  tertiary:  '#71717A',  // labels, texto de apoio (zinc-500) — piso mínimo
 } as const;
 
 // Paleta de gráficos (cores para séries de Recharts)
