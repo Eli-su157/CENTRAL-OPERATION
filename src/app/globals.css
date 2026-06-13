@@ -96,7 +96,7 @@ body {
     letter-spacing: -0.025em;
   }
   .kpi-label {
-    @apply text-[10px] text-zinc-500 uppercase tracking-[0.12em] font-semibold;
+    @apply text-[11px] text-zinc-400 uppercase tracking-[0.05em] font-medium;
   }
 
   /* Badge de status — só positivo/negativo/neutro */

@@ -46,7 +46,7 @@ export function KPICard({
   const valClass = valueColorClass ?? (value === '—' ? 'text-zinc-700' : valueClass[accent]);
 
   return (
-    <div className="relative bg-[#111111] border border-white/[0.06] rounded-xl p-5 overflow-hidden shadow-card">
+    <div className="relative bg-[#18181B] border border-[#27272A] rounded-lg p-6 overflow-hidden shadow-card">
       <div className={`absolute top-0 left-0 right-0 h-px ${barClass}`} />
 
       <div className="flex items-center justify-between mb-3">
@@ -61,7 +61,7 @@ export function KPICard({
       </p>
 
       {sub && (
-        <p className={`text-xs mt-2.5 font-medium tabular-nums ${subClass ?? 'text-zinc-600'}`}>
+        <p className={`text-xs mt-2.5 font-medium tabular-nums ${subClass ?? 'text-zinc-400'}`}>
           {sub}
         </p>
       )}

@@ -40,8 +40,8 @@ interface Props<T> {
   headerAction?: ReactNode;
 }
 
-const thCls = 'text-left text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.1em] py-2 px-3 whitespace-nowrap';
-const tdCls = 'py-2.5 px-3 text-sm text-zinc-300 tabular-nums';
+const thCls = 'text-left text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.08em] py-3 px-4 whitespace-nowrap';
+const tdCls = 'py-3.5 px-4 text-sm text-zinc-300 tabular-nums';
 
 export function DenseTable<T>({
   title, columns, rows, keyExtractor,
@@ -64,9 +64,9 @@ export function DenseTable<T>({
   if (sortFn && sortKey) processed = sortFn(processed, sortKey, sortDesc);
 
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-[#18181B] border border-[#27272A] rounded-lg overflow-hidden">
       {(title || filters || headerAction) && (
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.05]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272A]">
           {title && (
             <p className="kpi-label">{title}</p>
           )}
@@ -95,7 +95,7 @@ export function DenseTable<T>({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="border-b border-white/[0.05]">
+          <thead className="border-b border-[#27272A]">
             <tr>
               {columns.map(col => (
                 <th
@@ -113,7 +113,7 @@ export function DenseTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.04]">
+          <tbody className="divide-y divide-[#27272A]">
             {processed.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="py-8 text-center text-zinc-600 text-sm">

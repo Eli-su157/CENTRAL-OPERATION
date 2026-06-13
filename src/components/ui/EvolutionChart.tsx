@@ -141,15 +141,23 @@ export function EvolutionChart({
           <Legend
             wrapperStyle={{ fontSize: 11, color: CHART.axis, paddingTop: 8 }}
           />
+          <defs>
+            {bars.map(b => (
+              <linearGradient key={b.dataKey} id={`barGrad-${b.dataKey}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={b.color} stopOpacity={b.fillOpacity ?? 0.55} />
+                <stop offset="100%" stopColor={b.color} stopOpacity={0.08} />
+              </linearGradient>
+            ))}
+          </defs>
           {bars.map(b => (
             <Bar
               key={b.dataKey}
               yAxisId="left"
               dataKey={b.dataKey}
               name={b.label}
-              fill={b.color}
-              fillOpacity={b.fillOpacity ?? 0.6}
-              radius={[2, 2, 0, 0]}
+              fill={`url(#barGrad-${b.dataKey})`}
+              maxBarSize={44}
+              radius={[3, 3, 0, 0]}
             />
           ))}
           {lines.map(l => (
@@ -161,8 +169,11 @@ export function EvolutionChart({
               name={l.label}
               stroke={l.color}
               strokeWidth={l.strokeWidth ?? 2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               strokeDasharray={l.strokeDasharray}
-              dot={l.dot ?? false}
+              dot={false}
+              activeDot={{ r: 4, strokeWidth: 0 }}
             />
           ))}
         </ComposedChart>

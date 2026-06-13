@@ -465,7 +465,7 @@ export default async function AppPage() {
               { dataKey: 'receita', label: 'Receita', color: '#22c55e', fillOpacity: 0.5 },
             ]}
             lines={[
-              { dataKey: 'lucro', label: 'Lucro', color: '#f97316', strokeWidth: 2.5, dot: true },
+              { dataKey: 'lucro', label: 'Lucro', color: '#f97316', strokeWidth: 2 },
             ]}
             height={200}
             footnote="Últimos 6 meses · lançamentos manuais + integrações"
