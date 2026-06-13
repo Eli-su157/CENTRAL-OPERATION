@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
-import { getTrafficData } from '@/lib/mock/traffic';
 import { AlertsBar } from '@/components/blocks/AlertsBar';
 import { MetasBlock } from '@/components/traffic/MetasBlock';
 import { DecisaoTable } from '@/components/traffic/DecisaoTable';
@@ -13,11 +12,13 @@ import { SaudeContasBlock } from '@/components/traffic/SaudeContasBlock';
 import { TemporalChartLazy } from '@/components/traffic/TemporalChartLazy';
 import { PanelConfig } from '@/components/traffic/PanelConfig';
 import { Breadcrumb } from '@/components/layout/Breadcrumb';
+import { EmptyState } from '@/components/ui';
 import { DEFAULT_ENABLED_BLOCKS, DEFAULT_BLOCK_ORDER } from '@/lib/traffic/panelDefaults';
 import { getReconciliationData } from '@/lib/sales/attribution';
 import { monthStart, monthEnd } from '@/lib/finance/calc';
 import { fetchDashboardSpend } from '@/lib/traffic/spend';
 import { buildRealTrafficData, formatFetchedAgo } from '@/lib/traffic/realData';
+import { fetchTrackerData, buildTrackerMetrics } from '@/lib/traffic/trackerData';
 import { fetchActiveAlerts } from '@/lib/alerts/engine';
 import type { DailyPoint } from '@/lib/mock/traffic';
 
@@ -42,7 +43,11 @@ async function TrafficBlocksContent({
 }: BlocksProps) {
   const supabase = await createClient();
 
-  const [spendRows, salesWithUtmRes, reconciliation, realAlerts] = await Promise.all([
+  const now = new Date();
+  const diaAtual = now.getDate();
+  const diasNoMes = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+  const [spendRows, salesWithUtmRes, trackerRaw, reconciliation, realAlerts] = await Promise.all([
     fetchDashboardSpend(supabase, dashboardId, monthStart(), monthEnd()),
     (supabase as any)
       .from('sales')
@@ -51,13 +56,25 @@ async function TrafficBlocksContent({
       .gte('occurred_at', monthStart())
       .lte('occurred_at', `${monthEnd()}T23:59:59.999Z`)
       .then((r: { data: unknown[] | null }) => (r.data ?? [])),
+    fetchTrackerData(supabase, dashboardId, monthStart(), monthEnd()),
     getReconciliationData(supabase, dashboardId, primaryProvider, monthStart(), monthEnd()),
     fetchActiveAlerts(supabase, dashboardId, canSeeFinancial),
   ]);
 
-  const now = new Date();
-  const diaAtual = now.getDate();
-  const diasNoMes = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  // Sem tracker conectado → EmptyState no lugar dos blocos
+  const hasTracker = trackerRaw.hasTracker || spendRows.length > 0;
+  if (!hasTracker) {
+    return (
+      <div className="mt-6">
+        <EmptyState
+          title="Conecte sua fonte de tráfego para ver campanhas, funil e ROAS reais"
+          description="Integre Meta Ads, Google Ads ou outro tracker para começar a monitorar."
+          action={{ label: 'Ir para Integrações', href: `/app/d/${dashboardId}/dev#configurar-integracoes` }}
+          iconVariant="neutral"
+        />
+      </div>
+    );
+  }
 
   const realTrafficData = buildRealTrafficData({
     dashboardId, primaryProvider, period,
@@ -66,42 +83,52 @@ async function TrafficBlocksContent({
     sales: (salesWithUtmRes as { amount: number; status: string; occurred_at: string; utm: Record<string, string | null> | null }[]),
   });
 
-  const traffic = realTrafficData ?? getTrafficData(dashboardId, period);
-  const isReal = !!realTrafficData;
-  const fetchedAgo = isReal ? formatFetchedAgo(realTrafficData.fetched_at) : '';
+  const fetchedAgo = realTrafficData ? formatFetchedAgo(realTrafficData.fetched_at) : '';
 
   const reconciliationSource =
     reconciliation.has_data
       ? reconciliation.attributed_count > 0 ? 'real' : 'pending'
-      : 'mock';
+      : 'pending';
 
   const reconciliationProps =
-    reconciliationSource === 'mock'
-      ? { tracker_faturamento: traffic.tracker_faturamento, plataforma_faturamento: traffic.plataforma_faturamento, source: 'mock' as const }
-      : { tracker_faturamento: reconciliation.tracker_faturamento, plataforma_faturamento: reconciliation.plataforma_faturamento, attributed_count: reconciliation.attributed_count, total_count: reconciliation.total_count, source: reconciliationSource as 'real' | 'pending' };
+    reconciliationSource === 'pending'
+      ? { tracker_faturamento: 0, plataforma_faturamento: 0, source: 'pending' as const }
+      : { tracker_faturamento: reconciliation.tracker_faturamento, plataforma_faturamento: reconciliation.plataforma_faturamento, attributed_count: reconciliation.attributed_count, total_count: reconciliation.total_count, source: 'real' as const };
 
-  const actual = isReal
-    ? {
-        gasto_dia:       spendRows.reduce((s, r) => s + Number(r.spend), 0) / Math.max(diaAtual, 1),
-        faturamento_dia: reconciliation.plataforma_faturamento / Math.max(diaAtual, 1),
-        roas_confirmado: traffic.roas_confirmado,
-        roas_projetado:  traffic.roas_projetado,
-      }
-    : {
-        gasto_dia:       traffic.gasto_dia,
-        faturamento_dia: traffic.faturamento_dia,
-        roas_confirmado: traffic.roas_confirmado,
-        roas_projetado:  traffic.roas_projetado,
-      };
+  const totalSpend = spendRows.reduce((s, r) => s + Number(r.spend), 0);
+  const actual = {
+    gasto_dia:       totalSpend / Math.max(diaAtual, 1),
+    faturamento_dia: reconciliation.plataforma_faturamento / Math.max(diaAtual, 1),
+    roas_confirmado: realTrafficData?.roas_confirmado ?? (totalSpend > 0 ? reconciliation.plataforma_faturamento / totalSpend : 0),
+    roas_projetado:  realTrafficData?.roas_projetado  ?? 0,
+  };
 
   const goals = { meta_gasto: null as number | null, meta_faturamento: null as number | null, roas_alvo: roasAlvo };
+
+  const trackerMetrics = buildTrackerMetrics({
+    provider: primaryProvider ?? 'desconhecido',
+    period,
+    trackerSales: trackerRaw.trackerSales,
+    trackerAggs:  trackerRaw.trackerAggs,
+    adSpend: spendRows.map(r => ({
+      campaign_id:   r.campaign_id ?? '',
+      campaign_name: r.campaign_name ?? '',
+      spend:         Number(r.spend),
+      spend_date:    r.spend_date ?? '',
+    })),
+  });
+
+  const campaigns = realTrafficData?.campaigns ?? [];
+  const series    = (realTrafficData?.series ?? []) as DailyPoint[];
+  const accounts  = realTrafficData?.accounts ?? [];
+  const funil     = realTrafficData?.funil ?? { impressoes: 0, cliques: 0, checkout_iniciado: 0, pix_gerado: 0, pix_pago: 0, cartao_aprovado: 0, vendas_confirmadas: 0 };
 
   function showBlock(id: string) { return enabledBlocks[id] !== false; }
 
   return (
     <>
-      {showBlock('alertas') && (
-        <AlertsBar alerts={realAlerts.length > 0 ? realAlerts : traffic.alertas} />
+      {showBlock('alertas') && realAlerts.length > 0 && (
+        <AlertsBar alerts={realAlerts} />
       )}
 
       <div className="flex flex-col gap-4">
@@ -120,26 +147,23 @@ async function TrafficBlocksContent({
                 />
               );
             case 'decisao':
-              return <DecisaoTable key="decisao" campaigns={traffic.campaigns} roasAlvo={roasAlvo} />;
+              return <DecisaoTable key="decisao" campaigns={campaigns} roasAlvo={roasAlvo} />;
             case 'funil':
-              return <FunilBlock key="funil" funil={traffic.funil} />;
+              return <FunilBlock key="funil" funil={funil} />;
             case 'reconciliacao':
               return <ReconciliacaoBlock key="reconciliacao" {...reconciliationProps} />;
             case 'saude':
-              return <SaudeContasBlock key="saude" accounts={traffic.accounts} />;
+              return <SaudeContasBlock key="saude" accounts={accounts} />;
             case 'temporal':
-              return <TemporalChartLazy key="temporal" series={traffic.series as DailyPoint[]} />;
+              return <TemporalChartLazy key="temporal" series={series} />;
             default:
               return null;
           }
         })}
       </div>
 
-      {/* Badge de dados reais / demo abaixo dos blocos */}
       <p className="text-xs text-zinc-700 mt-3 text-right">
-        {isReal
-          ? `Dados reais${fetchedAgo ? ` · ${fetchedAgo}` : ''}`
-          : 'Modo demo · Connect Meta Ads/Google Ads para dados reais'}
+        Dados reais{fetchedAgo ? ` · ${fetchedAgo}` : ''}
       </p>
     </>
   );

@@ -1,18 +1,16 @@
 import { formatCurrency } from '@/lib/utils/format';
 import { MetricBlock } from '@/components/ui';
-import type { DashboardMetrics } from '@/lib/mock/metrics';
 import type { AccountSummary } from '@/lib/finance/calc';
 
 interface Props {
-  data: DashboardMetrics;
   realFinance?: AccountSummary | null;
 }
 
-export function FinancialBlock({ data, realFinance }: Props) {
-  const saldo    = realFinance?.faturamento    ?? data.financial.saldo;
-  const aReceber = realFinance?.a_receber      ?? data.financial.a_receber;
-  const aPagar   = realFinance?.a_pagar        ?? data.financial.a_pagar;
-  const lucro    = realFinance?.lucro_liquido  ?? data.financial.projecao_mes;
+export function FinancialBlock({ realFinance }: Props) {
+  const saldo    = realFinance?.faturamento    ?? 0;
+  const aReceber = realFinance?.a_receber      ?? 0;
+  const aPagar   = realFinance?.a_pagar        ?? 0;
+  const lucro    = realFinance?.lucro_liquido  ?? 0;
   const isReal   = !!realFinance;
 
   return (
@@ -37,26 +35,25 @@ export function FinancialBlock({ data, realFinance }: Props) {
       {/* Lucro principal */}
       <div className="mb-5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.04]">
         <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-2">
-          Lucro líquido {isReal ? '' : '(estimado)'}
+          Lucro líquido {isReal ? '' : '(sem lançamentos)'}
         </p>
         <p className={`text-3xl sm:text-[2rem] num font-bold leading-none ${
           lucro >= 0 ? 'text-emerald-300' : 'text-red-300'
         }`}>
-          {formatCurrency(lucro)}
+          {isReal ? formatCurrency(lucro) : '—'}
         </p>
         {!isReal && (
           <p className="text-[10px] text-zinc-600 mt-1.5 tracking-wide">
-            Registre lançamentos para dados reais
+            Registre lançamentos para ver os dados
           </p>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <MetricBlock label={isReal ? 'Receita bruta' : 'Saldo'} value={formatCurrency(saldo)} valueClass="text-emerald-400" />
-        <MetricBlock label="A receber" value={formatCurrency(aReceber)} valueClass="text-zinc-200" />
-        <MetricBlock label="A pagar"   value={formatCurrency(aPagar)}   valueClass="text-red-400" />
+        <MetricBlock label={isReal ? 'Receita bruta' : 'Saldo'} value={isReal ? formatCurrency(saldo) : '—'} valueClass="text-emerald-400" />
+        <MetricBlock label="A receber" value={isReal ? formatCurrency(aReceber) : '—'} valueClass="text-zinc-200" />
+        <MetricBlock label="A pagar"   value={isReal ? formatCurrency(aPagar)   : '—'} valueClass="text-red-400" />
       </div>
     </div>
   );
 }
-

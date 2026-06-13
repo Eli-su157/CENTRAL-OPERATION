@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { formatCurrency, formatDelta, deltaColor } from '@/lib/utils/format';
-import type { DashboardMetrics } from '@/lib/mock/metrics';
+import { EmptyState } from '@/components/ui';
 
 interface RealTrafficData {
   dashboardId: string;
@@ -12,21 +12,11 @@ interface RealTrafficData {
 }
 
 interface Props {
-  data: DashboardMetrics;
+  dashboardId: string;
   real?: RealTrafficData | null;
 }
 
-export function TrafficBlock({ data, real }: Props) {
-  const t = data.traffic;
-  const showReal = !!real;
-
-  const gasto    = showReal ? real.gasto_dia       : t.gasto_dia;
-  const roasConf = showReal ? real.roas_confirmado : t.roas;
-  const roasProj = showReal ? real.roas_projetado  : t.roas * 1.07;
-  const cpa      = showReal ? real.cpa             : t.cpa;
-  const roi      = showReal ? real.roi             : t.roi;
-  const roasOk   = roasConf >= 3;
-
+export function TrafficBlock({ dashboardId, real }: Props) {
   return (
     <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 shadow-card overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
@@ -48,45 +38,37 @@ export function TrafficBlock({ data, real }: Props) {
         )}
       </div>
 
-      {/* ROAS destaque */}
-      <div className="mb-5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.04]">
-        <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-2">ROAS</p>
-        <div className="flex items-baseline gap-2.5">
-          <span className={`text-3xl sm:text-[2rem] font-bold tabular-nums leading-none ${
-            roasOk ? 'text-emerald-400' : 'text-red-400'
-          }`}>
-            {roasConf.toFixed(2)}x
-          </span>
-          <span className="text-sm text-zinc-500 tabular-nums" title="ROAS projetado">
-            ~{roasProj.toFixed(2)}x
-          </span>
-        </div>
-        <p className="text-[10px] text-zinc-600 mt-1 tracking-wide">confirmado · projetado</p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <StatCell label="Gasto do dia" value={formatCurrency(gasto)} />
-        <StatCell label="CPA" value={formatCurrency(cpa)} />
-        <StatCell label="ROI" value={formatDelta(roi)} valueClass={deltaColor(roi)} />
-      </div>
-
-      {!showReal && t.plataformas.length > 0 && (
-        <div className="pt-4 border-t border-white/[0.05] mt-4">
-          <p className="text-[10px] text-zinc-600 uppercase tracking-[0.1em] font-semibold mb-3">Por plataforma</p>
-          <div className="flex flex-col gap-2">
-            {t.plataformas.map(p => (
-              <div key={p.nome} className="flex items-center justify-between text-sm py-1">
-                <span className="text-zinc-400">{p.nome}</span>
-                <div className="flex gap-4 tabular-nums">
-                  <span className="text-zinc-300">{formatCurrency(p.gasto)}</span>
-                  <span className={p.roas >= 3 ? 'text-emerald-400' : 'text-red-400'}>
-                    {p.roas.toFixed(2)}x
-                  </span>
-                </div>
-              </div>
-            ))}
+      {!real ? (
+        <EmptyState
+          title="Conecte sua fonte de tráfego"
+          description="Nenhuma integração de ads ativa para este produto."
+          action={{ label: 'Ir para Integrações', href: `/app/d/${dashboardId}/dev#configurar-integracoes` }}
+          iconVariant="neutral"
+          className="py-4"
+        />
+      ) : (
+        <>
+          <div className="mb-5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.04]">
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wide font-medium mb-2">ROAS</p>
+            <div className="flex items-baseline gap-2.5">
+              <span className={`text-3xl sm:text-[2rem] font-bold tabular-nums leading-none ${
+                real.roas_confirmado >= 3 ? 'text-emerald-400' : 'text-red-400'
+              }`}>
+                {real.roas_confirmado.toFixed(2)}x
+              </span>
+              <span className="text-sm text-zinc-500 tabular-nums" title="ROAS projetado">
+                ~{real.roas_projetado.toFixed(2)}x
+              </span>
+            </div>
+            <p className="text-[10px] text-zinc-600 mt-1 tracking-wide">confirmado · projetado</p>
           </div>
-        </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <StatCell label="Gasto do dia" value={formatCurrency(real.gasto_dia)} />
+            <StatCell label="CPA" value={formatCurrency(real.cpa)} />
+            <StatCell label="ROI" value={formatDelta(real.roi)} valueClass={deltaColor(real.roi)} />
+          </div>
+        </>
       )}
     </div>
   );

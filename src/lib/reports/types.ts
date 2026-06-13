@@ -22,7 +22,6 @@ export interface ReportTrafego {
   roas_confirmado: number;
   roas_projetado: number;
   campanhas_ativas: number;
-  note: string; // ex: 'dados mock — swap real na Fase 9d'
 }
 
 export interface ReportProducao {
@@ -48,7 +47,7 @@ export interface ReportData {
   period_start: string;
   period_end: string;
   financeiro: ReportFinanceiro;
-  trafego: ReportTrafego;
+  trafego: ReportTrafego | null;
   producao: ReportProducao;
   operacao: ReportOperacao;
   gerado_em: string;

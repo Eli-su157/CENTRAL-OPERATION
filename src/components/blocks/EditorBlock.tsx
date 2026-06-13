@@ -1,12 +1,6 @@
 import Link from 'next/link';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
-import {
-  getMaterialPerformance,
-  VERDICT_LABEL,
-  VERDICT_STYLE,
-  type MaterialVerdict,
-} from '@/lib/mock/materials';
 
 type MaterialStatus = 'em_producao' | 'pronto' | 'no_ar' | 'aposentado';
 type MaterialType = 'criativo_imagem' | 'criativo_video' | 'vsl' | 'pagina' | 'copy';
@@ -73,18 +67,8 @@ export async function EditorBlock({ dashboardId }: Props) {
     counts[m.status as MaterialStatus] = (counts[m.status as MaterialStatus] ?? 0) + 1;
   }
 
-  // Criativo em destaque: melhor ROAS entre os "no ar"
-  const noArMaterials = materials.filter(m => m.status === 'no_ar');
-  let featured: typeof materials[0] | null = null;
-  let featuredPerf: { roas: number; verdict: MaterialVerdict } = { roas: 0, verdict: 'sem_dados' };
-
-  for (const m of noArMaterials) {
-    const perf = getMaterialPerformance(m.id);
-    if (perf.roas > featuredPerf.roas) {
-      featured = m;
-      featuredPerf = perf;
-    }
-  }
+  // Criativo em destaque: primeiro material "no ar" (sem ranking por ROAS até haver dado real)
+  const featured = materials.find(m => m.status === 'no_ar') ?? null;
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
@@ -117,8 +101,8 @@ export async function EditorBlock({ dashboardId }: Props) {
               <span className="text-sm">{TYPE_ICON[featured.type as MaterialType]}</span>
               <p className="text-sm text-white truncate">{featured.title}</p>
             </div>
-            <span className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ${VERDICT_STYLE[featuredPerf.verdict]}`}>
-              {VERDICT_LABEL[featuredPerf.verdict]} · {featuredPerf.roas.toFixed(2)}x
+            <span className="text-xs px-2 py-0.5 rounded-full border shrink-0 text-zinc-500 border-zinc-700">
+              sem dados de performance ainda
             </span>
           </div>
         </div>

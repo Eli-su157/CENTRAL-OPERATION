@@ -38,8 +38,8 @@ function StatusDot({ status }: { status: string }) {
 
 interface Props {
   connections: IntegrationConnection[];
-  onManage: () => void;
   canManage: boolean;
+  manageHref?: string;
 }
 
 const columns: DenseColumn<IntegrationConnection>[] = [
@@ -75,7 +75,7 @@ const columns: DenseColumn<IntegrationConnection>[] = [
   },
 ];
 
-export function IntegrationsPanel({ connections, onManage, canManage }: Props) {
+export function IntegrationsPanel({ connections, canManage, manageHref }: Props) {
   const connected   = connections.filter(c => c.status === 'conectada').length;
   const withError   = connections.filter(c => c.status === 'erro' || c.status === 'desconectada').length;
 
@@ -86,13 +86,13 @@ export function IntegrationsPanel({ connections, onManage, canManage }: Props) {
           {connected > 0 && <span className="text-emerald-400 font-medium">{connected} ativas</span>}
           {withError > 0 && <span className="text-red-400 font-medium">{withError} com problema</span>}
         </div>
-        {canManage && (
-          <button
-            onClick={onManage}
+        {canManage && manageHref && (
+          <a
+            href={manageHref}
             className="ml-auto text-xs text-zinc-500 hover:text-orange-400 transition-colors font-medium"
           >
             Gerenciar credenciais →
-          </button>
+          </a>
         )}
       </div>
 

@@ -96,10 +96,10 @@ export function ReportViewer({ report, prevData }: Props) {
   const prevMargem = pf && pf.receita_bruta > 0 ? (pf.lucro_liquido / pf.receita_bruta) * 100 : undefined;
   const margemDelta = prevMargem != null ? margem - prevMargem : null;
 
-  const receitaDelta   = pct(f.receita_bruta,   pf?.receita_bruta);
-  const lucroDelta     = pct(f.lucro_liquido,   pf?.lucro_liquido);
-  const gastoTrafDelta = pct(t.gasto_total,     pt?.gasto_total);
-  const roasDelta      = pct(t.roas_confirmado, pt?.roas_confirmado);
+  const receitaDelta   = pct(f.receita_bruta,      pf?.receita_bruta);
+  const lucroDelta     = pct(f.lucro_liquido,      pf?.lucro_liquido);
+  const gastoTrafDelta = t ? pct(t.gasto_total,    pt?.gasto_total)    : null;
+  const roasDelta      = t ? pct(t.roas_confirmado, pt?.roas_confirmado) : null;
   const tasksDelta     = pct(o.tarefas_concluidas, po?.tarefas_concluidas);
 
   const lucroPositivo = f.lucro_liquido >= 0;
@@ -152,12 +152,16 @@ export function ReportViewer({ report, prevData }: Props) {
               : undefined}
             subClass={margemDelta != null ? deltaColor(margemDelta) : undefined}
           />
-          <KPICard
-            label="ROAS"
-            value={`${t.roas_confirmado.toFixed(2)}x`}
-            accent={t.roas_confirmado >= 2 ? 'positive' : t.roas_confirmado >= 1 ? 'brand' : 'negative'}
-            {...deltaSub(roasDelta)}
-          />
+          {t ? (
+            <KPICard
+              label="ROAS"
+              value={`${t.roas_confirmado.toFixed(2)}x`}
+              accent={t.roas_confirmado >= 2 ? 'positive' : t.roas_confirmado >= 1 ? 'brand' : 'negative'}
+              {...deltaSub(roasDelta)}
+            />
+          ) : (
+            <KPICard label="ROAS" value="—" accent="neutral" sub="sem tracker conectado" />
+          )}
         </div>
       </div>
 
@@ -219,48 +223,47 @@ export function ReportViewer({ report, prevData }: Props) {
         )}
       </AreaCard>
 
-      {/* ── Área: Tráfego ─────────────────────────────────────── */}
-      <AreaCard
-        title="Tráfego"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        }
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-          <MetricBlock
-            label="Gasto Total"
-            value={formatCurrency(t.gasto_total)}
-            delta={gastoTrafDelta != null ? formatDelta(gastoTrafDelta) + ' vs ant.' : undefined}
-            deltaClass={gastoTrafDelta != null ? deltaColor(gastoTrafDelta, true) : undefined}
+      {/* ── Área: Tráfego — omitida quando sem tracker ─────────── */}
+      {t && (
+        <AreaCard
+          title="Tráfego"
+          icon={
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          }
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+            <MetricBlock
+              label="Gasto Total"
+              value={formatCurrency(t.gasto_total)}
+              delta={gastoTrafDelta != null ? formatDelta(gastoTrafDelta) + ' vs ant.' : undefined}
+              deltaClass={gastoTrafDelta != null ? deltaColor(gastoTrafDelta, true) : undefined}
+            />
+            <MetricBlock
+              label="Faturamento"
+              value={formatCurrency(t.faturamento_total)}
+              valueClass="text-emerald-400"
+            />
+            <MetricBlock
+              label="Campanhas Ativas"
+              value={String(t.campanhas_ativas)}
+            />
+          </div>
+          <Row
+            label="ROAS confirmado"
+            value={`${t.roas_confirmado.toFixed(2)}x`}
+            valueClass={t.roas_confirmado >= 2 ? 'text-emerald-400' : 'text-amber-400'}
+            sub={roasDelta != null ? formatDelta(roasDelta) + ' vs período ant.' : undefined}
+            subClass={roasDelta != null ? deltaColor(roasDelta) : undefined}
           />
-          <MetricBlock
-            label="Faturamento"
-            value={formatCurrency(t.faturamento_total)}
-            valueClass="text-emerald-400"
+          <Row
+            label="ROAS projetado"
+            value={`${t.roas_projetado.toFixed(2)}x`}
+            valueClass="text-zinc-400"
           />
-          <MetricBlock
-            label="Campanhas Ativas"
-            value={String(t.campanhas_ativas)}
-          />
-        </div>
-        <Row
-          label="ROAS confirmado"
-          value={`${t.roas_confirmado.toFixed(2)}x`}
-          valueClass={t.roas_confirmado >= 2 ? 'text-emerald-400' : 'text-amber-400'}
-          sub={roasDelta != null ? formatDelta(roasDelta) + ' vs período ant.' : undefined}
-          subClass={roasDelta != null ? deltaColor(roasDelta) : undefined}
-        />
-        <Row
-          label="ROAS projetado"
-          value={`${t.roas_projetado.toFixed(2)}x`}
-          valueClass="text-zinc-400"
-        />
-        {t.note && (
-          <p className="text-[11px] text-zinc-700 mt-3 italic">{t.note}</p>
-        )}
-      </AreaCard>
+        </AreaCard>
+      )}
 
       {/* ── Área: Tarefas & Operação ──────────────────────────── */}
       <AreaCard

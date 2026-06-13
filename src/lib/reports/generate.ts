@@ -1,11 +1,11 @@
 // Gerador de snapshot para relatórios da operação.
-// Puxa dados REAIS de cada fonte: financeiro (calc.ts), tráfego (mock→swap 9d),
+// Puxa dados REAIS de cada fonte: financeiro (calc.ts), tráfego (tracker_sales/ad_spend),
 // materiais (DB), tarefas (DB).
 // SERVER-ONLY — nunca importar em componentes client.
 
 import { calcDre, calcAccountSummary, type FinanceEntry } from '@/lib/finance/calc';
-import { getTrafficData } from '@/lib/mock/traffic';
-import { getMaterialPerformance } from '@/lib/mock/materials';
+import { fetchTrackerData } from '@/lib/traffic/trackerData';
+import { fetchDashboardSpend } from '@/lib/traffic/spend';
 import { getPeriodDates } from './periods';
 import type { ReportData } from './types';
 
@@ -58,28 +58,48 @@ export async function generateReportData(opts: GenerateOptions): Promise<ReportD
     total_saidas:     entries.filter(e => e.direction === 'saida').reduce((s, e) => s + e.amount, 0),
   };
 
-  // ── TRÁFEGO (mock → swap real na Fase 9d) ────────────────
-  // Usa o período atual como proxy pois o mock não filtra por data
-  const trafficPeriod = periodType === 'mensal'
-    ? periodRef
-    : `${periodRef.split('-W')[0]}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
-
+  // ── TRÁFEGO — tracker real + ad_spend ────────────────────
   const { data: dashboards } = await db
     .from('dashboards')
     .select('id')
     .eq('operation_id', operationId);
 
-  const firstDashId = (dashboards as { id: string }[] | null)?.[0]?.id ?? 'demo';
-  const traffic = getTrafficData(firstDashId, trafficPeriod);
+  const dashIds = ((dashboards as { id: string }[] | null) ?? []).map(d => d.id);
 
-  const trafego = {
-    gasto_total:       traffic.gasto_dia * 30,
-    faturamento_total: traffic.faturamento_dia * 30,
-    roas_confirmado:   traffic.roas_confirmado,
-    roas_projetado:    traffic.roas_projetado,
-    campanhas_ativas:  traffic.campaigns.filter(c => c.status === 'ativa').length,
-    note:              'dados mock — swap real na Fase 9d',
-  };
+  // Agrega tracker + spend de todos os dashboards da operação no período
+  const trackerResults = await Promise.all(
+    dashIds.map(id => fetchTrackerData(db, id, start, end))
+  );
+  const spendResults = await Promise.all(
+    dashIds.map(id => fetchDashboardSpend(db, id, start, end))
+  );
+
+  const allTrackerSales = trackerResults.flatMap(r => r.trackerSales);
+  const allTrackerAggs  = trackerResults.flatMap(r => r.trackerAggs);
+  const allSpend        = spendResults.flat();
+  const hasTracker      = allTrackerSales.length > 0 || allTrackerAggs.length > 0 || allSpend.length > 0;
+
+  let trafego: import('./types').ReportTrafego | null = null;
+  if (hasTracker) {
+    const gastoTotal     = allSpend.reduce((s, r) => s + Number(r.spend), 0);
+    const revenueTotal   = allTrackerSales
+      .filter(s => (s as { status: string }).status === 'aprovado')
+      .reduce((s, r) => s + Number((r as { amount: number }).amount), 0);
+    const roas           = gastoTotal > 0 ? revenueTotal / gastoTotal : 0;
+
+    // Campanhas ativas: campanhas com spend > 0 no período
+    const campanhasAtivas = new Set(
+      allSpend.filter(r => Number(r.spend) > 0).map(r => r.campaign_id).filter(Boolean)
+    ).size;
+
+    trafego = {
+      gasto_total:      gastoTotal,
+      faturamento_total: revenueTotal,
+      roas_confirmado:  roas,
+      roas_projetado:   roas,
+      campanhas_ativas: campanhasAtivas,
+    };
+  }
 
   // ── PRODUÇÃO (materiais) ──────────────────────────────────
   const { data: matRows } = await db
@@ -92,16 +112,9 @@ export async function generateReportData(opts: GenerateOptions): Promise<ReportD
   const mats = (matRows ?? []) as { id: string; type: string; status: string }[];
   const matNoAr = mats.filter(m => m.status === 'no_ar');
 
-  // Criativo destaque: melhor ROAS entre os "no ar"
-  let crDestaqueLabel: string | null = null;
-  let crDestaqueRoas: number | null = null;
-  for (const m of matNoAr) {
-    const p = getMaterialPerformance(m.id);
-    if (crDestaqueRoas === null || p.roas > crDestaqueRoas) {
-      crDestaqueRoas = p.roas;
-      crDestaqueLabel = m.id;
-    }
-  }
+  // Criativo destaque: primeiro "no ar" por criação (sem performance mock)
+  const crDestaqueLabel: string | null = matNoAr[0]?.id ?? null;
+  const crDestaqueRoas: number | null = null;
 
   const porTipo: Record<string, number> = {};
   for (const m of mats) {

@@ -1,12 +1,24 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import {
-  getMaterialPerformance,
-  VERDICT_LABEL,
-  VERDICT_STYLE,
-} from '@/lib/mock/materials';
 import type { RealMaterialPerformance } from '@/lib/materials/performance';
+import type { MaterialVerdict } from '@/lib/mock/materials';
+
+const VERDICT_LABEL: Record<MaterialVerdict, string> = {
+  vencedor:  'Vencedor',
+  escalando: 'Escalando',
+  testando:  'Testando',
+  morto:     'Morto',
+  sem_dados: 'Sem dados',
+};
+
+const VERDICT_STYLE: Record<MaterialVerdict, string> = {
+  vencedor:  'bg-emerald-950 border-emerald-700 text-emerald-400',
+  escalando: 'bg-blue-950 border-blue-700 text-blue-400',
+  testando:  'bg-amber-950 border-amber-700 text-amber-400',
+  morto:     'bg-red-950 border-red-800 text-red-400',
+  sem_dados: 'bg-zinc-800 border-zinc-700 text-zinc-500',
+};
 import type { MaterialType, MaterialStatus, MaterialStorageKind } from '@/lib/types/database';
 import { updateMaterialStatusAction, linkAdAction } from '@/app/app/d/[dashboardId]/edicao/actions';
 
@@ -76,10 +88,7 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
   const [showLinkPicker, setShowLinkPicker] = useState(false);
   const [selectedAdId, setSelectedAdId] = useState('');
 
-  // Real performance quando disponível; mock como fallback com badge "demo"
-  const mockPerf = getMaterialPerformance(material.id);
-  const perf = performance ?? { ...mockPerf, source: 'mock' as const, ad_id: null, ad_name: null, fetched_at: null, cliques: 0 };
-  const isReal = perf.source === 'real';
+  const isReal = !!performance;
 
   function cycleStatus() {
     const currentIdx = STATUS_ORDER.indexOf(material.status);
@@ -173,7 +182,7 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
         {material.ad_reference ? (
           <div className="flex items-center gap-1">
             <p className="text-xs text-zinc-600 font-mono truncate flex-1" title={material.ad_reference}>
-              {isReal && perf.ad_name ? perf.ad_name : `ref: ${material.ad_reference}`}
+              {isReal && performance!.ad_name ? performance!.ad_name : `ref: ${material.ad_reference}`}
             </p>
             {canLink && (
               <button
@@ -225,21 +234,18 @@ export function MaterialCard({ material, dashboardId, performance, availableAds 
 
         {/* Performance */}
         {material.status === 'no_ar' && (
-          <div className="flex items-center justify-between gap-1 flex-wrap">
-            <span className={`text-xs px-2 py-0.5 rounded-full border ${VERDICT_STYLE[perf.verdict]}`}>
-              {VERDICT_LABEL[perf.verdict]}
-            </span>
-            <div className="flex items-center gap-1.5">
-              {perf.roas > 0 && (
-                <span className="text-xs text-zinc-500 tabular-nums">{perf.roas.toFixed(1)}x</span>
-              )}
-              <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
-                isReal ? 'bg-emerald-950 text-emerald-600' : 'bg-zinc-800 text-zinc-700'
-              }`}>
-                {isReal ? 'real' : 'demo'}
+          isReal ? (
+            <div className="flex items-center justify-between gap-1 flex-wrap">
+              <span className={`text-xs px-2 py-0.5 rounded-full border ${VERDICT_STYLE[performance!.verdict]}`}>
+                {VERDICT_LABEL[performance!.verdict]}
               </span>
+              {performance!.roas > 0 && (
+                <span className="text-xs text-zinc-500 tabular-nums">{performance!.roas.toFixed(1)}x</span>
+              )}
             </div>
-          </div>
+          ) : (
+            <p className="text-[10px] text-zinc-700">sem dados de performance ainda</p>
+          )
         )}
 
         {/* Footer */}

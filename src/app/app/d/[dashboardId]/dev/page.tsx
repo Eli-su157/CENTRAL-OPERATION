@@ -245,7 +245,7 @@ export default async function DevPanelPage({ params }: Props) {
         <IntegrationsPanel
           connections={health.connections}
           canManage={canManage}
-          onManage={() => {}}
+          manageHref="#configurar-integracoes"
         />
       </section>
 
@@ -266,7 +266,7 @@ export default async function DevPanelPage({ params }: Props) {
       )}
 
       {/* SEÇÃO 6: CONFIGURAÇÃO DE INTEGRAÇÕES (credenciais, edição) */}
-      <section>
+      <section id="configurar-integracoes">
         <SectionHeader variant="section" title="Configurar Integrações" />
         <IntegrationCenterClient
           connections={health.connections}

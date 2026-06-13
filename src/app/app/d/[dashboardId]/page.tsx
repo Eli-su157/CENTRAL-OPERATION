@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
-import { getDashboardMetrics } from '@/lib/mock/metrics';
 import { SummaryStrip } from '@/components/blocks/SummaryStrip';
 import { AlertsBar } from '@/components/blocks/AlertsBar';
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid';
@@ -54,28 +53,21 @@ export default async function DashboardPage({ params }: Props) {
   // Modo demo
   if (process.env.NEXT_PUBLIC_DEMO === 'true') {
     const { DEMO_DASHBOARDS } = await import('@/lib/demo');
+    const { getDashboardMetrics } = await import('@/lib/mock/metrics');
     const demoDash = DEMO_DASHBOARDS.find(d => d.id === dashboardId) ?? DEMO_DASHBOARDS[0];
     const metrics = getDashboardMetrics(dashboardId);
     return (
       <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <DashboardHeader dashboard={demoDash} canManage={true} />
-        <SummaryStrip
-          faturamento_dia={metrics.summary.faturamento_dia}
-          lucro_liquido={metrics.summary.lucro_liquido}
-          roas={metrics.summary.roas}
-          delta_faturamento={metrics.summary.delta_faturamento}
-          delta_lucro={metrics.summary.delta_lucro}
-          delta_roas={metrics.summary.delta_roas}
-          real={null}
-        />
+        <SummaryStrip real={null} demoSummary={metrics.summary} />
         <DashboardGrid
-          metrics={metrics}
           profile={{ role: 'dono', sector: null }}
           permissions={ctx.permissions}
           dashboardId={dashboardId}
           realTeamData={null}
           realFinance={null}
           realSales={null}
+          realTraffic={null}
         />
       </div>
     );
@@ -193,8 +185,6 @@ export default async function DashboardPage({ params }: Props) {
     realTraffic = computeTrafficSummary(rawSpend, rawSales, today);
   }
 
-  const metrics = getDashboardMetrics(dashboardId);
-
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <DashboardHeader
@@ -202,15 +192,9 @@ export default async function DashboardPage({ params }: Props) {
         canManage={ctx.permissions.pode_criar_dashboard}
       />
 
-      <AlertsBar alerts={realAlerts.length > 0 ? realAlerts : metrics.alerts} />
+      <AlertsBar alerts={realAlerts} />
 
       <SummaryStrip
-        faturamento_dia={metrics.summary.faturamento_dia}
-        lucro_liquido={metrics.summary.lucro_liquido}
-        roas={metrics.summary.roas}
-        delta_faturamento={metrics.summary.delta_faturamento}
-        delta_lucro={metrics.summary.delta_lucro}
-        delta_roas={metrics.summary.delta_roas}
         real={realFinance ? {
           faturamento: realFinance.faturamento,
           lucro_liquido: realFinance.lucro_liquido,
@@ -219,7 +203,6 @@ export default async function DashboardPage({ params }: Props) {
       />
 
       <DashboardGrid
-        metrics={metrics}
         profile={{
           role: ctx.profile.role as UserRole,
           sector: ctx.profile.sector as UserSector | null,

@@ -1,31 +1,40 @@
-import { formatCurrency, formatPercent, formatDelta, formatNumber, deltaColor } from '@/lib/utils/format';
-import { MetricBlock } from '@/components/ui';
-import type { DashboardMetrics } from '@/lib/mock/metrics';
+import { formatCurrency, formatPercent, formatNumber } from '@/lib/utils/format';
+import { MetricBlock, EmptyState } from '@/components/ui';
 import type { SalesMetrics } from '@/lib/sales/metrics';
 
 interface Props {
-  data: DashboardMetrics;
+  dashboardId: string;
   realSales?: SalesMetrics | null;
 }
 
-export function SalesBlock({ data, realSales }: Props) {
-  const useReal = !!realSales?.has_data;
-  const s = data.sales;
+export function SalesBlock({ dashboardId, realSales }: Props) {
+  if (!realSales?.has_data) {
+    return (
+      <BlockCard label="Vendas" badge="sem dados" icon={<ShoppingBagIcon />}>
+        <EmptyState
+          title="Conecte sua fonte de vendas"
+          description="Nenhuma venda registrada neste período."
+          action={{ label: 'Ir para Integrações', href: `/app/d/${dashboardId}/dev#configurar-integracoes` }}
+          iconVariant="neutral"
+          className="py-4"
+        />
+      </BlockCard>
+    );
+  }
 
-  const aprovadas_valor = useReal ? realSales!.aprovadas_valor : s.aprovadas_valor;
-  const aprovadas_qtd   = useReal ? realSales!.aprovadas_qtd   : s.aprovadas_qtd;
-  const ticket_medio    = useReal ? realSales!.ticket_medio    : s.ticket_medio;
-  const taxa_reembolso  = useReal ? realSales!.taxa_reembolso  : s.taxa_reembolso;
-  const conversao_pix   = useReal ? realSales!.conversao_pix   : s.conversao_pix;
-  const reembolsoHigh   = taxa_reembolso > 4;
+  const {
+    aprovadas_valor,
+    aprovadas_qtd,
+    ticket_medio,
+    taxa_reembolso,
+    conversao_pix,
+    no_primary_provider_warning,
+  } = realSales;
+
+  const reembolsoHigh = taxa_reembolso > 4;
 
   return (
-    <BlockCard label="Vendas" badge={useReal ? 'real' : 'demo'} icon={
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
-    }>
+    <BlockCard label="Vendas" badge="real" icon={<ShoppingBagIcon />}>
       <div className="mb-5">
         <p className="text-3xl sm:text-[2rem] num font-bold text-white leading-none">
           {formatCurrency(aprovadas_valor)}
@@ -33,12 +42,7 @@ export function SalesBlock({ data, realSales }: Props) {
         <p className="text-sm text-zinc-500 mt-1.5">
           {formatNumber(aprovadas_qtd)} pedidos aprovados
         </p>
-        {!useReal && (
-          <p className={`text-xs mt-1.5 font-medium tabular-nums ${deltaColor(s.delta_valor)}`}>
-            {formatDelta(s.delta_valor)} vs ontem
-          </p>
-        )}
-        {useReal && realSales!.no_primary_provider_warning && (
+        {no_primary_provider_warning && (
           <p className="text-xs mt-1.5 text-amber-400">Sem provider primário — somando todos</p>
         )}
       </div>
@@ -62,6 +66,15 @@ export function SalesBlock({ data, realSales }: Props) {
   );
 }
 
+function ShoppingBagIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 01-8 0"/>
+    </svg>
+  );
+}
 
 function BlockCard({
   label, badge, icon, children,
