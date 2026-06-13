@@ -467,8 +467,6 @@ export default async function AppPage() {
             lines={[
               { dataKey: 'lucro', label: 'Lucro', color: '#f97316', strokeWidth: 2.5, dot: true },
             ]}
-            leftFormatter={v => `R$ ${(v / 1000).toFixed(0)}k`}
-            tooltipFormatter={(key, v) => formatCurrency(v)}
             height={200}
             footnote="Últimos 6 meses · lançamentos manuais + integrações"
           />
