@@ -1,8 +1,8 @@
 import LoginBackground from '@/components/auth/login-background';
 import LoginHero from '@/components/auth/login-hero';
-import LoginCard from '@/components/auth/login-card';
+import SignupCard from '@/components/auth/signup-card';
 
-export default function HomePage() {
+export default function SignupPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[var(--surface-0)]">
       <LoginBackground glow={false} />
@@ -11,7 +11,7 @@ export default function HomePage() {
         {/* Card — order-1 → aparece primeiro no mobile */}
         <div className="order-1 lg:order-2 flex justify-center items-center w-full">
           <div className="w-full max-w-md">
-            <LoginCard />
+            <SignupCard />
           </div>
         </div>
 

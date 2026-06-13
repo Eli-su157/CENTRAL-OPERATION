@@ -14,14 +14,14 @@ interface Props {
 }
 
 export function MetricBlock({
-  label, value, valueClass = 'text-zinc-200',
+  label, value, valueClass = 'text-zinc-100',
   delta, deltaClass, highlight,
 }: Props) {
   return (
     <div className={`rounded-md p-2.5 ${
-      highlight ? 'bg-red-950/30 border border-red-800/30' : 'bg-white/[0.025]'
+      highlight ? 'bg-red-950/30 border border-red-800/30' : 'bg-white/[0.06]'
     }`}>
-      <p className="text-[9px] text-zinc-700 uppercase tracking-[0.1em] font-semibold mb-1">
+      <p className="text-[9px] text-[#A1A1AA] uppercase tracking-[0.1em] font-semibold mb-1">
         {label}
       </p>
       <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>

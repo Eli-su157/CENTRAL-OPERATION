@@ -13,7 +13,7 @@ export function SubmitButton({ label, loadingLabel = 'Aguarde...' }: Props) {
     <button
       type="submit"
       disabled={pending}
-      className="w-full py-3 px-4 font-semibold text-sm bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed tracking-wide mt-2"
+      className="w-full py-3 px-4 font-semibold text-sm bg-brand hover:bg-brand/90 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed tracking-wide mt-2"
     >
       {pending ? loadingLabel : label}
     </button>
