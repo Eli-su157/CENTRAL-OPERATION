@@ -40,10 +40,10 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`group flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
+      className={`group flex items-center gap-2.5 px-3 py-2 text-sm transition-all duration-150 ${
         active
-          ? 'bg-orange-500/10 text-orange-400 font-medium'
-          : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
+          ? 'border-l-2 border-orange-500 pl-[10px] text-white font-medium bg-white/[0.03] rounded-r-lg'
+          : 'border-l-2 border-transparent pl-[10px] text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04] rounded-lg'
       }`}
     >
       {children}
@@ -97,10 +97,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
                   key={d.id}
                   href={href}
                   onClick={onClose}
-                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
+                  className={`flex items-center gap-2.5 px-3 py-2 text-sm transition-all duration-150 ${
                     active
-                      ? 'bg-orange-500/10 text-orange-400 font-medium'
-                      : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]'
+                      ? 'border-l-2 border-orange-500 pl-[10px] text-white font-medium bg-white/[0.03] rounded-r-lg'
+                      : 'border-l-2 border-transparent pl-[10px] text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04] rounded-lg'
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${

@@ -17,12 +17,17 @@ interface Props {
   action?: Action;
   /** 'branded' adiciona fundo laranja no ícone; 'neutral' usa zinc */
   iconVariant?: 'branded' | 'neutral';
+  /**
+   * 'default' — card com borda/fundo, padding generoso (listas de página)
+   * 'compact' — sem card, só ícone + texto, para colunas Kanban e listas inline
+   */
+  size?: 'default' | 'compact';
   className?: string;
 }
 
 export function EmptyState({
   icon, title, description, action,
-  iconVariant = 'branded', className = '',
+  iconVariant = 'branded', size = 'default', className = '',
 }: Props) {
   const iconBg = iconVariant === 'branded'
     ? 'bg-orange-500/10 border border-orange-500/15'
@@ -39,6 +44,28 @@ export function EmptyState({
     </svg>
   );
 
+  if (size === 'compact') {
+    return (
+      <div className={`flex flex-col items-center justify-center py-8 text-center ${className}`}>
+        <div className={`inline-flex items-center justify-center w-8 h-8 rounded-lg mb-3 ${iconBg}`}>
+          {icon ?? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="1.5" className={iconColor}>
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+          )}
+        </div>
+        <p className="text-[11px] text-[#A1A1AA]">{title}</p>
+        {description && (
+          <p className="text-[10px] text-zinc-600 mt-0.5 max-w-[160px] leading-relaxed">{description}</p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={`border border-white/[0.05] rounded-xl p-12 text-center bg-[#0D0D0D] relative overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-b from-orange-500/[0.015] to-transparent pointer-events-none" />
@@ -50,7 +77,7 @@ export function EmptyState({
         )}
         <p className="text-zinc-200 font-semibold mb-2">{title}</p>
         {description && (
-          <p className="text-zinc-600 text-sm max-w-xs leading-relaxed mb-5">{description}</p>
+          <p className="text-[#A1A1AA] text-sm max-w-xs leading-relaxed mb-5">{description}</p>
         )}
         {action && (
           action.href ? (

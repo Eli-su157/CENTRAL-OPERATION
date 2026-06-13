@@ -1,6 +1,7 @@
 import { PRIORITY_COLORS, PRIORITY_LABELS, STATUS_LABELS, SECTOR_LABELS } from '@/lib/types/tasks';
 import type { Task } from '@/lib/types/tasks';
 import { TaskCard } from './TaskCard';
+import { EmptyState } from '@/components/ui';
 
 const today = () => new Date().toISOString().split('T')[0];
 
@@ -31,10 +32,19 @@ export function MyTasksList({ tasks, currentUserId, onTaskClick }: Props) {
 
   if (sorted.length === 0) {
     return (
-      <div className="border border-dashed border-zinc-800 rounded-xl p-16 text-center">
-        <p className="text-zinc-500 text-sm">Nenhuma tarefa atribuída a você.</p>
-        <p className="text-zinc-700 text-xs mt-1">As tarefas criadas pelo seu gestor aparecerão aqui.</p>
-      </div>
+      <EmptyState
+        size="default"
+        iconVariant="neutral"
+        title="Nenhuma tarefa atribuída a você"
+        description="As tarefas criadas pelo seu gestor aparecerão aqui."
+        icon={
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="1.5" className="text-zinc-500">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+          </svg>
+        }
+      />
     );
   }
 

@@ -68,7 +68,7 @@ export function ReportDraftEditor({ report, isHead, isDono, prevData }: Props) {
       {/* Comentário do Head (edição ou leitura) */}
       {canEdit && (
         <div className="bg-zinc-900 border border-white/[0.08] rounded-xl p-5 mb-5">
-          <p className="text-xs font-semibold text-orange-400 uppercase tracking-widest mb-3">
+          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-3">
             Análise do Head <span className="text-zinc-600 font-normal">(editável)</span>
           </p>
           <textarea

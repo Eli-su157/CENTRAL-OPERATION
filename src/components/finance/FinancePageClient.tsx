@@ -89,7 +89,7 @@ function exportCSV(entries: FinanceEntry[], dashMap: Record<string, string>) {
   URL.revokeObjectURL(url);
 }
 
-const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/30';
+const selectCls = 'sel';
 
 export function FinancePageClient({ entries, categories, dashboards, members }: Props) {
   const [period, setPeriod]         = useState<Period>('mes_atual');
@@ -198,7 +198,7 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
       </div>
 
       {/* ─── KPIs do topo ─────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <KPICard
           label="Receita bruta"
           value={formatCurrency(dre.receita_bruta)}

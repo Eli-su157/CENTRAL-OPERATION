@@ -38,7 +38,7 @@ export function GenerateReportForm({ existingRefs }: Props) {
     });
   }
 
-  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/40 cursor-pointer';
+  const selectCls = 'sel';
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">

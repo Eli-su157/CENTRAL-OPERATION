@@ -263,7 +263,7 @@ export function ChatInterface({ initialSystemInfo }: Props) {
             </svg>
           </button>
         </form>
-        <p className="text-[10px] text-zinc-800 mt-2 text-center">
+        <p className="text-[10px] text-zinc-600 mt-2 text-center">
           Respostas baseadas nos dados que você pode ver · Shift+Enter = nova linha
         </p>
       </div>

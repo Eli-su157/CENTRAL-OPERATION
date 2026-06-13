@@ -77,7 +77,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5 items-start">
+      <div className="flex flex-col lg:flex-row gap-4 items-start">
         {/* Coluna esquerda: gerar + lista */}
         <div className="w-full lg:w-64 shrink-0 flex flex-col gap-4">
           {/* Form de geração (só head/dono) */}

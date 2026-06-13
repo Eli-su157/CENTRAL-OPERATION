@@ -35,8 +35,8 @@ export function SectionHeader({
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-            <h1 className="text-2xl font-bold text-white tracking-tight">{title}</h1>
+            <div className="w-[3px] h-6 bg-orange-500 rounded-sm shrink-0" />
+            <h1 className="text-2xl font-semibold text-[#FFFFFF] tracking-tight">{title}</h1>
             {badge && (
               <span className="text-xs bg-zinc-900/80 text-zinc-500 border border-zinc-800 px-2 py-0.5 rounded font-semibold">
                 {badge}
@@ -44,7 +44,7 @@ export function SectionHeader({
             )}
           </div>
           {subtitle && (
-            <p className="text-sm text-zinc-500 pl-4">{subtitle}</p>
+            <p className="text-sm text-[#A1A1AA] pl-[11px]">{subtitle}</p>
           )}
         </div>
         {action && <div className="shrink-0 pt-0.5">{action}</div>}

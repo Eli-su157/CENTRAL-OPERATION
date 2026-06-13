@@ -168,7 +168,7 @@ export function ReportViewer({ report, prevData }: Props) {
       {/* ── Análise do Head ───────────────────────────────────── */}
       {report.head_comment && (
         <div className="bg-white/[0.02] border border-orange-500/10 rounded-xl p-5">
-          <p className="text-[10px] font-semibold text-orange-400 uppercase tracking-[0.12em] mb-2">
+          <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.12em] mb-2">
             Análise do Head
           </p>
           <p className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">

@@ -38,6 +38,22 @@ body {
     @apply transition-colors duration-150 hover:border-white/[0.10] hover:bg-[#131313];
   }
 
+  /* Selects — filtros e seletores do app */
+  .sel {
+    @apply bg-[#161618] border border-[#27272A] text-zinc-300 rounded-[6px]
+           px-3 py-1.5 text-sm cursor-pointer appearance-none
+           focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500/30
+           hover:bg-[#1C1C1E] hover:border-[#3F3F46]
+           transition-all duration-200 ease-in-out;
+  }
+  .sel-sm {
+    @apply bg-[#161618] border border-[#27272A] text-zinc-300 rounded-[6px]
+           px-2.5 py-1.5 text-xs cursor-pointer appearance-none
+           focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500/30
+           hover:bg-[#1C1C1E] hover:border-[#3F3F46]
+           transition-all duration-200 ease-in-out;
+  }
+
   /* Inputs — todos os forms do app */
   .inp {
     @apply w-full bg-[#0D0D0D] border border-white/[0.08] text-zinc-200
@@ -55,29 +71,30 @@ body {
   /* Botões */
   .btn-primary {
     @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold
-           bg-orange-500 hover:bg-orange-400 text-white
-           transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed;
+           bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white
+           transition-all duration-200 ease-in-out
+           disabled:opacity-40 disabled:cursor-not-allowed;
   }
   .btn-primary-sm {
     @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold
-           bg-orange-500 hover:bg-orange-400 text-white
-           transition-colors duration-150 disabled:opacity-40;
+           bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white
+           transition-all duration-200 ease-in-out disabled:opacity-40;
   }
   .btn-secondary {
     @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
-           bg-white/[0.05] hover:bg-white/[0.08] text-zinc-300
-           border border-white/[0.08] hover:border-white/[0.12]
-           transition-all duration-150 disabled:opacity-40;
+           bg-white/[0.05] hover:bg-white/[0.09] active:bg-white/[0.12] text-zinc-300 hover:text-zinc-100
+           border border-white/[0.08] hover:border-white/[0.16]
+           transition-all duration-200 ease-in-out disabled:opacity-40;
   }
   .btn-secondary-sm {
     @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
-           bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400
-           border border-white/[0.07] hover:text-zinc-200
-           transition-all duration-150;
+           bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.12] text-zinc-400 hover:text-zinc-200
+           border border-white/[0.07] hover:border-white/[0.14]
+           transition-all duration-200 ease-in-out;
   }
   .btn-ghost {
-    @apply text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04]
-           px-2 py-1.5 rounded-md text-xs transition-all duration-150;
+    @apply text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.05] active:bg-white/[0.08]
+           px-2 py-1.5 rounded-md text-xs transition-all duration-200 ease-in-out;
   }
 
   /* Labels de seção — estilo terminal */

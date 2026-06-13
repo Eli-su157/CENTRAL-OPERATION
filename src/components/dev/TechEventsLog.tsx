@@ -33,8 +33,8 @@ export function TechEventsLog({ logs }: Props) {
   if (logs.length === 0) {
     return (
       <div className="bg-[#111111] border border-white/[0.06] rounded-xl p-5 text-center">
-        <p className="text-xs text-zinc-700">Nenhum evento registrado ainda.</p>
-        <p className="text-[10px] text-zinc-800 mt-1">Webhooks e crons são registrados automaticamente.</p>
+        <p className="text-xs text-zinc-500">Nenhum evento registrado ainda.</p>
+        <p className="text-[10px] text-zinc-600 mt-1">Webhooks e crons são registrados automaticamente.</p>
       </div>
     );
   }
@@ -58,7 +58,7 @@ export function TechEventsLog({ logs }: Props) {
                   <p className="text-[10px] text-red-400/80 mt-0.5 truncate">{log.error_msg}</p>
                 )}
               </div>
-              <span className="text-[10px] text-zinc-700 font-mono shrink-0">
+              <span className="text-[10px] text-zinc-500 font-mono shrink-0">
                 {relativeTime(log.received_at)}
               </span>
             </div>

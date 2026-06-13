@@ -69,7 +69,7 @@ export function MaterialsLibraryClient({ materials, dashboardId, operationId, ca
     });
   }
 
-  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40 cursor-pointer';
+  const selectCls = 'sel-sm';
 
   const statsTotal = materials.length;
   const statsNoAr  = materials.filter(m => m.status === 'no_ar').length;

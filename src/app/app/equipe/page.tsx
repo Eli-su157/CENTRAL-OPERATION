@@ -163,7 +163,7 @@ export default async function EquipePage() {
   const totalCustoMes   = Object.values(custoByMember).reduce((s, v) => s + v, 0);
 
   return (
-    <main className="p-4 sm:p-6 max-w-4xl mx-auto">
+    <main className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
@@ -177,7 +177,7 @@ export default async function EquipePage() {
       </div>
 
       {/* KPIs da equipe */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         <KPICard label="Membros" value={String(members.length)} accent="brand" />
         <KPICard
           label="Tarefas abertas"
@@ -202,7 +202,7 @@ export default async function EquipePage() {
       </div>
 
       {/* Convites + Membros */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4">
         <InvitePanel pendingInvites={pendingInvites} />
 
         <div>
@@ -212,7 +212,7 @@ export default async function EquipePage() {
               Membros ({members.length})
             </p>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {members.map(member => (
               <MemberCard
                 key={member.id}

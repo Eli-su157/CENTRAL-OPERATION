@@ -253,7 +253,7 @@ export function CalendarioClient({ events, canSeeFinancial }: Props) {
                   className={`
                     relative bg-[#111111] min-h-[88px] p-1.5 flex flex-col gap-1
                     transition-colors duration-100
-                    ${isCurrent ? 'hover:bg-white/[0.025]' : ''}
+                    ${isCurrent ? 'hover:bg-white/[0.025]' : 'opacity-30'}
                   `}
                 >
                   {/* Número do dia */}
@@ -277,7 +277,7 @@ export function CalendarioClient({ events, canSeeFinancial }: Props) {
                         key={ev.id}
                         title={ev.label}
                         className={`
-                          flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] leading-tight
+                          flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] leading-tight
                           truncate w-full cursor-default select-none
                           ${cfg.pill}
                         `}

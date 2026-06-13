@@ -289,7 +289,7 @@ export default async function IntegracoesPage() {
 
         <div className="px-6 sm:px-10 py-10 max-w-6xl relative z-10">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] text-orange-500 uppercase tracking-[0.2em] font-semibold">Plataforma</span>
+            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-semibold">Plataforma</span>
             <span className="text-white/10 text-xs">·</span>
             <span className="text-[10px] text-zinc-600 uppercase tracking-[0.2em]">Central de Operações</span>
           </div>
@@ -308,7 +308,7 @@ export default async function IntegracoesPage() {
             </div>
             <div className="w-px h-8 bg-white/[0.06]" />
             <div>
-              <p className="text-2xl font-bold text-orange-400 tabular-nums">{totalConectadas}</p>
+              <p className="text-2xl font-bold text-white tabular-nums">{totalConectadas}</p>
               <p className="text-xs text-zinc-600 mt-0.5">Conexões configuradas</p>
             </div>
             <div className="w-px h-8 bg-white/[0.06]" />
@@ -328,7 +328,7 @@ export default async function IntegracoesPage() {
           return (
             <section key={cat} className="mb-12">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-px h-5 bg-orange-500" />
+                <div className="w-px h-5 bg-white/[0.12]" />
                 <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-widest">{cat}</h2>
                 <span className="text-xs text-zinc-700">{items.filter(i => i.status === 'disponivel').length} disponíveis</span>
               </div>

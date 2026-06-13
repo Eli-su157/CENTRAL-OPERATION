@@ -66,7 +66,7 @@ export function ExtratoPro({ entries, dashboards, onEditEntry }: Props) {
   const totalEntradas = filtered.filter(e => e.direction === 'entrada').reduce((s, e) => s + e.amount, 0);
   const totalSaidas   = filtered.filter(e => e.direction === 'saida').reduce((s, e) => s + e.amount, 0);
 
-  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-md px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/30';
+  const selectCls = 'sel-sm';
 
   function toggleSort(key: typeof sortKey) {
     if (sortKey === key) setSortDesc(d => !d);

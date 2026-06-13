@@ -177,7 +177,7 @@ function PrimaryProviderSelector({
         value={current}
         onChange={handleChange}
         disabled={isPending}
-        className="flex-1 min-w-[160px] text-xs bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-lg px-2 py-1 focus:outline-none focus:border-amber-600 disabled:opacity-50"
+        className="sel-sm flex-1 min-w-[160px] disabled:opacity-50"
       >
         <option value="">— contar todos (sem fonte definida)</option>
         {vendaProviders.map(p => (

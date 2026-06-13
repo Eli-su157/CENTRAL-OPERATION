@@ -69,7 +69,7 @@ export function TasksPageClient({
     setFilters({ setor: '', assigneeId: '', dashboardId: '', priority: '' });
   }
 
-  const selectCls = 'bg-white/[0.04] border border-white/[0.08] text-zinc-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40';
+  const selectCls = 'sel-sm';
 
   return (
     <div className="relative">

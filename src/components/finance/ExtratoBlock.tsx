@@ -26,7 +26,7 @@ export function ExtratoBlock({ entries, categories }: Props) {
   const totalEntradas = filtered.filter(e => e.direction === 'entrada').reduce((s, e) => s + e.amount, 0);
   const totalSaidas   = filtered.filter(e => e.direction === 'saida').reduce((s, e) => s + e.amount, 0);
 
-  const selectCls = 'bg-[#0D0D0D] border border-white/[0.08] text-zinc-300 rounded-md px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-orange-500/40';
+  const selectCls = 'sel-sm';
 
   const statusLabel: Record<string, string> = {
     pago: 'Pago', a_pagar: 'A pagar', a_receber: 'A receber',
