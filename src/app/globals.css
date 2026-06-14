@@ -176,11 +176,11 @@ body {
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: .05; transform: scale(1); }
-  50%       { opacity: .09; transform: scale(1.06); }
+  0%, 100% { opacity: .18; transform: scale(1); }
+  50%       { opacity: .28; transform: scale(1.06); }
 }
 .login-bg-glow {
-  background: radial-gradient(600px circle at 50% 30%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 70%);
+  background: radial-gradient(700px circle at 60% 40%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 65%);
   animation: breathe 14s ease-in-out infinite;
   will-change: opacity, transform;
 }

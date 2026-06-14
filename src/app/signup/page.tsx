@@ -5,7 +5,7 @@ import SignupCard from '@/components/auth/signup-card';
 export default function SignupPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[var(--surface-0)]">
-      <LoginBackground glow={false} />
+      <LoginBackground glow={true} />
 
       <div className="relative z-10 min-h-screen grid lg:grid-cols-2 lg:gap-16 lg:px-16 px-6 py-12 items-center">
         {/* Card — order-1 → aparece primeiro no mobile */}
