@@ -30,12 +30,12 @@ export default function SignupCard() {
 
       {/* Header */}
       <div className="mb-8 pb-6 border-b border-white/[0.06]">
-        <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ÆTHER.OS // NEW INSTANCE</p>
+        <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ZÊNITE // NOVA INSTÂNCIA</p>
         <h2 className="text-foreground font-bold text-lg tracking-tight leading-none">
-          CREATE OPERATION<span className="text-brand">.</span>
+          CRIAR OPERAÇÃO<span className="text-brand">.</span>
         </h2>
         <p className="font-mono text-[10px] text-foreground/30 tracking-wide mt-2 leading-relaxed">
-          {'[ NEW INSTANCE ] YOU BECOME THE OWNER. INVITE YOUR TEAM AFTER DEPLOY.'}
+          {'[ NOVA INSTÂNCIA ] VOCÊ SERÁ O DONO. CONVIDE SUA EQUIPE DEPOIS.'}
         </p>
       </div>
 
@@ -46,13 +46,13 @@ export default function SignupCard() {
           </div>
         )}
 
-        {/* OPERATOR NAME */}
+        {/* NOME DO OPERADOR */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="sc-fullName"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            OPERATOR NAME
+            NOME DO OPERADOR
           </label>
           <input
             id="sc-fullName"
@@ -65,13 +65,13 @@ export default function SignupCard() {
           />
         </div>
 
-        {/* OPERATION ID */}
+        {/* NOME DA OPERAÇÃO */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="sc-operationName"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            OPERATION ID
+            NOME DA OPERAÇÃO
           </label>
           <input
             id="sc-operationName"
@@ -89,7 +89,7 @@ export default function SignupCard() {
             htmlFor="sc-email"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            EMAIL
+            E-MAIL
           </label>
           <input
             id="sc-email"
@@ -102,13 +102,13 @@ export default function SignupCard() {
           />
         </div>
 
-        {/* ACCESS KEY */}
+        {/* CHAVE DE ACESSO */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="sc-password"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            ACCESS KEY
+            CHAVE DE ACESSO
           </label>
           <input
             id="sc-password"
@@ -123,17 +123,17 @@ export default function SignupCard() {
         </div>
 
         <div className="pt-1">
-          <SubmitButton label="DEPLOY ÆTHER" loadingLabel="[ DEPLOYING... ]" />
+          <SubmitButton label="CRIAR OPERAÇÃO" loadingLabel="[ PROVISIONANDO... ]" />
         </div>
       </form>
 
       <p className="mt-7 font-mono text-[10px] text-foreground/25 text-center tracking-wide">
-        ALREADY DEPLOYED?{' '}
+        {'JÁ TEM ACESSO?'}{' '}
         <Link
           href="/"
           className="text-brand/70 hover:text-brand transition-colors tracking-widest"
         >
-          ← RETURN TO ACCESS
+          ← VOLTAR AO ACESSO
         </Link>
       </p>
     </div>

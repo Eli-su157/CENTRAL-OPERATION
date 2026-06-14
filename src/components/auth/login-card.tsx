@@ -32,7 +32,7 @@ export default function LoginCard() {
 
       {/* Header */}
       <div className="mb-8 pb-6 border-b border-white/[0.06]">
-        <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ÆTHER.OS // AUTH MODULE</p>
+        <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ZÊNITE // MÓDULO AUTH</p>
         <h2 className="text-foreground font-bold text-lg tracking-tight leading-none">
           SYSTEM<span className="text-brand">.</span>LOGIN
         </h2>
@@ -45,13 +45,17 @@ export default function LoginCard() {
           </div>
         )}
 
-        {/* OPERATOR ID */}
+        <p className="font-mono text-[9px] tracking-[0.25em] text-foreground/30 uppercase -mb-2">
+          {'[ AUTENTICAÇÃO DE SEGURANÇA ]'}
+        </p>
+
+        {/* OPERADOR */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="lc-email"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            OPERATOR ID
+            OPERADOR
           </label>
           <input
             id="lc-email"
@@ -64,13 +68,13 @@ export default function LoginCard() {
           />
         </div>
 
-        {/* ACCESS KEY */}
+        {/* CHAVE DE ACESSO */}
         <div className="flex flex-col gap-2">
           <label
             htmlFor="lc-password"
             className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
           >
-            ACCESS KEY
+            CHAVE DE ACESSO
           </label>
           <input
             id="lc-password"
@@ -84,17 +88,17 @@ export default function LoginCard() {
         </div>
 
         <div className="pt-1">
-          <SubmitButton label="INITIALIZE ÆTHER" loadingLabel="[ PROCESSING... ]" />
+          <SubmitButton label="AUTENTICAR" loadingLabel="[ AUTENTICANDO... ]" />
         </div>
       </form>
 
       <p className="mt-7 font-mono text-[10px] text-foreground/25 text-center tracking-wide">
-        NO CREDENTIALS?{' '}
+        {'SEM ACESSO?'}{' '}
         <Link
           href="/signup"
           className="text-brand/70 hover:text-brand transition-colors tracking-widest"
         >
-          DEPLOY NEW OPERATION →
+          CRIAR NOVA OPERAÇÃO →
         </Link>
       </p>
     </div>

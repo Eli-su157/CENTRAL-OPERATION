@@ -7,7 +7,7 @@ interface Props {
   loadingLabel?: string;
 }
 
-export function SubmitButton({ label, loadingLabel = 'Aguarde...' }: Props) {
+export function SubmitButton({ label, loadingLabel = '[ AGUARDE... ]' }: Props) {
   const { pending } = useFormStatus();
   return (
     <button

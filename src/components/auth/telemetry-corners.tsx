@@ -64,26 +64,26 @@ export default function TelemetryCorners() {
       <div className={`${cls} top-4 left-4`} aria-hidden="true">
         <div>LAT {v.lat} N</div>
         <div>LON {v.lon} W</div>
-        <div>SYS OK</div>
+        <div>SIS OK</div>
       </div>
 
       {/* top-right */}
       <div className={`${cls} top-4 right-4 text-right`} aria-hidden="true">
         <div>MEM {v.mem} MB</div>
         <div>TX {v.tx} KB/s</div>
-        <div>STREAM ACTIVE</div>
+        <div>[ FLUXO DE RECEITA: ESTÁVEL ]</div>
       </div>
 
       {/* bottom-left */}
       <div className={`${cls} bottom-4 left-4`} aria-hidden="true">
         <div>UPTIME {v.uptime}</div>
-        <div>NODE ÆTHER-01</div>
+        <div>NÓ ZENITE-01</div>
         <div>v2.4.1-rc</div>
       </div>
 
       {/* bottom-right */}
       <div className={`${cls} bottom-4 right-4 text-right`} aria-hidden="true">
-        <div>AUTH MODULE</div>
+        <div>[ TAREFAS ATIVAS: 4 ]</div>
         <div>PKT {Math.floor(parseFloat(v.tx) * 1000)}</div>
         <div>STATUS NOMINAL</div>
       </div>

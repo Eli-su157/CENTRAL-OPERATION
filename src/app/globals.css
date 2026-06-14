@@ -198,7 +198,24 @@ body {
               0 0 28px -10px color-mix(in oklab, var(--accent) 35%, transparent);
 }
 
+@keyframes zenite-enter {
+  from { opacity: 0; letter-spacing: .08em; }
+  to   { opacity: 1; letter-spacing: .18em; }
+}
+.zenite-wordmark { animation: zenite-enter .7s cubic-bezier(.16,1,.3,1) both; }
+
+@keyframes zenite-line {
+  from { opacity: 0; transform: scaleX(.6); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+.zenite-line {
+  animation: zenite-line .5s cubic-bezier(.16,1,.3,1) .2s both;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-in { animation: none; }
   .login-bg-glow { animation: none; opacity: .06; }
+  .zenite-wordmark { animation: none; opacity: 1; letter-spacing: .18em; }
+  .zenite-line { animation: none; opacity: 1; transform: none; }
 }
