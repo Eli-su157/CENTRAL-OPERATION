@@ -42,16 +42,16 @@ export default function LoginHero() {
         {/* Subtítulo */}
         <div className="flex flex-col items-center gap-1 mt-2">
           <span
-            className="font-mono text-white/60 uppercase tracking-[0.25em]"
+            className="font-mono text-white/45 uppercase tracking-[0.3em]"
             style={{ fontSize: '10px' }}
           >
-            [ PROTOCOLO ATIVO ]
+            [ SISTEMA OPERACIONAL ]
           </span>
           <span
-            className="font-mono text-white/60 uppercase tracking-[0.2em]"
-            style={{ fontSize: '10px' }}
+            className="font-mono text-white/70 uppercase tracking-[0.18em]"
+            style={{ fontSize: '11px' }}
           >
-            CONVERGÊNCIA ABSOLUTA DE DADOS.
+            CONTROLE ABSOLUTO DE TODA SUA OPERAÇÃO.
           </span>
         </div>
       </div>
