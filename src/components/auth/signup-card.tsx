@@ -60,7 +60,7 @@ export default function SignupCard() {
             type="text"
             required
             autoComplete="name"
-            placeholder="Full name"
+            placeholder="Nome completo"
             className={fieldCls}
           />
         </div>
@@ -78,7 +78,7 @@ export default function SignupCard() {
             name="operationName"
             type="text"
             required
-            placeholder="e.g. Alpha Launch"
+            placeholder="ex: Lançamento Alpha"
             className={fieldCls}
           />
         </div>
@@ -97,7 +97,7 @@ export default function SignupCard() {
             type="email"
             required
             autoComplete="email"
-            placeholder="operator@domain.com"
+            placeholder="operador@dominio.com"
             className={fieldCls}
           />
         </div>
@@ -117,7 +117,7 @@ export default function SignupCard() {
             required
             autoComplete="new-password"
             minLength={8}
-            placeholder="Minimum 8 characters"
+            placeholder="Mínimo 8 caracteres"
             className={fieldCls}
           />
         </div>

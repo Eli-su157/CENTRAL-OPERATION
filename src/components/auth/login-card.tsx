@@ -34,7 +34,7 @@ export default function LoginCard() {
       <div className="mb-8 pb-6 border-b border-white/[0.06]">
         <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ZÊNITE // MÓDULO AUTH</p>
         <h2 className="text-foreground font-bold text-lg tracking-tight leading-none">
-          SYSTEM<span className="text-brand">.</span>LOGIN
+          SISTEMA<span className="text-brand">.</span>ACESSO
         </h2>
       </div>
 
@@ -63,7 +63,7 @@ export default function LoginCard() {
             type="email"
             required
             autoComplete="email"
-            placeholder="operator@domain.com"
+            placeholder="operador@dominio.com"
             className={fieldCls}
           />
         </div>

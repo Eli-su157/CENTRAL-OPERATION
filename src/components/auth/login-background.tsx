@@ -7,43 +7,149 @@ export default function LoginBackground() {
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const canvas = canvasRef.current!;
     if (!canvas.getContext('2d')) return;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const ctx = canvas.getContext('2d')!;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // cap DPR at 2
     const getDPR = () => Math.min(window.devicePixelRatio || 1, 2);
 
     let dpr = getDPR();
     let W = 0;
     let H = 0;
 
-    // --- vertical nodes (top half) ---
-    interface Node {
-      x: number; // logical px
+    // --- partículas voando pelo fundo inteiro ---
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;   // raio em px lógicos
       opacity: number;
-    }
-    let nodes: Node[] = [];
-
-    function buildNodes(width: number) {
-      const count = Math.max(20, Math.min(50, Math.round(width / 20)));
-      nodes = Array.from({ length: count }, (_, i) => ({
-        x: Math.round((i / count) * width + Math.random() * (width / count)),
-        opacity: 0.02 + Math.random() * 0.04,
-      }));
+      pulse: number;  // fase de brilho individual
+      pulseSpeed: number;
+      type: 'dot' | 'cross' | 'diamond';
     }
 
-    // --- perspective grid state ---
-    // Horizontal lines scroll toward the viewer (offset increases over time, wraps).
-    // offset ∈ [0, 1) — fraction of the current band spacing consumed.
+    let particles: Particle[] = [];
+
+    function makeParticle(): Particle {
+      const types: Particle['type'][] = ['dot', 'cross', 'diamond'];
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: -0.05 - Math.random() * 0.12, // sobem levemente
+        size: 0.8 + Math.random() * 2.2,
+        opacity: 0.04 + Math.random() * 0.10,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.008 + Math.random() * 0.018,
+        type: types[Math.floor(Math.random() * types.length)],
+      };
+    }
+
+    function buildParticles() {
+      const count = Math.round((W * H) / 9000);
+      particles = Array.from({ length: Math.max(40, Math.min(count, 140)) }, makeParticle);
+    }
+
+    // linhas de conexão entre partículas próximas
+    const CONNECT_DIST = 120;
+
+    function drawConnections() {
+      ctx.lineWidth = dpr * 0.4;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < CONNECT_DIST) {
+            const op = (1 - d / CONNECT_DIST) * 0.04;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x * dpr, particles[i].y * dpr);
+            ctx.lineTo(particles[j].x * dpr, particles[j].y * dpr);
+            ctx.strokeStyle = `rgba(255,255,255,${op})`;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function drawParticle(p: Particle) {
+      const glow = Math.sin(p.pulse) * 0.5 + 0.5; // 0..1
+      const op = p.opacity * (0.6 + glow * 0.4);
+      const r = p.size * dpr;
+      const x = p.x * dpr;
+      const y = p.y * dpr;
+
+      ctx.fillStyle = `rgba(255,255,255,${op})`;
+      ctx.strokeStyle = `rgba(255,255,255,${op * 0.5})`;
+      ctx.lineWidth = dpr * 0.5;
+
+      if (p.type === 'dot') {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.type === 'cross') {
+        const arm = r * 1.8;
+        ctx.beginPath();
+        ctx.moveTo(x - arm, y); ctx.lineTo(x + arm, y);
+        ctx.moveTo(x, y - arm); ctx.lineTo(x, y + arm);
+        ctx.stroke();
+      } else {
+        // diamond
+        ctx.beginPath();
+        ctx.moveTo(x, y - r * 1.6);
+        ctx.lineTo(x + r, y);
+        ctx.lineTo(x, y + r * 1.6);
+        ctx.lineTo(x - r, y);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // --- grade de perspectiva (terço inferior) ---
     let gridOffset = 0;
+    let pulse = 0;
 
-    // Keydown pulse: briefly boost grid opacity
-    let pulse = 0; // 0..1, decays each frame
+    function drawGrid(offset: number, extraPulse: number) {
+      const cW = canvas.width;
+      const cH = canvas.height;
+      const gridTop = cH * 0.62;
+      const gridH = cH - gridTop;
+      const hx = cW / 2;
+      const hy = gridTop;
+
+      const vCount = 14;
+      ctx.lineWidth = dpr * 0.7;
+      for (let i = 0; i <= vCount; i++) {
+        const bx = (i / vCount) * cW;
+        const op = (0.035 + extraPulse * 0.07) * (1 - Math.abs(i / vCount - 0.5) * 0.55);
+        ctx.beginPath();
+        ctx.moveTo(hx, hy);
+        ctx.lineTo(bx, cH);
+        ctx.strokeStyle = `rgba(255,255,255,${Math.max(0, op)})`;
+        ctx.stroke();
+      }
+
+      const hCount = 10;
+      ctx.lineWidth = dpr * 0.7;
+      for (let i = 0; i < hCount; i++) {
+        const raw = (i + 1 + offset) / hCount;
+        if (raw <= 0 || raw > 1 + 1 / hCount) continue;
+        const t = Math.min(raw, 1);
+        const tCurved = Math.pow(t, 2.5);
+        const y = hy + tCurved * gridH;
+        const lx = hx + (0 - hx) * (1 - tCurved);
+        const rx = hx + (cW - hx) * (1 - tCurved);
+        const op = 0.025 + tCurved * 0.045 + extraPulse * 0.06;
+        ctx.beginPath();
+        ctx.moveTo(lx, y);
+        ctx.lineTo(rx, y);
+        ctx.strokeStyle = `rgba(255,255,255,${Math.min(op, 0.15)})`;
+        ctx.stroke();
+      }
+    }
 
     // --- resize ---
     function resize() {
@@ -52,87 +158,14 @@ export default function LoginBackground() {
       H = canvas.clientHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
-      buildNodes(W);
+      buildParticles();
     }
 
-    // --- drawing helpers ---
-
-    function drawNodes() {
-      // Subtle vertical lines in the top ~55% of the canvas
-      const topZone = H * 0.55 * dpr;
-      ctx.lineWidth = dpr * 0.6;
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.moveTo(n.x * dpr, 0);
-        ctx.lineTo(n.x * dpr, topZone);
-        ctx.strokeStyle = `rgba(255,255,255,${n.opacity})`;
-        ctx.stroke();
-      });
-    }
-
-    function drawGrid(offset: number, extraPulse: number) {
-      const cW = canvas.width;
-      const cH = canvas.height;
-
-      // Grid occupies bottom 40% of canvas
-      const gridTop = cH * 0.6;
-      const gridH = cH - gridTop;
-
-      // Horizon point: top-center of the grid area
-      const hx = cW / 2;
-      const hy = gridTop;
-
-      // --- vertical convergence lines ---
-      // Number of "columns" — lines radiating from horizon
-      const vCount = 12;
-      ctx.lineWidth = dpr * 0.8;
-      for (let i = 0; i <= vCount; i++) {
-        // spread evenly across the bottom edge
-        const bx = (i / vCount) * cW;
-        const op = (0.04 + extraPulse * 0.08) * (1 - Math.abs(i / vCount - 0.5) * 0.6);
-        ctx.beginPath();
-        ctx.moveTo(hx, hy);
-        ctx.lineTo(bx, cH);
-        ctx.strokeStyle = `rgba(255,255,255,${Math.max(0, op)})`;
-        ctx.stroke();
-      }
-
-      // --- horizontal lines in perspective ---
-      // We place N horizontal bands; their y-positions follow a power curve so
-      // lines bunch near the horizon and spread near the viewer.
-      // `offset` scrolls them forward: each band shifts one step and wraps.
-      const hCount = 10; // number of bands
-      ctx.lineWidth = dpr * 0.8;
-
-      for (let i = 0; i < hCount; i++) {
-        // t ∈ (0,1]: 1 = viewer's edge, 0 = horizon
-        // Adding offset slides everything toward viewer; wrap via modulo
-        const raw = (i + 1 + offset) / hCount;
-        if (raw <= 0 || raw > 1 + 1 / hCount) continue;
-        const t = Math.min(raw, 1);
-
-        // Power curve: t^2.5 gives natural perspective bunching
-        const tCurved = Math.pow(t, 2.5);
-        const y = hy + tCurved * gridH;
-
-        // Width of the line at this depth (perspective narrowing at horizon)
-        const lx = hx + (0 - hx) * (1 - tCurved);
-        const rx = hx + (cW - hx) * (1 - tCurved);
-
-        // Lines near horizon are more transparent
-        const op = (0.03 + tCurved * 0.05 + extraPulse * 0.07);
-        ctx.beginPath();
-        ctx.moveTo(lx, y);
-        ctx.lineTo(rx, y);
-        ctx.strokeStyle = `rgba(255,255,255,${Math.min(op, 0.18)})`;
-        ctx.stroke();
-      }
-    }
-
-    // --- static render (reduced-motion) ---
+    // --- static (reduced-motion) ---
     function drawStatic() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawNodes();
+      particles.forEach(drawParticle);
+      drawConnections();
       drawGrid(0, 0);
     }
 
@@ -140,13 +173,24 @@ export default function LoginBackground() {
     function drawFrame() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Advance grid: offset wraps at 1 (one full band step = 1 cycle)
-      gridOffset = (gridOffset + 0.003) % 1;
+      gridOffset = (gridOffset + 0.0025) % 1;
+      pulse = Math.max(0, pulse - 0.02);
 
-      // Decay pulse
-      pulse = Math.max(0, pulse - 0.025);
+      // atualizar partículas
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.pulse += p.pulseSpeed;
 
-      drawNodes();
+        // wrap ao sair da tela
+        if (p.x < -10) p.x = W + 10;
+        if (p.x > W + 10) p.x = -10;
+        if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+        if (p.y > H + 10) { p.y = -10; p.x = Math.random() * W; }
+      }
+
+      drawConnections();
+      particles.forEach(drawParticle);
       drawGrid(gridOffset, pulse);
     }
 
@@ -163,12 +207,10 @@ export default function LoginBackground() {
       paused = document.hidden;
     }
 
-    // Keydown pulse (optional, only in animated path)
     function handleKeyDown() {
-      pulse = Math.min(1, pulse + 0.4);
+      pulse = Math.min(1, pulse + 0.5);
     }
 
-    // debounced resize
     let resizeTimer = 0;
     function handleResize() {
       clearTimeout(resizeTimer);
@@ -178,11 +220,9 @@ export default function LoginBackground() {
       }, 120);
     }
 
-    // --- init ---
     resize();
 
     if (reduced) {
-      // static render, no rAF, no keydown
       drawStatic();
       window.addEventListener('resize', handleResize);
       return () => {
@@ -191,7 +231,6 @@ export default function LoginBackground() {
       };
     }
 
-    // animated path
     loop();
     document.addEventListener('visibilitychange', handleVisibility);
     document.addEventListener('keydown', handleKeyDown);
