@@ -13,7 +13,15 @@ export function SubmitButton({ label, loadingLabel = 'Aguarde...' }: Props) {
     <button
       type="submit"
       disabled={pending}
-      className="w-full py-3.5 px-4 rounded-lg font-semibold text-sm bg-brand hover:bg-brand/90 active:bg-brand/80 text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed tracking-wide"
+      className={
+        'w-full py-3.5 px-6 rounded-lg font-mono text-xs uppercase tracking-[0.2em] ' +
+        'bg-transparent border border-brand text-brand ' +
+        'shadow-[0_0_8px_0_rgba(249,115,22,0.25)] ' +
+        'hover:bg-brand/10 hover:shadow-[0_0_18px_2px_rgba(249,115,22,0.45)] ' +
+        'active:bg-brand/20 active:shadow-[0_0_10px_0_rgba(249,115,22,0.3)] ' +
+        'transition-[box-shadow,background-color] duration-200 ' +
+        'disabled:opacity-35 disabled:cursor-not-allowed disabled:shadow-none'
+      }
     >
       {pending ? loadingLabel : label}
     </button>

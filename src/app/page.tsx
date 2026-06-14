@@ -1,11 +1,13 @@
 import LoginBackground from '@/components/auth/login-background';
 import LoginHero from '@/components/auth/login-hero';
 import LoginCard from '@/components/auth/login-card';
+import TelemetryCorners from '@/components/auth/telemetry-corners';
 
 export default function HomePage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[var(--surface-0)]">
-      <LoginBackground glow={true} />
+      <LoginBackground />
+      <TelemetryCorners />
 
       <div className="relative z-10 min-h-screen grid lg:grid-cols-2 lg:gap-16 lg:px-16 px-6 py-12 items-center">
         {/* Card — order-1 → aparece primeiro no mobile */}

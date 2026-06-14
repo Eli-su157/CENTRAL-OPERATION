@@ -5,41 +5,53 @@ import Link from 'next/link';
 import { login } from '@/app/actions';
 import { SubmitButton } from './SubmitButton';
 
-const inputCls =
-  'w-full bg-[var(--surface-0)] border border-[var(--border)] text-foreground placeholder-foreground/20 px-4 py-3 rounded-lg text-sm focus:outline-none focus:border-brand/40 focus:ring-1 focus:ring-brand/15 transition-all';
+// "fenda de luz" — dark field, bottom-border glows brand on focus
+// group/input trick: label reacts to sibling input focus via peer-*
+const fieldCls =
+  'w-full bg-transparent border-0 border-b border-white/[0.10] text-foreground text-sm px-0 py-2.5 ' +
+  'placeholder-foreground/20 focus:outline-none focus:border-brand ' +
+  'transition-[border-color,box-shadow] duration-200 ' +
+  'focus:[box-shadow:0_2px_12px_-2px_rgba(249,115,22,0.35)] ' +
+  'autofill:bg-transparent';
 
 export default function LoginCard() {
   const [state, action] = useActionState(login, null);
 
   return (
-    <div className="login-card anim-in bg-[var(--surface-1)] rounded-2xl p-8 w-full" style={{ animationDelay: '80ms' }}>
+    <div
+      className={
+        'login-card anim-in relative w-full rounded-xl p-8 ' +
+        'bg-white/[0.025] border border-white/[0.07] backdrop-blur-md ' +
+        'shadow-[0_0_40px_-8px_rgba(0,0,0,0.8)]'
+      }
+      style={{ animationDelay: '80ms' }}
+    >
+      {/* corner accent — pure decoration */}
+      <span aria-hidden="true" className="pointer-events-none absolute top-0 left-0 w-10 h-10 border-t border-l border-brand/40 rounded-tl-xl" />
+      <span aria-hidden="true" className="pointer-events-none absolute bottom-0 right-0 w-10 h-10 border-b border-r border-brand/20 rounded-br-xl" />
 
-      {/* Header do card */}
-      <div className="flex items-center gap-3 mb-8 pb-6 border-b border-[var(--border)]">
-        <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center shrink-0">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <rect x="1" y="1" width="5" height="5" rx="1" fill="#f97316" />
-            <rect x="8" y="1" width="5" height="5" rx="1" fill="#f97316" opacity=".5" />
-            <rect x="8" y="8" width="5" height="5" rx="1" fill="#f97316" />
-            <rect x="1" y="8" width="5" height="5" rx="1" fill="#f97316" opacity=".5" />
-          </svg>
-        </div>
-        <div>
-          <h2 className="text-foreground font-semibold text-sm leading-none">Entrar</h2>
-          <p className="text-foreground/35 text-xs mt-1">Central de Operações</p>
-        </div>
+      {/* Header */}
+      <div className="mb-8 pb-6 border-b border-white/[0.06]">
+        <p className="font-mono text-[9px] tracking-[0.3em] text-brand/50 uppercase mb-2">ÆTHER.OS // AUTH MODULE</p>
+        <h2 className="text-foreground font-bold text-lg tracking-tight leading-none">
+          SYSTEM<span className="text-brand">.</span>LOGIN
+        </h2>
       </div>
 
-      <form action={action} className="flex flex-col gap-5">
+      <form action={action} className="flex flex-col gap-7">
         {state?.error && (
-          <div className="border border-red-800/60 bg-red-950/40 text-red-400 px-4 py-3 rounded-lg text-xs">
-            {state.error}
+          <div className="font-mono text-[10px] tracking-wide border border-red-700/50 bg-red-950/30 text-red-400 px-3 py-2.5 rounded">
+            {'[ ERROR ] '}{state.error}
           </div>
         )}
 
+        {/* OPERATOR ID */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="lc-email" className="text-[10px] font-semibold text-foreground/30 uppercase tracking-[0.15em]">
-            E-mail
+          <label
+            htmlFor="lc-email"
+            className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
+          >
+            OPERATOR ID
           </label>
           <input
             id="lc-email"
@@ -47,14 +59,18 @@ export default function LoginCard() {
             type="email"
             required
             autoComplete="email"
-            placeholder="seu@email.com"
-            className={inputCls}
+            placeholder="operator@domain.com"
+            className={fieldCls}
           />
         </div>
 
+        {/* ACCESS KEY */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="lc-password" className="text-[10px] font-semibold text-foreground/30 uppercase tracking-[0.15em]">
-            Senha
+          <label
+            htmlFor="lc-password"
+            className="font-mono text-[9px] tracking-[0.25em] text-foreground/35 uppercase"
+          >
+            ACCESS KEY
           </label>
           <input
             id="lc-password"
@@ -63,19 +79,22 @@ export default function LoginCard() {
             required
             autoComplete="current-password"
             placeholder="••••••••"
-            className={inputCls}
+            className={fieldCls}
           />
         </div>
 
         <div className="pt-1">
-          <SubmitButton label="Entrar" loadingLabel="Entrando..." />
+          <SubmitButton label="INITIALIZE ÆTHER" loadingLabel="[ PROCESSING... ]" />
         </div>
       </form>
 
-      <p className="mt-6 text-sm text-foreground/30 text-center">
-        Sem conta ainda?{' '}
-        <Link href="/signup" className="text-brand hover:text-brand/80 transition-colors font-medium">
-          Criar operação →
+      <p className="mt-7 font-mono text-[10px] text-foreground/25 text-center tracking-wide">
+        NO CREDENTIALS?{' '}
+        <Link
+          href="/signup"
+          className="text-brand/70 hover:text-brand transition-colors tracking-widest"
+        >
+          DEPLOY NEW OPERATION →
         </Link>
       </p>
     </div>

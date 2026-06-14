@@ -1,67 +1,109 @@
-const features = [
-  { index: '01', title: 'Vendas reais', sub: 'Hotmart, Paradise, Vega, Shopify' },
-  { index: '02', title: 'Tráfego conectado', sub: 'Meta Ads + Google Ads' },
-  { index: '03', title: 'Financeiro unificado', sub: 'DRE via calc.ts — fonte única' },
-  { index: '04', title: 'Motor de alertas', sub: 'ROAS, reembolso, meta, pixel' },
-] as const
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+const TITLE = 'CONTROL THE FLOOD.';
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+const DURATION = 800; // ms total until title locks
+
+function DecodeTitle() {
+  const [display, setDisplay] = useState(TITLE);
+  const rafRef = useRef<number>(0);
+  const startRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const len = TITLE.length;
+
+    function scramble(ts: number) {
+      if (!startRef.current) startRef.current = ts;
+      const elapsed = ts - startRef.current;
+      const progress = Math.min(elapsed / DURATION, 1);
+      // characters resolve left-to-right: first ~progress*len chars are locked
+      const locked = Math.floor(progress * len);
+
+      setDisplay(
+        TITLE.split('').map((char, i) => {
+          if (i < locked || char === ' ' || char === '.') return char;
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        }).join('')
+      );
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(scramble);
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(scramble);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  // split to color the trailing dot brand
+  const body = display.slice(0, -1);
+  const dot = display.slice(-1);
+
+  return (
+    <h1
+      className="text-foreground font-black leading-[0.92] tracking-tight mb-6"
+      style={{ fontSize: 'clamp(42px, 5.5vw, 76px)' }}
+    >
+      {body}<span className="text-brand">{dot}</span>
+    </h1>
+  );
+}
 
 export default function LoginHero() {
   return (
-    <div className="flex flex-col gap-10 py-8 lg:py-0">
+    <div className="flex flex-col gap-8 py-8 lg:py-0">
 
-      {/* Eyebrow */}
+      {/* Wordmark */}
       <div className="anim-in flex items-center gap-3" style={{ animationDelay: '0ms' }}>
-        <span className="block w-6 h-px bg-brand/60" />
-        <span className="text-brand/70 text-[10px] tracking-[0.25em] uppercase font-semibold num">
-          Plataforma de gestão
+        <span className="block w-5 h-px bg-brand/50" />
+        <span className="font-mono text-[10px] tracking-[0.3em] text-brand/60 uppercase">
+          ÆTHER.OS
         </span>
       </div>
 
-      {/* Headline */}
+      {/* Headline with decode */}
       <div className="anim-in" style={{ animationDelay: '60ms' }}>
-        <h1
-          className="text-foreground font-extrabold leading-[0.95] tracking-tight mb-5"
-          style={{ fontSize: 'clamp(44px, 5vw, 72px)' }}
-        >
-          Sua operação<br />
-          inteira.<br />
-          <span className="text-brand">Um lugar só.</span>
-        </h1>
-        <p className="text-foreground/40 text-[15px] max-w-[320px] leading-relaxed">
-          Vendas, tráfego, financeiro e equipe —<br />
-          tudo conectado em tempo real.
+        <DecodeTitle />
+        <p className="font-mono text-[11px] text-foreground/35 leading-relaxed max-w-[360px] tracking-wide">
+          {'[ SYSTEM STATUS: OPERATIONAL ] OVERSEEING ALL REVENUE, TRAFFIC AND LOGISTICS IN SINGLE-STREAM CONVERGENCE.'}
         </p>
       </div>
 
-      {/* Features */}
-      <div className="anim-in flex flex-col" style={{ animationDelay: '120ms' }}>
-        {features.map(({ index, title, sub }, i) => (
+      {/* Stream metrics — decorative */}
+      <div className="anim-in flex flex-col gap-0" style={{ animationDelay: '120ms' }}>
+        {[
+          { id: '01', label: 'REVENUE STREAM',   value: 'ACTIVE' },
+          { id: '02', label: 'TRAFFIC NODES',    value: 'SYNCED' },
+          { id: '03', label: 'FINANCIAL CORE',   value: 'LOCKED' },
+          { id: '04', label: 'ALERT ENGINE',     value: 'ARMED'  },
+        ].map(({ id, label, value }, i, arr) => (
           <div
-            key={title}
-            className={`flex items-start gap-5 py-3.5 ${
-              i < features.length - 1 ? 'border-b border-white/[0.06]' : ''
+            key={id}
+            className={`flex items-center justify-between py-3 ${
+              i < arr.length - 1 ? 'border-b border-white/[0.05]' : ''
             }`}
           >
-            <span className="text-[10px] text-foreground/15 font-semibold num mt-0.5 shrink-0 w-4 tabular-nums">
-              {index}
-            </span>
-            <div>
-              <p className="text-foreground/85 text-sm font-medium leading-none mb-1">{title}</p>
-              <p className="text-foreground/30 text-xs leading-relaxed">{sub}</p>
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[9px] text-foreground/15 tabular-nums w-4">{id}</span>
+              <span className="font-mono text-[11px] text-foreground/50 tracking-wider">{label}</span>
             </div>
+            <span className="font-mono text-[9px] text-brand/60 tracking-widest">{value}</span>
           </div>
         ))}
       </div>
 
-      {/* Footer badge */}
+      {/* Status badge */}
       <div className="anim-in flex items-center gap-3" style={{ animationDelay: '180ms' }}>
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/[0.08] bg-white/[0.03]">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80" />
-          <span className="text-[10px] text-foreground/30 font-medium tracking-wide num">v1.0</span>
+        <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm border border-white/[0.07] bg-white/[0.02]">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70" />
+          <span className="font-mono text-[9px] text-foreground/25 tracking-widest">SYS ONLINE</span>
         </span>
-        <span className="text-foreground/20 text-[11px]">Fases 0–10 completas</span>
       </div>
 
     </div>
-  )
+  );
 }
