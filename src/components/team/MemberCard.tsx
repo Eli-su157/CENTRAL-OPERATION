@@ -138,7 +138,7 @@ export function MemberCard({ member, currentUserId, stats, custoMes, dashboards 
   const perf = member.sector ? SECTOR_PERF[member.sector] : null;
 
   return (
-    <div className={`bg-[#111111] rounded-xl border overflow-hidden ${
+    <div className={`bg-[#0f0f12] rounded-xl border overflow-hidden ${
       stats.atrasadas > 0 ? 'border-red-900/30' : 'border-white/[0.06]'
     }`}>
       {/* ── Linha principal ──────────────────────────────────── */}

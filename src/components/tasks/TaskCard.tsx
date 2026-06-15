@@ -24,7 +24,7 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left bg-[#111111] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-150 group ${
+      className={`w-full text-left bg-[#0f0f12] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-150 group ${
         overdue ? 'border-red-900/50 hover:border-red-800/70' : 'border-white/[0.06] hover:border-white/[0.10]'
       }`}
     >

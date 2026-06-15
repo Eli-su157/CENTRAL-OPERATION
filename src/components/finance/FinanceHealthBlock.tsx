@@ -34,7 +34,7 @@ export function FinanceHealthBlock({ dre, evolution }: Props) {
   const margemBaixa   = !lucroPrejuizo && margem < 10;
 
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl p-5">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5">
       <p className="kpi-label mb-4">Saúde Financeira</p>
 
       {/* Alertas */}

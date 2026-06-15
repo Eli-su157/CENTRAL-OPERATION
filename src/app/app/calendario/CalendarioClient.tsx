@@ -183,7 +183,7 @@ export function CalendarioClient({ events, canSeeFinancial }: Props) {
       </div>
 
       {/* Card do calendário */}
-      <div className="bg-[#111111] border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden">
 
         {/* Seletor de mês */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
@@ -251,7 +251,7 @@ export function CalendarioClient({ events, canSeeFinancial }: Props) {
                 <div
                   key={i}
                   className={`
-                    relative bg-[#111111] min-h-[88px] p-1.5 flex flex-col gap-1
+                    relative bg-[#0f0f12] min-h-[88px] p-1.5 flex flex-col gap-1
                     transition-colors duration-100
                     ${isCurrent ? 'hover:bg-white/[0.025]' : 'opacity-30'}
                   `}

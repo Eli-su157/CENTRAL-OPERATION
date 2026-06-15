@@ -19,7 +19,7 @@ export function FluxoCaixaBlock({ cashflow, totalAReceber, totalAPagar }: Props)
   const saldoLiquido = totalAReceber - totalAPagar;
 
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden">
       <div className="px-5 py-4 border-b border-white/[0.05]">
         <p className="kpi-label mb-3">Fluxo de Caixa Projetado · próximos 30 dias</p>
         <div className="grid grid-cols-3 gap-3">

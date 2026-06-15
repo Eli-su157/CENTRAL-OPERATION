@@ -3,7 +3,7 @@
 
 export function OpenFinancePlaceholder() {
   return (
-    <div className="relative bg-[#111111] border border-white/[0.06] rounded-xl p-5 overflow-hidden opacity-70">
+    <div className="relative bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5 overflow-hidden opacity-70">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
 
       <div className="flex items-center justify-between mb-4">

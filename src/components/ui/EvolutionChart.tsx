@@ -76,7 +76,7 @@ const CustomTooltip = ({
 }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-[#18181b] border border-white/[0.08] rounded-lg px-3 py-2 text-xs shadow-xl">
+    <div className="bg-[#0f0f12] border border-white/[0.08] rounded-lg px-3 py-2 text-xs shadow-xl">
       <p className="text-zinc-500 mb-1.5">{label}</p>
       {payload.map(p => (
         <p key={p.name} style={{ color: p.color }} className="tabular-nums">
@@ -103,7 +103,7 @@ export function EvolutionChart({
   }));
 
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl p-5">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5">
       {title && (
         <p className="kpi-label mb-4">{title}</p>
       )}

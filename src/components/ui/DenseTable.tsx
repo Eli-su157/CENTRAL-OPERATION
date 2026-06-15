@@ -64,9 +64,9 @@ export function DenseTable<T>({
   if (sortFn && sortKey) processed = sortFn(processed, sortKey, sortDesc);
 
   return (
-    <div className="bg-[#18181B] border border-[#27272A] rounded-lg overflow-hidden">
+    <div className="bg-[#0f0f12] border border-white/[0.05] rounded-lg overflow-hidden">
       {(title || filters || headerAction) && (
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272A]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.05]">
           {title && (
             <p className="kpi-label">{title}</p>
           )}
@@ -95,7 +95,7 @@ export function DenseTable<T>({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="border-b border-[#27272A]">
+          <thead className="border-b border-white/[0.05]">
             <tr>
               {columns.map(col => (
                 <th

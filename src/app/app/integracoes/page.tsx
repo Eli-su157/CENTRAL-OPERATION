@@ -278,7 +278,7 @@ export default async function IntegracoesPage() {
   const plataformasAtivas = Object.keys(connByProvider).length;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
+    <div className="min-h-screen bg-[#08080a]">
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="border-b border-white/[0.05] relative overflow-hidden">
         {/* Decorativo */}
@@ -288,17 +288,10 @@ export default async function IntegracoesPage() {
         <div className="absolute top-1/2 right-8 -translate-y-1/2 w-24 h-24 rounded-full border border-orange-500/[0.07]" />
 
         <div className="px-6 sm:px-10 py-10 max-w-6xl relative z-10">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-semibold">Plataforma</span>
-            <span className="text-white/10 text-xs">·</span>
-            <span className="text-[10px] text-zinc-600 uppercase tracking-[0.2em]">Central de Operações</span>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-[2px] h-6 bg-orange-500 rounded-sm shrink-0 shadow-[0_0_8px_rgba(249,115,22,0.5)]" />
+            <h1 className="text-xl font-bold text-white tracking-tight">Integrações</h1>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white leading-none mb-3">
-            Integrações
-          </h1>
-          <p className="text-zinc-500 text-sm max-w-md">
-            Conecte suas plataformas de vendas, tráfego e atribuição. Dados em tempo real, fonte única de verdade.
-          </p>
 
           {/* Stats */}
           <div className="flex items-center gap-8 mt-8">
@@ -342,7 +335,7 @@ export default async function IntegracoesPage() {
                   return (
                     <div
                       key={platform.key}
-                      className={`relative bg-[#111111] border rounded-xl p-5 flex flex-col gap-4 transition-all duration-200 overflow-hidden ${
+                      className={`relative bg-[#0f0f12] border rounded-xl p-5 flex flex-col gap-4 transition-all duration-200 overflow-hidden ${
                         isConnected
                           ? 'border-orange-500/25 shadow-[0_0_20px_rgba(249,115,22,0.06)]'
                           : 'border-white/[0.06] hover:border-white/[0.1]'

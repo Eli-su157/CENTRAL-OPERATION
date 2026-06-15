@@ -42,7 +42,7 @@ function TaskChip({ task, onClick }: { task: Task; onClick: () => void }) {
       className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left w-full max-w-xs transition-colors ${
         overdue
           ? 'bg-red-950/40 border border-red-900/50 hover:border-red-800/70'
-          : 'bg-[#111111] border border-white/[0.06] hover:border-white/[0.10]'
+          : 'bg-[#0f0f12] border border-white/[0.06] hover:border-white/[0.10]'
       }`}
     >
       <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${PRIORITY_COLORS[task.priority]}`} />
@@ -74,8 +74,8 @@ function MemberRow({
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       atrasadas.length > 0
-        ? 'border-red-900/40 bg-[#111111]'
-        : 'border-white/[0.06] bg-[#111111]'
+        ? 'border-red-900/40 bg-[#0f0f12]'
+        : 'border-white/[0.06] bg-[#0f0f12]'
     }`}>
       {/* Linha de resumo — sempre visível */}
       <button
@@ -225,7 +225,7 @@ export function TeamView({ tasks, members, currentUserId, onTaskClick }: Props) 
   return (
     <div>
       {/* Resumo da operação */}
-      <div className="flex items-center gap-4 mb-4 p-3 bg-[#111111] border border-white/[0.06] rounded-lg">
+      <div className="flex items-center gap-4 mb-4 p-3 bg-[#0f0f12] border border-white/[0.06] rounded-lg">
         {totalAtrasadas > 0 && (
           <div className="flex items-center gap-1.5 text-xs text-red-400">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500" />

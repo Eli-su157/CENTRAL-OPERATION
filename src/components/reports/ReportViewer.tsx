@@ -42,7 +42,7 @@ function deltaSub(val: number | null, invertLogic = false): { sub?: string; subC
 
 function AreaCard({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden">
       <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-white/[0.05]">
         <span className="text-zinc-500">{icon}</span>
         <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.12em]">{title}</p>

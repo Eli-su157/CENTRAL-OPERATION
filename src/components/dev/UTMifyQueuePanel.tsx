@@ -46,7 +46,7 @@ export function UTMifyQueuePanel({ items }: Props) {
   const isStale = (iso: string) => Date.now() - new Date(iso).getTime() > 48 * 3600_000;
 
   return (
-    <div className="bg-[#111111] border border-amber-500/15 rounded-xl overflow-hidden">
+    <div className="bg-[#0f0f12] border border-amber-500/15 rounded-xl overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.05]">
         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
         <p className="text-xs text-amber-400 font-semibold">{items.length} evento{items.length > 1 ? 's' : ''} aguardando venda correspondente</p>

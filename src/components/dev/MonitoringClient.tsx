@@ -19,7 +19,7 @@ function Section({
   items: MonitoredResource[]; dashboardId: string; canManage: boolean;
 }) {
   return (
-    <div className="bg-[#111111] border border-white/[0.06] rounded-xl p-4">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl p-4">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-zinc-500">{icon}</span>
         <p className="kpi-label">{title}</p>

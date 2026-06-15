@@ -130,7 +130,6 @@ export default async function AppPage() {
       <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">Visão Geral</h1>
-          <p className="text-sm text-zinc-500 mt-1">Modo demo — dados simulados</p>
         </div>
         {canSeeFinancial && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">

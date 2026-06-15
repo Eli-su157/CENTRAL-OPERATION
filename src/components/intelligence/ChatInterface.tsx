@@ -197,7 +197,7 @@ export function ChatInterface({ initialSystemInfo }: Props) {
                 <div className={`px-4 py-3 rounded-xl text-sm leading-relaxed ${
                   msg.role === 'user'
                     ? 'bg-orange-500/15 text-zinc-200 border border-orange-500/20'
-                    : 'bg-[#111111] text-zinc-300 border border-white/[0.06]'
+                    : 'bg-[#0f0f12] text-zinc-300 border border-white/[0.06]'
                 }`}>
                   <MarkdownText text={cleanText} />
                 </div>
@@ -216,7 +216,7 @@ export function ChatInterface({ initialSystemInfo }: Props) {
         {streaming && (
           <div className="flex gap-3">
             <div className="w-7 h-7 rounded-full bg-zinc-800 text-zinc-300 flex items-center justify-center text-xs font-bold shrink-0">IA</div>
-            <div className="bg-[#111111] border border-white/[0.06] px-4 py-3 rounded-xl text-sm text-zinc-300 leading-relaxed max-w-[85%]">
+            <div className="bg-[#0f0f12] border border-white/[0.06] px-4 py-3 rounded-xl text-sm text-zinc-300 leading-relaxed max-w-[85%]">
               {currentResponse ? (
                 <MarkdownText text={currentResponse} />
               ) : (

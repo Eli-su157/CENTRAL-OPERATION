@@ -65,7 +65,6 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
             </div>
           </div>
         )}
-        <p className="text-sm text-zinc-500 mt-1 pl-4">Dashboard · dados de hoje</p>
       </div>
 
       {canManage && mode !== 'rename' && (
