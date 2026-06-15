@@ -415,9 +415,6 @@ export default async function AppPage() {
           <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
           <h1 className="text-2xl font-bold text-white tracking-tight">Visão Geral</h1>
         </div>
-        <p className="text-sm text-zinc-500 pl-4">
-          {canSeeFinancial ? 'Consolidado do mês atual · dados reais' : 'Seus produtos'}
-        </p>
       </div>
 
       {/* Alertas ativos em destaque */}

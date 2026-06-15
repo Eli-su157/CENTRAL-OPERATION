@@ -72,9 +72,6 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           </div>
           {selected && <ExportPDFButton />}
         </div>
-        <p className="text-sm text-zinc-500 pl-4">
-          {isDono ? 'Visualize relatórios gerados pelo Head' : 'Gere, edite e congele relatórios do período'}
-        </p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 items-start">

@@ -130,7 +130,6 @@ export default async function TarefasPage() {
           <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
           <h1 className="text-2xl font-bold text-white tracking-tight">Tarefas</h1>
         </div>
-        <p className="text-sm text-zinc-500 pl-4">Kanban da operação · todas as áreas</p>
       </div>
       <TasksPageClient
         tasks={tasks}

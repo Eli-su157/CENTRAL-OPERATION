@@ -139,7 +139,6 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
             <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
             <h1 className="text-2xl font-bold text-white tracking-tight">Financeiro</h1>
           </div>
-          <p className="text-sm text-zinc-500 pl-4">Acesso restrito · fonte de dados real</p>
         </div>
         <div className="flex items-center gap-2">
           <button

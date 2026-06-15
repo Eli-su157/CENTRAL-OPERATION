@@ -243,7 +243,6 @@ export default async function EdicaoPanelPage({ params }: Props) {
             Edição
           </span>
         </div>
-        <p className="text-sm text-zinc-600 pl-4">Tarefas de criação + Biblioteca de materiais</p>
       </div>
 
       {/* TAREFAS DE CRIAÇÃO */}

@@ -191,7 +191,6 @@ export default async function DevPanelPage({ params }: Props) {
             Dev
           </span>
         </div>
-        <p className="text-sm text-zinc-600 pl-4">Demandas técnicas · Monitoramento · Integrações</p>
       </div>
 
       {/* Alertas de infra */}
