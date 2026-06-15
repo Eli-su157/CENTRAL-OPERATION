@@ -1,22 +1,25 @@
-// KPICard — card de número grande com acento de cor e badge real/demo.
-// Extraído de: SummaryStrip (Kpi), app/page.tsx (ConsolidatedKpi).
-// Substitui todas as variações de "card com número principal" do app.
-
 export type KPIAccent = 'brand' | 'positive' | 'negative' | 'neutral';
 export type KPIBadge = 'real' | 'demo' | 'sem dados' | string;
 
 const topBarClass: Record<KPIAccent, string> = {
-  brand:    'bg-gradient-to-r from-transparent via-orange-500/35 to-transparent',
-  positive: 'bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent',
-  negative: 'bg-gradient-to-r from-transparent via-red-500/30 to-transparent',
-  neutral:  'bg-gradient-to-r from-transparent via-white/[0.05] to-transparent',
+  brand:    'bg-gradient-to-r from-transparent via-orange-500/40 to-transparent',
+  positive: 'bg-gradient-to-r from-transparent via-emerald-500/35 to-transparent',
+  negative: 'bg-gradient-to-r from-transparent via-red-500/35 to-transparent',
+  neutral:  'bg-gradient-to-r from-transparent via-white/[0.06] to-transparent',
+};
+
+const glowClass: Record<KPIAccent, string> = {
+  brand:    'shadow-[0_0_30px_-10px_rgba(249,115,22,0.12)]',
+  positive: 'shadow-[0_0_30px_-10px_rgba(52,211,153,0.10)]',
+  negative: 'shadow-[0_0_30px_-10px_rgba(248,113,113,0.10)]',
+  neutral:  '',
 };
 
 const valueClass: Record<KPIAccent, string> = {
   brand:    'text-white',
   positive: 'text-emerald-300',
   negative: 'text-red-300',
-  neutral:  'text-zinc-600',
+  neutral:  'text-zinc-500',
 };
 
 const badgeClass: Record<string, string> = {
@@ -28,14 +31,10 @@ const badgeClass: Record<string, string> = {
 interface Props {
   label: string;
   value: string;
-  /** Acento de cor da barra top e do valor */
   accent?: KPIAccent;
-  /** Badge de fonte de dados */
   badge?: KPIBadge;
-  /** Linha secundária — comparativo ("↑12% vs ontem") ou texto contextual */
   sub?: string;
   subClass?: string;
-  /** Sobrepõe a cor do valor */
   valueColorClass?: string;
 }
 
@@ -44,24 +43,31 @@ export function KPICard({
 }: Props) {
   const barClass = topBarClass[accent];
   const valClass = valueColorClass ?? (value === '—' ? 'text-zinc-700' : valueClass[accent]);
+  const shadowClass = glowClass[accent];
 
   return (
-    <div className="relative bg-[#18181B] border border-[#27272A] rounded-lg p-6 overflow-hidden shadow-card">
+    <div className={`relative bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5 overflow-hidden transition-all duration-200 hover:border-white/[0.09] ${shadowClass}`}>
+      {/* acento top */}
       <div className={`absolute top-0 left-0 right-0 h-px ${barClass}`} />
 
-      <div className="flex items-center justify-between mb-3">
+      {/* glow de fundo por acento */}
+      {accent === 'brand' && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-12 bg-orange-500/[0.04] blur-2xl pointer-events-none rounded-full" />
+      )}
+
+      <div className="flex items-start justify-between mb-4">
         <p className="kpi-label">{label}</p>
         {badge && (
           <span className={badgeClass[badge] ?? 'badge-neutral'}>{badge}</span>
         )}
       </div>
 
-      <p className={`text-2xl sm:text-[1.65rem] font-bold num leading-none ${valClass}`}>
+      <p className={`text-2xl sm:text-[1.7rem] font-bold num leading-none ${valClass}`}>
         {value}
       </p>
 
       {sub && (
-        <p className={`text-xs mt-2.5 font-medium tabular-nums ${subClass ?? 'text-zinc-400'}`}>
+        <p className={`text-[11px] mt-3 font-medium tabular-nums font-mono ${subClass ?? 'text-zinc-600'}`}>
           {sub}
         </p>
       )}

@@ -2,182 +2,193 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens — CSS vars ───────────────────────────────────────────────── */
+/* ── Design tokens ──────────────────────────────────────────────────────────── */
 :root {
-  --accent: #f97316; /* === brand.DEFAULT no tailwind.config.ts — manter os dois sincronizados */
-  --border: #27272A; /* === surface.border no tailwind.config.ts */
+  --accent: #f97316;
+  --border: #1f1f23;
+  --surface-0: #08080a;
+  --surface-1: #0f0f12;
+  --surface-2: #141418;
+  --surface-3: #1a1a1f;
+  --glow-brand: rgba(249,115,22,0.12);
 }
 
-/* ── Scrollbar — fino, discreto ────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 3px; height: 3px; }
+/* ── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 2px; height: 2px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #333; }
+::-webkit-scrollbar-thumb { background: #2a2a2e; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3e; }
 
-/* ── Selection ─────────────────────────────────────────────────────────────── */
-::selection { background-color: rgba(249,115,22,0.20); color: white; }
+/* ── Selection ──────────────────────────────────────────────────────────────── */
+::selection { background-color: rgba(249,115,22,0.18); color: white; }
 
-/* ── Focus ring — laranja suave ────────────────────────────────────────────── */
+/* ── Focus ring ─────────────────────────────────────────────────────────────── */
 *:focus-visible {
-  outline: 1.5px solid rgba(249,115,22,0.45);
+  outline: 1.5px solid rgba(249,115,22,0.40);
   outline-offset: 2px;
   border-radius: 5px;
 }
 
-/* ── Base ──────────────────────────────────────────────────────────────────── */
+/* ── Base ───────────────────────────────────────────────────────────────────── */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "ss01", "cv01";
-  background: #09090B;
+  background: var(--surface-0);
   color: #FFFFFF;
 }
 
-/* ── Sistema de componentes ────────────────────────────────────────────────── */
+/* ── Componentes ────────────────────────────────────────────────────────────── */
 @layer components {
 
   /* Cards */
   .card {
-    @apply bg-[#111111] border border-white/[0.06] rounded-xl;
+    @apply bg-[#0f0f12] border border-white/[0.05] rounded-xl;
   }
   .card-hover {
-    @apply transition-colors duration-150 hover:border-white/[0.10] hover:bg-[#131313];
+    @apply transition-all duration-200
+           hover:border-white/[0.09] hover:bg-[#131318]
+           hover:shadow-[0_0_20px_-8px_rgba(249,115,22,0.08)];
   }
 
-  /* Selects — filtros e seletores do app */
+  /* Selects */
   .sel {
-    @apply bg-[#161618] border border-[#27272A] text-zinc-300 rounded-[6px]
+    @apply bg-[#111115] border border-white/[0.07] text-zinc-300 rounded-lg
            px-3 py-1.5 text-sm cursor-pointer appearance-none
-           focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500/30
-           hover:bg-[#1C1C1E] hover:border-[#3F3F46]
-           transition-all duration-200 ease-in-out;
+           focus:outline-none focus:ring-1 focus:ring-orange-500/25 focus:border-orange-500/25
+           hover:bg-[#161619] hover:border-white/[0.10]
+           transition-all duration-200;
   }
   .sel-sm {
-    @apply bg-[#161618] border border-[#27272A] text-zinc-300 rounded-[6px]
+    @apply bg-[#111115] border border-white/[0.07] text-zinc-300 rounded-lg
            px-2.5 py-1.5 text-xs cursor-pointer appearance-none
-           focus:outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500/30
-           hover:bg-[#1C1C1E] hover:border-[#3F3F46]
-           transition-all duration-200 ease-in-out;
+           focus:outline-none focus:ring-1 focus:ring-orange-500/25 focus:border-orange-500/25
+           hover:bg-[#161619] hover:border-white/[0.10]
+           transition-all duration-200;
   }
 
-  /* Inputs — todos os forms do app */
+  /* Inputs */
   .inp {
-    @apply w-full bg-[#0D0D0D] border border-white/[0.08] text-zinc-200
+    @apply w-full bg-[#0a0a0d] border border-white/[0.06] text-zinc-200
            placeholder-zinc-700 rounded-lg px-3 py-2 text-sm
-           focus:outline-none focus:ring-1 focus:ring-orange-500/40
-           focus:border-orange-500/30 transition-colors;
+           focus:outline-none focus:ring-1 focus:ring-orange-500/35
+           focus:border-orange-500/25 transition-colors;
   }
   .inp-sm {
-    @apply w-full bg-[#0D0D0D] border border-white/[0.08] text-zinc-300
+    @apply w-full bg-[#0a0a0d] border border-white/[0.06] text-zinc-300
            placeholder-zinc-700 rounded-md px-2.5 py-1.5 text-xs
-           focus:outline-none focus:ring-1 focus:ring-orange-500/30
-           focus:border-orange-500/25 transition-colors;
+           focus:outline-none focus:ring-1 focus:ring-orange-500/25
+           focus:border-orange-500/20 transition-colors;
   }
 
   /* Botões */
   .btn-primary {
     @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold
-           bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white
-           transition-all duration-200 ease-in-out
-           disabled:opacity-40 disabled:cursor-not-allowed;
+           bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white
+           shadow-[0_0_16px_-4px_rgba(249,115,22,0.5)] hover:shadow-[0_0_20px_-4px_rgba(249,115,22,0.65)]
+           transition-all duration-200
+           disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none;
   }
   .btn-primary-sm {
     @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold
-           bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white
-           transition-all duration-200 ease-in-out disabled:opacity-40;
+           bg-orange-500 hover:bg-orange-400 active:bg-orange-600 text-white
+           shadow-[0_0_12px_-4px_rgba(249,115,22,0.45)]
+           transition-all duration-200 disabled:opacity-40;
   }
   .btn-secondary {
     @apply flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
-           bg-white/[0.05] hover:bg-white/[0.09] active:bg-white/[0.12] text-zinc-300 hover:text-zinc-100
-           border border-white/[0.08] hover:border-white/[0.16]
-           transition-all duration-200 ease-in-out disabled:opacity-40;
+           bg-white/[0.04] hover:bg-white/[0.07] active:bg-white/[0.10] text-zinc-300 hover:text-white
+           border border-white/[0.07] hover:border-white/[0.13]
+           transition-all duration-200 disabled:opacity-40;
   }
   .btn-secondary-sm {
     @apply flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium
-           bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.12] text-zinc-400 hover:text-zinc-200
-           border border-white/[0.07] hover:border-white/[0.14]
-           transition-all duration-200 ease-in-out;
+           bg-white/[0.03] hover:bg-white/[0.07] active:bg-white/[0.10] text-zinc-400 hover:text-zinc-100
+           border border-white/[0.06] hover:border-white/[0.12]
+           transition-all duration-200;
   }
   .btn-ghost {
     @apply text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.05] active:bg-white/[0.08]
-           px-2 py-1.5 rounded-md text-xs transition-all duration-200 ease-in-out;
+           px-2 py-1.5 rounded-md text-xs transition-all duration-200;
   }
 
-  /* Labels de seção — estilo terminal */
+  /* Labels de seção */
   .section-title {
-    @apply text-[10px] text-zinc-500 uppercase tracking-[0.15em]
-           font-semibold px-3 pt-5 pb-1.5;
+    @apply text-[9px] text-zinc-600 uppercase tracking-[0.18em]
+           font-bold px-3 pt-5 pb-1.5 font-mono;
   }
   .section-label {
-    @apply text-[10px] text-zinc-500 uppercase tracking-[0.12em] font-semibold;
+    @apply text-[9px] text-zinc-600 uppercase tracking-[0.15em] font-bold font-mono;
   }
 
-  /* Valores de KPI — tipografia financeira */
+  /* Tipografia KPI */
   .kpi-value {
     @apply text-white font-bold tabular-nums leading-none;
     font-feature-settings: "tnum", "lnum";
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
   }
   .kpi-label {
-    @apply text-[11px] text-zinc-400 uppercase tracking-[0.05em] font-medium;
+    @apply text-[10px] text-zinc-500 uppercase tracking-[0.08em] font-semibold font-mono;
   }
 
-  /* Badge de status — só positivo/negativo/neutro */
-  .badge-positive  { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/15; }
-  .badge-negative  { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-red-500/10 text-red-400 ring-1 ring-red-500/15; }
-  .badge-warning   { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/15; }
-  .badge-neutral   { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-zinc-800 text-zinc-500 ring-1 ring-zinc-700/50; }
-  .badge-brand     { @apply text-[10px] px-1.5 py-px rounded font-semibold bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/20; }
+  /* Badges */
+  .badge-positive  { @apply text-[9px] px-1.5 py-px rounded font-bold font-mono bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/10; }
+  .badge-negative  { @apply text-[9px] px-1.5 py-px rounded font-bold font-mono bg-red-500/10 text-red-400 ring-1 ring-red-500/10; }
+  .badge-warning   { @apply text-[9px] px-1.5 py-px rounded font-bold font-mono bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/10; }
+  .badge-neutral   { @apply text-[9px] px-1.5 py-px rounded font-bold font-mono bg-white/[0.04] text-zinc-500 ring-1 ring-white/[0.06]; }
+  .badge-brand     { @apply text-[9px] px-1.5 py-px rounded font-bold font-mono bg-orange-500/10 text-orange-400 ring-1 ring-orange-500/15; }
 
-  /* Acento top de card KPI */
-  .card-kpi-top {
-    @apply absolute top-0 left-0 right-0 h-px
-           bg-gradient-to-r from-transparent via-orange-500/30 to-transparent;
-  }
-  .card-kpi-top-positive {
-    @apply absolute top-0 left-0 right-0 h-px
-           bg-gradient-to-r from-transparent via-emerald-500/25 to-transparent;
-  }
-  .card-kpi-top-negative {
-    @apply absolute top-0 left-0 right-0 h-px
-           bg-gradient-to-r from-transparent via-red-500/25 to-transparent;
-  }
-  .card-kpi-top-neutral {
-    @apply absolute top-0 left-0 right-0 h-px
-           bg-gradient-to-r from-transparent via-white/[0.05] to-transparent;
-  }
+  /* Acento top de KPICard */
+  .card-kpi-top         { @apply absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent; }
+  .card-kpi-top-positive { @apply absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/35 to-transparent; }
+  .card-kpi-top-negative { @apply absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-red-500/35 to-transparent; }
+  .card-kpi-top-neutral  { @apply absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent; }
 
-  /* Link inline de ação (ex: "Ver todos →") */
-  .link-action {
-    @apply text-xs text-zinc-500 hover:text-orange-400 transition-colors font-medium;
-  }
+  /* Link de ação */
+  .link-action { @apply text-xs text-zinc-600 hover:text-orange-400 transition-colors font-medium; }
 
   /* Stat genérico */
-  .stat-label { @apply text-xs text-zinc-500 font-medium uppercase tracking-wide; }
+  .stat-label { @apply text-[9px] text-zinc-600 font-bold uppercase tracking-[0.12em] font-mono; }
   .stat-value { @apply text-white font-bold tabular-nums; }
   .badge      { @apply text-xs px-1.5 py-0.5 rounded-md font-medium; }
 }
 
-/* ── Número de terminal — usado em grandes KPIs ─────────────────────────────── */
+/* ── .num — números de terminal ─────────────────────────────────────────────── */
 .num {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "tnum", "lnum";
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 
-/* ── Login redesign — fundo, animações, card ────────────────────────────────── */
+/* ── App shell — scanline sutil no fundo ────────────────────────────────────── */
+.app-scanline {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.008) 2px,
+    rgba(255,255,255,0.008) 4px
+  );
+  pointer-events: none;
+}
 
+/* ── Sidebar nav item — glow no ativo ──────────────────────────────────────── */
+.nav-item-active-glow {
+  box-shadow: inset 0 0 12px -4px rgba(249,115,22,0.08);
+}
+
+/* ── Login redesign ─────────────────────────────────────────────────────────── */
 .login-bg-grid {
-  background-image: radial-gradient(circle, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255,255,255,.03) 1px, transparent 1px);
   background-size: 32px 32px;
   -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, #000 0%, transparent 78%);
           mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, #000 0%, transparent 78%);
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: .18; transform: scale(1); }
-  50%       { opacity: .28; transform: scale(1.06); }
+  0%, 100% { opacity: .15; transform: scale(1); }
+  50%       { opacity: .25; transform: scale(1.06); }
 }
 .login-bg-glow {
   background: radial-gradient(700px circle at 60% 40%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 65%);
@@ -186,16 +197,16 @@ body {
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
 }
 .anim-in { animation: fade-up .4s cubic-bezier(.16,1,.3,1) both; }
 
-.login-card { border: 1px solid var(--border); transition: border-color .15s, box-shadow .15s; }
+.login-card { border: 1px solid rgba(255,255,255,0.06); transition: border-color .2s, box-shadow .2s; }
 .login-card:focus-within {
-  border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 25%, transparent),
-              0 0 28px -10px color-mix(in oklab, var(--accent) 35%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 20%, transparent),
+              0 0 32px -10px color-mix(in oklab, var(--accent) 30%, transparent);
 }
 
 @keyframes zenite-enter {
@@ -213,8 +224,21 @@ body {
   transform-origin: center;
 }
 
+/* ── Animações de entrada app interno ───────────────────────────────────────── */
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+.anim-sidebar { animation: slide-in-left .25s cubic-bezier(.16,1,.3,1) both; }
+
+@keyframes kpi-pop {
+  from { opacity: 0; transform: scale(.97) translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.anim-kpi { animation: kpi-pop .35s cubic-bezier(.16,1,.3,1) both; }
+
 @media (prefers-reduced-motion: reduce) {
-  .anim-in { animation: none; }
+  .anim-in, .anim-sidebar, .anim-kpi { animation: none; }
   .login-bg-glow { animation: none; opacity: .06; }
   .zenite-wordmark { animation: none; opacity: 1; letter-spacing: .18em; }
   .zenite-line { animation: none; opacity: 1; transform: none; }

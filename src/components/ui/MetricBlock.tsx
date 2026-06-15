@@ -1,15 +1,9 @@
-// MetricBlock — bloco compacto de métrica com comparativo opcional.
-// Extraído de: FinancialBlock (StatCell), SalesBlock (MetricCell), DashboardCard (StatCell).
-// Usado dentro de grids de blocos do dashboard.
-
 interface Props {
   label: string;
   value: string;
   valueClass?: string;
-  /** Linha de comparativo, ex: "+8% vs ontem" */
   delta?: string;
   deltaClass?: string;
-  /** Destaque vermelho no fundo (ex: reembolso alto) */
   highlight?: boolean;
 }
 
@@ -18,15 +12,17 @@ export function MetricBlock({
   delta, deltaClass, highlight,
 }: Props) {
   return (
-    <div className={`rounded-md p-2.5 ${
-      highlight ? 'bg-red-950/30 border border-red-800/30' : 'bg-white/[0.06]'
+    <div className={`rounded-lg p-3 transition-colors ${
+      highlight
+        ? 'bg-red-950/20 border border-red-900/25'
+        : 'bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.05]'
     }`}>
-      <p className="text-[9px] text-[#A1A1AA] uppercase tracking-[0.1em] font-semibold mb-1">
+      <p className="text-[9px] text-zinc-600 uppercase tracking-[0.12em] font-bold font-mono mb-1.5">
         {label}
       </p>
       <p className={`text-sm font-bold num leading-tight ${valueClass}`}>{value}</p>
       {delta && (
-        <p className={`text-[10px] mt-0.5 tabular-nums ${deltaClass ?? 'text-zinc-600'}`}>
+        <p className={`text-[9px] mt-1 tabular-nums font-mono ${deltaClass ?? 'text-zinc-700'}`}>
           {delta}
         </p>
       )}
