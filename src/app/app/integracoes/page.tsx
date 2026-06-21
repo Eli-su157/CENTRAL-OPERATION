@@ -280,17 +280,21 @@ export default async function IntegracoesPage() {
   return (
     <div className="min-h-screen bg-[#08080a]">
       {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="border-b border-white/[0.05] relative overflow-hidden">
+      <div className="border-b border-white/[0.06] relative overflow-hidden anim-slide-down border-bottom-run">
         {/* Decorativo */}
         <div className="absolute top-0 right-0 w-px h-full bg-white/[0.03]" />
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
         <div className="absolute top-1/2 right-16 -translate-y-1/2 w-48 h-48 rounded-full border border-orange-500/[0.07]" />
         <div className="absolute top-1/2 right-8 -translate-y-1/2 w-24 h-24 rounded-full border border-orange-500/[0.07]" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
 
         <div className="px-6 sm:px-10 py-10 max-w-6xl relative z-10">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-[2px] h-6 bg-orange-500 rounded-sm shrink-0 shadow-[0_0_8px_rgba(249,115,22,0.5)]" />
-            <h1 className="text-xl font-bold text-white tracking-tight">Integrações</h1>
+          <div className="flex items-center gap-4 mb-1">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+            <div>
+              <h1 className="text-3xl font-black text-white tracking-tight">Integrações</h1>
+              <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Plataformas · APIs · conectores</p>
+            </div>
           </div>
 
           {/* Stats */}
@@ -314,7 +318,7 @@ export default async function IntegracoesPage() {
       </div>
 
       {/* ── Categorias ──────────────────────────────────────────── */}
-      <div className="px-6 sm:px-10 py-10 max-w-6xl mx-auto">
+      <div className="anim-fade-in delay-200 px-6 sm:px-10 py-10 max-w-6xl mx-auto">
 
         {CATEGORIES.map(cat => {
           const items = CATALOG.filter(p => p.category === cat);

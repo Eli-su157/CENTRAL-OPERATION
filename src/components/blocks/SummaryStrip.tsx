@@ -26,7 +26,7 @@ export function SummaryStrip({ real, demoSummary }: Props) {
     const lucroPos = real.lucro_liquido >= 0;
     const roasOk   = real.roas !== null && real.roas >= 3;
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <div className="anim-slide-up grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <KPICard
           label="Faturamento · mês"
           value={formatCurrency(real.faturamento)}
@@ -58,7 +58,7 @@ export function SummaryStrip({ real, demoSummary }: Props) {
     const lucroPos = demoSummary.lucro_liquido >= 0;
     const roasOk   = demoSummary.roas >= 3;
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <div className="anim-slide-up grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <KPICard
           label="Faturamento · dia"
           value={formatCurrency(demoSummary.faturamento_dia)}

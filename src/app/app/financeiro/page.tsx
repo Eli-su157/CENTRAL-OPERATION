@@ -60,15 +60,28 @@ export default async function FinanceiroPage() {
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      <FinancePageClient
-        entries={entries}
-        categories={(categoriesRes.data ?? []).map(c => ({
-          name: c.name,
-          direction: c.direction as 'entrada' | 'saida',
-        }))}
-        dashboards={dashboardsRes.data ?? []}
-        members={(membersRes.data ?? []).map(m => ({ id: m.id, full_name: m.full_name }))}
-      />
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center gap-4 relative">
+          <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+          <div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Financeiro</h1>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">DRE · fluxo de caixa · extratos</p>
+          </div>
+        </div>
+      </div>
+      <div className="anim-fade-in delay-200">
+        <FinancePageClient
+          entries={entries}
+          categories={(categoriesRes.data ?? []).map(c => ({
+            name: c.name,
+            direction: c.direction as 'entrada' | 'saida',
+          }))}
+          dashboards={dashboardsRes.data ?? []}
+          members={(membersRes.data ?? []).map(m => ({ id: m.id, full_name: m.full_name }))}
+        />
+      </div>
     </div>
   );
 }

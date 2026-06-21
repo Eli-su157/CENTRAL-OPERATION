@@ -165,15 +165,20 @@ export default async function EquipePage() {
   return (
     <main className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-          <h1 className="text-2xl font-bold text-white tracking-tight">Equipe</h1>
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center gap-4 relative">
+          <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+          <div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Equipe</h1>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Gestão de membros · permissões</p>
+          </div>
         </div>
       </div>
 
       {/* KPIs da equipe */}
+      <div className="anim-slide-up delay-150">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         <KPICard label="Membros" value={String(members.length)} accent="brand" />
         <KPICard
@@ -198,7 +203,10 @@ export default async function EquipePage() {
         )}
       </div>
 
+      </div>{/* end anim-slide-up */}
+
       {/* Convites + Membros */}
+      <div className="anim-fade-in delay-300">
       <div className="flex flex-col gap-4">
         <InvitePanel pendingInvites={pendingInvites} />
 
@@ -223,6 +231,7 @@ export default async function EquipePage() {
           </div>
         </div>
       </div>
+      </div>{/* end anim-fade-in */}
     </main>
   );
 }

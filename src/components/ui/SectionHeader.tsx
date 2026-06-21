@@ -23,7 +23,7 @@ export function SectionHeader({
   }
 
   return (
-    <div className="mb-8 pb-6 border-b border-white/[0.04] relative">
+    <div className="mb-8 pb-6 border-b border-white/[0.04] relative anim-slide-up">
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/15 via-orange-500/5 to-transparent" />
       <div className="flex items-start justify-between gap-3">
         <div>

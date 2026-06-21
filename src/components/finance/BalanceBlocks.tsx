@@ -29,7 +29,7 @@ export function AReceberBlock({ entries }: Props) {
   const total = toReceive.reduce((s, e) => s + e.amount, 0);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 anim-slide-up line-sweep-emerald">
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">A Receber</p>
         <span className="text-sm font-bold text-emerald-400 tabular-nums">{formatCurrency(total)}</span>
@@ -53,7 +53,7 @@ export function APagarBlock({ entries }: Props) {
   const total = toPay.reduce((s, e) => s + e.amount, 0);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 anim-slide-up line-sweep-brand">
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">A Pagar</p>
         <span className="text-sm font-bold text-red-400 tabular-nums">{formatCurrency(total)}</span>

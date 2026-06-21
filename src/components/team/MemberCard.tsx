@@ -138,8 +138,10 @@ export function MemberCard({ member, currentUserId, stats, custoMes, dashboards 
   const perf = member.sector ? SECTOR_PERF[member.sector] : null;
 
   return (
-    <div className={`bg-[#0f0f12] rounded-xl border overflow-hidden ${
-      stats.atrasadas > 0 ? 'border-red-900/30' : 'border-white/[0.06]'
+    <div className={`bg-[#0f0f12] rounded-xl border overflow-hidden shimmer-sweep hover:-translate-y-0.5 transition-all duration-300 ${
+      stats.atrasadas > 0
+        ? 'border-red-900/30 hover:border-red-800/40'
+        : 'border-white/[0.06] hover:border-orange-500/20'
     }`}>
       {/* ── Linha principal ──────────────────────────────────── */}
       <div className="flex items-start gap-3 p-4">

@@ -24,8 +24,10 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left bg-[#0f0f12] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-150 group ${
-        overdue ? 'border-red-900/50 hover:border-red-800/70' : 'border-white/[0.06] hover:border-white/[0.10]'
+      className={`w-full text-left bg-[#0f0f12] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-300 group shimmer-sweep hover:-translate-y-0.5 ${
+        overdue
+          ? 'border-red-900/50 hover:border-red-800/70 hover:shadow-[0_0_20px_-8px_rgba(248,113,113,0.2)]'
+          : 'border-white/[0.06] hover:border-orange-500/20 hover:shadow-[0_0_20px_-8px_rgba(249,115,22,0.2)]'
       }`}
     >
       {/* Priority + sector */}

@@ -63,18 +63,22 @@ export default async function RelatoriosPage({ searchParams }: Props) {
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-            <h1 className="text-2xl font-bold text-white tracking-tight">Relatórios</h1>
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center justify-between relative">
+          <div className="flex items-center gap-4">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+            <div>
+              <h1 className="text-3xl font-black text-white tracking-tight">Relatórios</h1>
+              <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Análise · exportação · insights</p>
+            </div>
           </div>
           {selected && <ExportPDFButton />}
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 items-start">
+      <div className="anim-fade-in delay-200 flex flex-col lg:flex-row gap-4 items-start">
         {/* Coluna esquerda: gerar + lista */}
         <div className="w-full lg:w-64 shrink-0 flex flex-col gap-4">
           {/* Form de geração (só head/dono) */}

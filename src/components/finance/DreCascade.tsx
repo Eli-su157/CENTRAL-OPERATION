@@ -56,7 +56,7 @@ export function DreCascade({ dre, period, showComparativo }: Props) {
   const lucroPos = dre.lucro_liquido >= 0;
 
   return (
-    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden">
+    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden anim-slide-up line-sweep-brand">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05]">
         <div>

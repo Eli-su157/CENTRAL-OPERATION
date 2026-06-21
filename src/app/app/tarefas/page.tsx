@@ -124,23 +124,29 @@ export default async function TarefasPage() {
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-          <h1 className="text-2xl font-bold text-white tracking-tight">Tarefas</h1>
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center gap-4 relative">
+          <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+          <div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Tarefas</h1>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Gestão de tarefas · kanban</p>
+          </div>
         </div>
       </div>
-      <TasksPageClient
-        tasks={tasks}
-        members={allMembers}
-        assignableMembers={assignableMembers}
-        dashboards={dashboards}
-        currentUserId={ctx.userId}
-        currentSector={ctx.profile.sector as UserSector | null}
-        scope={scope}
-        canCreate={scope !== 'nenhum'}
-      />
+      <div className="anim-fade-in delay-200">
+        <TasksPageClient
+          tasks={tasks}
+          members={allMembers}
+          assignableMembers={assignableMembers}
+          dashboards={dashboards}
+          currentUserId={ctx.userId}
+          currentSector={ctx.profile.sector as UserSector | null}
+          scope={scope}
+          canCreate={scope !== 'nenhum'}
+        />
+      </div>
     </div>
   );
 }

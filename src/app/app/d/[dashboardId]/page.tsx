@@ -57,18 +57,22 @@ export default async function DashboardPage({ params }: Props) {
     const demoDash = DEMO_DASHBOARDS.find(d => d.id === dashboardId) ?? DEMO_DASHBOARDS[0];
     const metrics = getDashboardMetrics(dashboardId);
     return (
-      <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <div className="anim-fade-in p-4 sm:p-6 max-w-5xl mx-auto">
         <DashboardHeader dashboard={demoDash} canManage={true} />
-        <SummaryStrip real={null} demoSummary={metrics.summary} />
-        <DashboardGrid
-          profile={{ role: 'dono', sector: null }}
-          permissions={ctx.permissions}
-          dashboardId={dashboardId}
-          realTeamData={null}
-          realFinance={null}
-          realSales={null}
-          realTraffic={null}
-        />
+        <div className="anim-slide-up delay-100">
+          <SummaryStrip real={null} demoSummary={metrics.summary} />
+        </div>
+        <div className="anim-slide-up delay-200">
+          <DashboardGrid
+            profile={{ role: 'dono', sector: null }}
+            permissions={ctx.permissions}
+            dashboardId={dashboardId}
+            realTeamData={null}
+            realFinance={null}
+            realSales={null}
+            realTraffic={null}
+          />
+        </div>
       </div>
     );
   }
@@ -186,7 +190,7 @@ export default async function DashboardPage({ params }: Props) {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+    <div className="anim-fade-in p-4 sm:p-6 max-w-5xl mx-auto">
       <DashboardHeader
         dashboard={dashboardRow}
         canManage={ctx.permissions.pode_criar_dashboard}
@@ -194,26 +198,30 @@ export default async function DashboardPage({ params }: Props) {
 
       <AlertsBar alerts={realAlerts} />
 
-      <SummaryStrip
-        real={realFinance ? {
-          faturamento: realFinance.faturamento,
-          lucro_liquido: realFinance.lucro_liquido,
-          roas: realRoas,
-        } : null}
-      />
+      <div className="anim-slide-up delay-100">
+        <SummaryStrip
+          real={realFinance ? {
+            faturamento: realFinance.faturamento,
+            lucro_liquido: realFinance.lucro_liquido,
+            roas: realRoas,
+          } : null}
+        />
+      </div>
 
-      <DashboardGrid
-        profile={{
-          role: ctx.profile.role as UserRole,
-          sector: ctx.profile.sector as UserSector | null,
-        }}
-        permissions={ctx.permissions}
-        dashboardId={dashboardId}
-        realTeamData={realTeamData}
-        realFinance={realFinance}
-        realSales={realSales}
-        realTraffic={realTraffic}
-      />
+      <div className="anim-slide-up delay-200">
+        <DashboardGrid
+          profile={{
+            role: ctx.profile.role as UserRole,
+            sector: ctx.profile.sector as UserSector | null,
+          }}
+          permissions={ctx.permissions}
+          dashboardId={dashboardId}
+          realTeamData={realTeamData}
+          realFinance={realFinance}
+          realSales={realSales}
+          realTraffic={realTraffic}
+        />
+      </div>
     </div>
   );
 }

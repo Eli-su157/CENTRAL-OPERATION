@@ -35,7 +35,7 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
   );
 
   return (
-    <div className="flex flex-wrap items-start justify-between mb-7 gap-3">
+    <div className="flex flex-wrap items-start justify-between mb-7 gap-3 anim-slide-down border-bottom-run">
       <div className="flex-1 min-w-0">
         {mode === 'rename' ? (
           <form action={renameAction} className="flex items-center gap-2">
@@ -56,9 +56,9 @@ export function DashboardHeader({ dashboard, canManage }: Props) {
           </form>
         ) : (
           <div className="flex items-center gap-3">
-            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+            <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
             <div>
-              <h1 className="text-2xl font-bold text-white leading-tight tracking-tight">{dashboard.name}</h1>
+              <h1 className="text-3xl font-black text-white leading-tight tracking-tight">{dashboard.name}</h1>
               {renameState && 'error' in renameState && (
                 <p className="text-xs text-red-400 mt-1">{renameState.error}</p>
               )}
