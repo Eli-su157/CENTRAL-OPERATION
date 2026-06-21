@@ -4,7 +4,9 @@ import { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { EntryForm } from './EntryForm';
 import { DreCascade } from './DreCascade';
-import { FluxoCaixaBlock } from './FluxoCaixaBlock';
+import { CashflowChart } from './CashflowChart';
+import { DreCostChart } from './DreCostChart';
+import { MargemGauge } from './MargemGauge';
 import { MargemPorProduto } from './MargemPorProduto';
 import { FinanceHealthBlock } from './FinanceHealthBlock';
 import { ExtratoPro } from './ExtratoPro';
@@ -12,8 +14,8 @@ import { OpenFinancePlaceholder } from './OpenFinancePlaceholder';
 import { KPICard } from '@/components/ui';
 import type { DreResult, FinanceEntry } from '@/lib/finance/calc';
 import {
-  calcDre, calcDreComparativo, calcEvolutionSeries,
-  calcCashflow, calcMargemPorDashboard,
+  calcDreComparativo, calcEvolutionSeries,
+  calcCashflow, calcMargemPorDashboard, calcMargem,
   filterByPeriod, filterByDashboard,
   monthStart, monthEnd,
 } from '@/lib/finance/calc';
@@ -26,7 +28,7 @@ const EvolutionChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5 animate-pulse">
+      <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 animate-pulse">
         <div className="h-3 w-40 bg-zinc-800 rounded mb-4" />
         <div className="h-[220px] bg-zinc-800/50 rounded" />
       </div>
@@ -105,8 +107,9 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
 
   const dre    = useMemo(() => calcDreComparativo(filtered, prevFiltered), [filtered, prevFiltered]);
   const cashflow = useMemo(() => calcCashflow(entries), [entries]);
-  const evolution  = useMemo(() => calcEvolutionSeries(dashFiltered, 6), [dashFiltered]);
+  const evolution  = useMemo(() => calcEvolutionSeries(dashFiltered, 8), [dashFiltered]);
   const margins    = useMemo(() => dashboards.length > 1 ? calcMargemPorDashboard(filtered, dashboards) : [], [filtered, dashboards]);
+  const margem     = useMemo(() => calcMargem(dre), [dre]);
 
   const totalAReceber = useMemo(() =>
     entries.filter(e => e.direction === 'entrada' && e.status === 'a_receber').reduce((s, e) => s + e.amount, 0),
@@ -131,20 +134,32 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8 pb-6 border-b border-white/[0.05] gap-4 flex-wrap relative">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
-            <h1 className="text-2xl font-bold text-white tracking-tight">Financeiro</h1>
-          </div>
+      {/* ─── Barra de ações ───────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+        {/* Filtros de período */}
+        <div className="flex gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
+          {(['mes_atual', 'mes_anterior', '30d'] as Period[]).map(p => (
+            <button key={p} onClick={() => setPeriod(p)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                period === p
+                  ? 'bg-orange-500/15 text-orange-300 border border-orange-500/20'
+                  : 'text-zinc-500 hover:text-zinc-300'
+              }`}>
+              {periodRange(p).label}
+            </button>
+          ))}
         </div>
+
         <div className="flex items-center gap-2">
+          {dashboards.length > 0 && (
+            <select value={dashboardId} onChange={e => setDashboardId(e.target.value)} className={selectCls}>
+              <option value="">Todos os produtos</option>
+              {dashboards.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+          )}
           <button
             onClick={() => exportCSV(filtered, dashMap)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400 border border-white/[0.07] hover:text-zinc-200 transition-all"
-            title="Exportar CSV"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400 border border-white/[0.07] hover:text-zinc-200 transition-all"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -154,8 +169,7 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
           </button>
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400 border border-white/[0.07] hover:text-zinc-200 transition-all"
-            title="Imprimir / Salvar PDF"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400 border border-white/[0.07] hover:text-zinc-200 transition-all"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="6 9 6 2 18 2 18 9" />
@@ -166,7 +180,7 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
           </button>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-all shadow-[0_0_20px_-4px_rgba(249,115,22,0.5)]"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -176,28 +190,8 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
         </div>
       </div>
 
-      {/* Filtros */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <div className="flex gap-1 bg-white/[0.04] border border-white/[0.06] rounded-lg p-1">
-          {(['mes_atual', 'mes_anterior', '30d'] as Period[]).map(p => (
-            <button key={p} onClick={() => setPeriod(p)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                period === p ? 'bg-white/[0.08] text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'
-              }`}>
-              {periodRange(p).label}
-            </button>
-          ))}
-        </div>
-        {dashboards.length > 0 && (
-          <select value={dashboardId} onChange={e => setDashboardId(e.target.value)} className={selectCls}>
-            <option value="">Todos os produtos</option>
-            {dashboards.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
-        )}
-      </div>
-
       {/* ─── KPIs do topo ─────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <KPICard
           label="Receita bruta"
           value={formatCurrency(dre.receita_bruta)}
@@ -230,18 +224,14 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
         />
       </div>
 
-      {/* ─── DRE em cascata ───────────────────────────────────── */}
-      <div className="mb-6">
-        <DreCascade dre={dre} period={label} showComparativo />
-      </div>
-
-      {/* ─── Gráfico de evolução ──────────────────────────────── */}
-      <div className="mb-6">
+      {/* ─── Gráfico de evolução (faixa larga) ───────────────── */}
+      <div className="mb-6 bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden relative shimmer-sweep">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+        <p className="kpi-label mb-4">EVOLUÇÃO MENSAL — RECEITA × CUSTO × LUCRO</p>
         <EvolutionChart
           data={evolutionData}
           xKey="date"
-          title="EVOLUÇÃO MENSAL — RECEITA × CUSTO × LUCRO"
-          height={200}
+          height={220}
           bars={[
             { dataKey: 'receita', label: 'Receita', color: CHART.bar2, fillOpacity: 0.45 },
             { dataKey: 'custos',  label: 'Custos',  color: '#ef4444',  fillOpacity: 0.4 },
@@ -254,9 +244,34 @@ export function FinancePageClient({ entries, categories, dashboards, members }: 
         />
       </div>
 
-      {/* ─── Fluxo de Caixa + Saúde ───────────────────────────── */}
+      {/* ─── DRE + Gráfico de custos lado a lado ─────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 mb-6">
+        <DreCascade dre={dre} period={label} showComparativo />
+        <div className="flex flex-col gap-4">
+          <DreCostChart dre={dre} />
+          {/* Gauge de margem */}
+          <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 flex flex-col items-center justify-center relative overflow-hidden shimmer-sweep">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/20 to-transparent" />
+            <MargemGauge margem={margem} />
+            <div className="mt-3 grid grid-cols-2 gap-2 w-full">
+              <div className="bg-white/[0.02] rounded-lg p-2.5 text-center border border-white/[0.04]">
+                <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Receita</p>
+                <p className="text-xs font-bold text-emerald-400 num">{formatCurrency(dre.receita_bruta)}</p>
+              </div>
+              <div className="bg-white/[0.02] rounded-lg p-2.5 text-center border border-white/[0.04]">
+                <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Lucro</p>
+                <p className={`text-xs font-bold num ${dre.lucro_liquido >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>
+                  {formatCurrency(dre.lucro_liquido)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Fluxo de Caixa (com gráfico) + Saúde Financeira ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <FluxoCaixaBlock
+        <CashflowChart
           cashflow={cashflow}
           totalAReceber={totalAReceber}
           totalAPagar={totalAPagar}

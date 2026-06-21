@@ -103,7 +103,7 @@ export function EvolutionChart({
   }));
 
   return (
-    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5">
+    <div className="bg-transparent">
       {title && (
         <p className="kpi-label mb-4">{title}</p>
       )}
