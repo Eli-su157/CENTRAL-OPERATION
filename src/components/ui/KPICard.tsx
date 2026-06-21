@@ -58,10 +58,11 @@ export function KPICard({
   const valClass = valueColorClass ?? (value === '—' ? 'text-zinc-700' : valueClass[accent]);
 
   return (
-    <div className={`relative bg-[#0c0c0f] border rounded-2xl p-6 overflow-hidden transition-all duration-300 group shimmer-sweep hover:scale-[1.02] hover:-translate-y-1 ${borderClass[accent]} ${glowClass[accent]}`}>
+    <div className={`relative bg-[#0c0c0f] border rounded-2xl p-6 overflow-hidden transition-all duration-300 group shimmer-sweep card-scan hover:scale-[1.02] hover:-translate-y-1 ${borderClass[accent]} ${glowClass[accent]}`}
+      style={{ '--scan-delay': accent === 'brand' ? '0s' : accent === 'positive' ? '2s' : '4s' } as React.CSSProperties}>
 
-      {/* Gradiente de acento no topo — mais espesso */}
-      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${topGradient[accent]}`} />
+      {/* Gradiente de acento no topo estático */}
+      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${topGradient[accent]} opacity-60`} />
 
       {/* Glow de fundo */}
       <div className={`absolute top-0 left-0 right-0 h-24 blur-3xl pointer-events-none transition-all duration-500 ${bgGlow[accent]}`} />

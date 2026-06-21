@@ -362,6 +362,159 @@ body {
 /* Float sutil para o logo no topo da sidebar */
 .anim-float { animation: float-y 4s ease-in-out infinite; }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+   LINHAS COLORIDAS ANDANDO — border sweep animado nos cards
+   Técnica: pseudoelemento com gradiente rotativo (conic-gradient) + clip
+────────────────────────────────────────────────────────────────────────────── */
+
+/* Linha que varre da esquerda para direita — usada nos acentos de topo dos cards */
+@keyframes line-sweep {
+  0%   { transform: translateX(-110%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(110%); opacity: 0; }
+}
+
+/* Linha que pulsa em tamanho — para o acento da sidebar e header */
+@keyframes line-breathe {
+  0%, 100% { opacity: 0.4; transform: scaleX(0.6); }
+  50%       { opacity: 1;   transform: scaleX(1); }
+}
+
+/* Gradiente que corre ao longo de uma linha horizontal */
+@keyframes gradient-run {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Borda luminosa que gira em volta do card */
+@keyframes border-rotate {
+  from { --angle: 0deg; }
+  to   { --angle: 360deg; }
+}
+
+/* Pulso de opacidade suave — para linhas "vivas" */
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.9; }
+}
+
+/* Scan line que desce verticalmente */
+@keyframes scan-down {
+  0%   { top: -2px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Classe: linha de topo com sweep automático */
+.line-sweep-brand,
+.line-sweep-emerald {
+  position: relative;
+  overflow: hidden;
+}
+.line-sweep-brand::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(249,115,22,0.9) 40%,
+    rgba(255,180,80,1) 50%,
+    rgba(249,115,22,0.9) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: line-sweep 3s cubic-bezier(.4,0,.6,1) infinite;
+  animation-delay: var(--sweep-delay, 0s);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.line-sweep-emerald::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(52,211,153,0.9) 40%,
+    rgba(110,255,200,1) 50%,
+    rgba(52,211,153,0.9) 60%,
+    transparent 100%
+  );
+  animation: line-sweep 4s cubic-bezier(.4,0,.6,1) infinite;
+  animation-delay: var(--sweep-delay, 0s);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Linha de gradiente animada (corre em loop) */
+.line-gradient-run {
+  background: linear-gradient(90deg,
+    rgba(249,115,22,0),
+    rgba(249,115,22,0.7),
+    rgba(255,200,100,1),
+    rgba(249,115,22,0.7),
+    rgba(249,115,22,0)
+  );
+  background-size: 300% 100%;
+  animation: gradient-run 4s ease infinite;
+}
+
+/* Pulso suave para linhas "vivas" sempre visíveis */
+.line-pulse {
+  animation: pulse-opacity 2.5s ease-in-out infinite;
+  animation-delay: var(--pulse-delay, 0s);
+}
+
+/* Scan de baixo nos cards — linha fina que percorre */
+.card-scan {
+  position: relative;
+  overflow: hidden;
+}
+.card-scan::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(249,115,22,0.15) 20%,
+    rgba(249,115,22,0.4) 50%,
+    rgba(249,115,22,0.15) 80%,
+    transparent
+  );
+  top: -2px;
+  animation: scan-down 6s linear infinite;
+  animation-delay: var(--scan-delay, 0s);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Linha de borda inferior animada */
+.border-bottom-run {
+  position: relative;
+}
+.border-bottom-run::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(249,115,22,0) 0%,
+    rgba(249,115,22,0.6) 30%,
+    rgba(255,180,80,0.9) 50%,
+    rgba(249,115,22,0.6) 70%,
+    rgba(249,115,22,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: gradient-run 3s ease infinite;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-in, .anim-sidebar, .anim-kpi,
   .anim-fade-in, .anim-slide-up, .anim-slide-down,
@@ -372,4 +525,8 @@ body {
   .zenite-line { animation: none; opacity: 1; transform: none; }
   .shimmer-sweep::after { display: none; }
   .dot-live::before { animation: none; }
+  .line-sweep-brand::before,
+  .line-sweep-emerald::before,
+  .card-scan::after,
+  .border-bottom-run::after { animation: none; }
 }

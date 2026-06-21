@@ -92,8 +92,23 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex flex-col h-full border-r border-white/[0.06] anim-slide-right"
+    <aside className="w-64 flex flex-col h-full border-r border-white/[0.06] anim-slide-right relative"
       style={{ background: 'linear-gradient(180deg, #0a0a0e 0%, #08080b 100%)' }}>
+
+      {/* Linha laranja andando no topo da sidebar */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] overflow-hidden pointer-events-none z-10">
+        <div className="absolute inset-0 line-gradient-run opacity-70" />
+        <div className="absolute inset-0 line-gradient-run opacity-40" style={{ animationDelay: '1.5s', animationDirection: 'reverse' }} />
+      </div>
+
+      {/* Linha laranja descendo pela borda direita da sidebar */}
+      <div className="absolute top-0 right-0 bottom-0 w-[1px] overflow-hidden pointer-events-none z-10">
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(180deg, rgba(249,115,22,0) 0%, rgba(249,115,22,0.5) 40%, rgba(255,180,80,0.8) 50%, rgba(249,115,22,0.5) 60%, rgba(249,115,22,0) 100%)',
+          backgroundSize: '100% 200%',
+          animation: 'gradient-run 4s ease infinite',
+        }} />
+      </div>
 
       {/* Brand */}
       <div className="px-4 py-5 border-b border-white/[0.05] relative overflow-hidden">

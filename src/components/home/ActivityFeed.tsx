@@ -99,8 +99,8 @@ export function ActivityFeed({ events }: Props) {
   }
 
   return (
-    <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)' }}>
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/50 via-emerald-500/15 to-transparent" />
+    <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden line-sweep-emerald" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)', '--sweep-delay': '0.8s' } as React.CSSProperties}>
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/30 via-emerald-500/10 to-transparent" />
       <div className="px-5 py-4 border-b border-white/[0.05] flex items-center gap-3">
         <span className="relative flex h-2 w-2">
           <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />

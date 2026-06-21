@@ -16,10 +16,10 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
   return (
     <Link
       href={`/app/d/${dashboard.id}`}
-      className="group relative border border-white/[0.07] hover:border-orange-500/40 rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_0_50px_-10px_rgba(249,115,22,0.25)] hover:-translate-y-1.5 hover:scale-[1.015] cursor-pointer block overflow-hidden shimmer-sweep"
-      style={{ background: 'linear-gradient(135deg, #121217 0%, #0f0f13 100%)' }}
+      className="group relative border border-white/[0.07] hover:border-orange-500/40 rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_0_50px_-10px_rgba(249,115,22,0.25)] hover:-translate-y-1.5 hover:scale-[1.015] cursor-pointer block overflow-hidden shimmer-sweep card-scan"
+      style={{ background: 'linear-gradient(135deg, #121217 0%, #0f0f13 100%)', '--scan-delay': '1s' } as React.CSSProperties}
     >
-      {/* Borda laranja no topo ao hover */}
+      {/* Linha sweep no topo ao hover */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-500/0 via-orange-500/0 group-hover:via-orange-500/70 to-orange-500/0 transition-all duration-500" />
       {/* Glow de fundo ao hover */}
       <div className="absolute top-0 left-0 right-0 h-20 bg-orange-500/0 group-hover:bg-orange-500/[0.04] blur-2xl transition-all duration-500 pointer-events-none" />

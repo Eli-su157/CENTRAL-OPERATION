@@ -408,8 +408,8 @@ export default async function AppPage() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Page header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down overflow-hidden">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/50 via-orange-500/10 to-transparent" />
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down overflow-hidden border-bottom-run">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
         <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
         <div className="flex items-center gap-4 relative">
           <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
@@ -430,7 +430,7 @@ export default async function AppPage() {
       {/* KPIs consolidados */}
       {dashboards.length > 0 && canSeeFinancial && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="anim-slide-up delay-150">
+          <div className="anim-slide-up delay-150 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '0.5s' } as React.CSSProperties}>
           <KPICard
             label="Faturamento"
             value={formatCurrency(consolidated.faturamento)}
@@ -438,7 +438,7 @@ export default async function AppPage() {
             sub={`A receber: ${formatCurrency(consolidated.a_receber)}`}
           />
           </div>
-          <div className="anim-slide-up delay-200">
+          <div className="anim-slide-up delay-200 line-sweep-emerald rounded-2xl" style={{ '--sweep-delay': '1.5s' } as React.CSSProperties}>
           <KPICard
             label="Lucro Líquido"
             value={formatCurrency(consolidated.lucro_liquido)}
@@ -446,7 +446,7 @@ export default async function AppPage() {
             sub={`A pagar: ${formatCurrency(consolidated.a_pagar)}`}
           />
           </div>
-          <div className="anim-slide-up delay-250">
+          <div className="anim-slide-up delay-250 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '2.5s' } as React.CSSProperties}>
           <KPICard
             label="Produtos ativos"
             value={String(dashboards.length)}
@@ -458,7 +458,7 @@ export default async function AppPage() {
 
       {/* Gráfico de evolução dos últimos 6 meses */}
       {canSeeFinancial && evolutionSeries.length > 1 && (
-        <div className="mb-8 anim-slide-up delay-300">
+        <div className="mb-8 anim-slide-up delay-300 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '3s' } as React.CSSProperties}>
           <EvolutionChart
             title="EVOLUÇÃO — RECEITA E LUCRO"
             data={evolutionSeries.map(p => ({
@@ -489,8 +489,8 @@ export default async function AppPage() {
 
           {/* O que vem aí — próximos 7 dias */}
           {hasUpcoming && (
-            <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)' }}>
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/40 via-blue-500/10 to-transparent" />
+            <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden line-sweep-brand" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)', '--sweep-delay': '2s' } as React.CSSProperties}>
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/20 via-blue-500/5 to-transparent" />
               <div className="px-5 py-4 border-b border-white/[0.05]">
                 <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] font-mono">
                   O que vem aí · próximos 7 dias

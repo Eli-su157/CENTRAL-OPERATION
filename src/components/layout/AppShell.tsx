@@ -60,9 +60,9 @@ export function AppShell({
       <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* Top bar */}
-        <div className="flex items-center gap-3 px-4 h-12 border-b border-white/[0.06] shrink-0 relative anim-slide-down" style={{ background: 'rgba(8,8,11,0.95)', backdropFilter: 'blur(8px)' }}>
-          {/* linha de acento inferior laranja */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/40 via-orange-500/15 to-transparent" />
+        <div className="flex items-center gap-3 px-4 h-12 border-b border-white/[0.06] shrink-0 relative anim-slide-down border-bottom-run" style={{ background: 'rgba(8,8,11,0.95)', backdropFilter: 'blur(8px)' }}>
+          {/* linha de acento inferior laranja estática de fundo */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
 
           {/* Hamburguer mobile */}
           <button
