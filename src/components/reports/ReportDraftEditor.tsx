@@ -68,7 +68,7 @@ export function ReportDraftEditor({ report, isHead, isDono, prevData }: Props) {
 
       {/* ── Barra de ações do rascunho ─────────────────────────── */}
       {report.status === 'rascunho' && (isHead || isDono) && (
-        <div className="flex items-center justify-between gap-3 flex-wrap bg-[#0c0c0f] border border-amber-500/15 rounded-2xl px-5 py-4 relative overflow-hidden">
+        <div className="print-hide flex items-center justify-between gap-3 flex-wrap bg-[#0c0c0f] border border-amber-500/15 rounded-2xl px-5 py-4 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)] animate-pulse shrink-0" />

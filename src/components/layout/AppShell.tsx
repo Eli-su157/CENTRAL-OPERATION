@@ -29,9 +29,9 @@ export function AppShell({
   return (
     <div className="flex h-screen overflow-hidden relative" style={{ background: '#07070a' }}>
       {/* Scanline de fundo sutil */}
-      <div className="app-scanline absolute inset-0 pointer-events-none z-0 opacity-30" />
+      <div className="print-hide app-scanline absolute inset-0 pointer-events-none z-0 opacity-30" />
       {/* Glow no canto superior esquerdo */}
-      <div className="absolute top-0 left-0 w-96 h-64 bg-orange-500/[0.025] blur-[80px] pointer-events-none z-0 rounded-full" />
+      <div className="print-hide absolute top-0 left-0 w-96 h-64 bg-orange-500/[0.025] blur-[80px] pointer-events-none z-0 rounded-full" />
       {/* overlay mobile */}
       {sidebarOpen && (
         <div
@@ -41,7 +41,7 @@ export function AppShell({
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:static inset-y-0 left-0 z-30 transition-transform duration-200 lg:translate-x-0 ${
+      <div className={`print-hide fixed lg:static inset-y-0 left-0 z-30 transition-transform duration-200 lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <Sidebar
@@ -60,7 +60,7 @@ export function AppShell({
       <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* Top bar */}
-        <div className="flex items-center gap-3 px-4 h-12 border-b border-white/[0.06] shrink-0 relative anim-slide-down border-bottom-run" style={{ background: 'rgba(8,8,11,0.95)', backdropFilter: 'blur(8px)' }}>
+        <div className="print-hide flex items-center gap-3 px-4 h-12 border-b border-white/[0.06] shrink-0 relative anim-slide-down border-bottom-run" style={{ background: 'rgba(8,8,11,0.95)', backdropFilter: 'blur(8px)' }}>
           {/* linha de acento inferior laranja estática de fundo */}
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
 

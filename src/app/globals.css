@@ -530,3 +530,85 @@ body {
   .card-scan::after,
   .border-bottom-run::after { animation: none; }
 }
+
+/* ── Print / PDF ────────────────────────────────────────────────────────────── */
+@media print {
+  /* Oculta tudo que não é o relatório */
+  body { background: #fff !important; color: #111 !important; font-family: 'Inter', sans-serif; }
+
+  /* Esconde sidebar, topbar, formulários, banners de rascunho, botões */
+  nav, aside, header,
+  [data-print-hide],
+  .print-hide { display: none !important; }
+
+  /* Remove decorações animadas */
+  .shimmer-sweep::after,
+  .line-sweep-brand::before,
+  .line-sweep-emerald::before,
+  .card-scan::after,
+  .border-bottom-run::after,
+  .dot-live::before { display: none !important; }
+
+  /* Remove glow/sombras pesadas */
+  * { box-shadow: none !important; text-shadow: none !important; }
+
+  /* Layout: expande o main container para ocupar toda a página */
+  body, html { height: auto !important; overflow: visible !important; }
+  .flex.h-screen { display: block !important; height: auto !important; overflow: visible !important; }
+  .flex-1.flex.flex-col { display: block !important; width: 100% !important; overflow: visible !important; }
+  main { overflow: visible !important; height: auto !important; }
+
+  /* Reset de background para branco limpo */
+  .print-area {
+    display: block !important;
+    background: #fff !important;
+    color: #111 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Cabeçalho do PDF */
+  .print-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  /* Cards das seções: borda sutil no print */
+  .print-area .bg-\[\#0c0c0f\],
+  .print-area [class*="bg-[#0"],
+  .print-area [class*="bg-white"] {
+    background: #fafafa !important;
+    border-color: #e5e7eb !important;
+  }
+
+  /* Textos: garantir legibilidade no papel */
+  .print-area p, .print-area span, .print-area h1, .print-area h2 { color: #111 !important; }
+  .print-area .text-zinc-400,
+  .print-area .text-zinc-500,
+  .print-area .text-zinc-600 { color: #6b7280 !important; }
+  .print-area .text-emerald-300,
+  .print-area .text-emerald-400 { color: #059669 !important; }
+  .print-area .text-red-300,
+  .print-area .text-red-400    { color: #dc2626 !important; }
+  .print-area .text-amber-300,
+  .print-area .text-amber-400  { color: #d97706 !important; }
+  .print-area .text-orange-400 { color: #ea580c !important; }
+
+  /* Impede quebra de página dentro de cards */
+  .print-area > * { page-break-inside: avoid; }
+
+  /* Quebra de página forçada antes de cada seção */
+  .print-page-break { page-break-before: always; }
+
+  /* Configuração de página */
+  @page {
+    size: A4 portrait;
+    margin: 16mm 14mm;
+  }
+}

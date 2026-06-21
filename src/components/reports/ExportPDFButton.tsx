@@ -4,14 +4,15 @@ export function ExportPDFButton() {
   return (
     <button
       onClick={() => window.print()}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-300 transition-colors"
+      className="print-hide flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-[#0c0c0f] hover:bg-white/[0.06] border border-white/[0.10] text-zinc-300 hover:text-white transition-all duration-150 group relative overflow-hidden"
     >
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <polyline points="6 9 6 2 18 2 18 9" />
-        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-        <rect x="6" y="14" width="12" height="8" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-gradient-to-r from-orange-500/[0.04] to-transparent" />
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="relative z-10 text-orange-400 group-hover:text-orange-300 transition-colors">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
       </svg>
-      Exportar PDF
+      <span className="relative z-10">Exportar PDF</span>
     </button>
   );
 }

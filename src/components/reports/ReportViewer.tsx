@@ -150,6 +150,31 @@ export function ReportViewer({ report, prevData }: Props) {
 
   return (
     <article className="space-y-5">
+
+      {/* ── Cabeçalho visível APENAS no print ─────────────────── */}
+      <div className="print-header hidden">
+        <div>
+          <p style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: 2, color: '#9ca3af', marginBottom: 2, fontFamily: 'monospace' }}>
+            Central de Operações · Relatório Oficial
+          </p>
+          <p style={{ fontSize: 22, fontWeight: 900, color: '#111', lineHeight: 1.1 }}>
+            {formatPeriodLabel(report.period_type, report.period_ref)}
+          </p>
+          <p style={{ fontSize: 11, color: '#6b7280', marginTop: 3, fontFamily: 'monospace' }}>
+            {d.period_start} → {d.period_end}
+          </p>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <p style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: 2, color: '#9ca3af', fontFamily: 'monospace' }}>Gerado em</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>
+            {new Date(d.gerado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+          </p>
+          <p style={{ fontSize: 11, color: '#9ca3af', fontFamily: 'monospace' }}>
+            {report.status === 'congelado' ? '🔒 Congelado' : '✏️ Rascunho'}
+          </p>
+        </div>
+      </div>
+
       {/* ── Cabeçalho do relatório ─────────────────────────────── */}
       <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />

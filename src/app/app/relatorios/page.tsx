@@ -63,7 +63,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
+      <div className="print-hide mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
         <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
         <div className="flex items-center justify-between relative">
@@ -81,7 +81,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       <div className="anim-fade-in delay-200 flex flex-col lg:flex-row gap-5 items-start">
 
         {/* ── Sidebar esquerda ──────────────────────────────────── */}
-        <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4">
+        <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4 print-hide">
 
           {/* Form de geração */}
           <GenerateReportForm existingRefs={existingRefs} />
@@ -146,7 +146,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
         </div>
 
         {/* ── Conteúdo principal ────────────────────────────────── */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 print-area">
           {selected ? (
             selected.status === 'rascunho' ? (
               <ReportDraftEditor
