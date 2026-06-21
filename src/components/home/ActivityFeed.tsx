@@ -99,14 +99,14 @@ export function ActivityFeed({ events }: Props) {
   }
 
   return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-      <div className="px-5 py-4 border-b border-white/[0.04] flex items-center gap-2.5">
-        <span className="relative flex h-1.5 w-1.5">
+    <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)' }}>
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500/50 via-emerald-500/15 to-transparent" />
+      <div className="px-5 py-4 border-b border-white/[0.05] flex items-center gap-3">
+        <span className="relative flex h-2 w-2">
           <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
         </span>
-        <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em]">Feed de Atividade</p>
+        <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] font-mono">Feed de Atividade</p>
       </div>
       <div className="divide-y divide-white/[0.04] max-h-80 overflow-y-auto">
         {events.map((ev, i) => (

@@ -92,14 +92,17 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex flex-col h-full bg-[#09090c] border-r border-white/[0.04] anim-slide-right">
+    <aside className="w-64 flex flex-col h-full border-r border-white/[0.06] anim-slide-right"
+      style={{ background: 'linear-gradient(180deg, #0a0a0e 0%, #08080b 100%)' }}>
 
       {/* Brand */}
-      <div className="px-4 py-4 border-b border-white/[0.04]">
-        <div className="flex items-center gap-3">
-          {/* Logo com glow pulsante */}
-          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0 anim-logo-glow ring-1 ring-orange-400/30 anim-float">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <div className="px-4 py-5 border-b border-white/[0.05] relative overflow-hidden">
+        {/* fundo de glow atrás do logo */}
+        <div className="absolute top-0 left-0 w-32 h-full bg-orange-500/[0.04] blur-2xl pointer-events-none" />
+        <div className="flex items-center gap-3 relative">
+          {/* Logo premium */}
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shrink-0 anim-logo-glow ring-1 ring-orange-400/40 anim-float shadow-[0_0_20px_rgba(249,115,22,0.5)]">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
               <rect x="1" y="1" width="6" height="6" fill="white" />
               <rect x="9" y="1" width="6" height="6" fill="white" />
               <rect x="9" y="9" width="6" height="6" fill="white" />
@@ -107,10 +110,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             </svg>
           </div>
           <div className="min-w-0 anim-slide-up delay-100">
-            <p className="text-[11px] font-bold text-white uppercase tracking-[0.18em] leading-none font-mono">
+            <p className="text-[12px] font-black text-white uppercase tracking-[0.2em] leading-none font-mono">
               CENTRAL
             </p>
-            <p className="text-[11px] text-zinc-600 truncate mt-0.5 font-mono tracking-wide">
+            <p className="text-[10px] text-orange-400/70 truncate mt-1 font-mono tracking-widest uppercase">
               {operation.name}
             </p>
           </div>
@@ -257,10 +260,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
       </nav>
 
       {/* User footer */}
-      <div className="border-t border-white/[0.04] p-3 space-y-0.5 anim-slide-up delay-500">
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
+      <div className="border-t border-white/[0.05] p-3 space-y-0.5 anim-slide-up delay-500">
+        <div className="flex items-center gap-2.5 px-2 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04]">
           {/* Avatar com glow */}
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shrink-0 text-[11px] font-bold text-white shadow-[0_0_10px_rgba(249,115,22,0.3)] hover:shadow-[0_0_18px_rgba(249,115,22,0.5)] transition-shadow duration-300">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-400 to-orange-700 flex items-center justify-center shrink-0 text-[12px] font-bold text-white shadow-[0_0_14px_rgba(249,115,22,0.4)] hover:shadow-[0_0_22px_rgba(249,115,22,0.6)] transition-shadow duration-300">
             {user.name[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">

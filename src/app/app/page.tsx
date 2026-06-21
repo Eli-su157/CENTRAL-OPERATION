@@ -408,11 +408,15 @@ export default async function AppPage() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Page header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.05] relative anim-slide-down">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0 shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
-          <h1 className="text-2xl font-bold text-white tracking-tight">Visão Geral</h1>
+      <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/50 via-orange-500/10 to-transparent" />
+        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center gap-4 relative">
+          <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+          <div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Visão Geral</h1>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Mês atual · dados consolidados</p>
+          </div>
         </div>
       </div>
 
@@ -485,10 +489,10 @@ export default async function AppPage() {
 
           {/* O que vem aí — próximos 7 dias */}
           {hasUpcoming && (
-            <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-              <div className="px-5 py-4 border-b border-white/[0.04]">
-                <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em]">
+            <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)' }}>
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/40 via-blue-500/10 to-transparent" />
+              <div className="px-5 py-4 border-b border-white/[0.05]">
+                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] font-mono">
                   O que vem aí · próximos 7 dias
                 </p>
               </div>
@@ -534,12 +538,15 @@ export default async function AppPage() {
 
       {/* Dashboards de produtos */}
       <div className="mb-10 anim-slide-up delay-500">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-sm font-semibold text-white">Produtos</h2>
-            <p className="text-xs text-zinc-600 mt-0.5">
-              {dashboards.length} / {maxDashboards} dashboards
-            </p>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-5 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
+            <div>
+              <h2 className="text-base font-bold text-white tracking-tight">Produtos</h2>
+              <p className="text-[10px] text-zinc-600 mt-0.5 font-mono tracking-wide">
+                {dashboards.length} / {maxDashboards} dashboards
+              </p>
+            </div>
           </div>
           {ctx.permissions.pode_criar_dashboard && (
             <CreateDashboardButton maxReached={maxReached} maxDashboards={maxDashboards} />

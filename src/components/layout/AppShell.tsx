@@ -27,9 +27,11 @@ export function AppShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#08080a] overflow-hidden relative">
+    <div className="flex h-screen overflow-hidden relative" style={{ background: '#07070a' }}>
       {/* Scanline de fundo sutil */}
-      <div className="app-scanline absolute inset-0 pointer-events-none z-0 opacity-40" />
+      <div className="app-scanline absolute inset-0 pointer-events-none z-0 opacity-30" />
+      {/* Glow no canto superior esquerdo */}
+      <div className="absolute top-0 left-0 w-96 h-64 bg-orange-500/[0.025] blur-[80px] pointer-events-none z-0 rounded-full" />
       {/* overlay mobile */}
       {sidebarOpen && (
         <div
@@ -58,9 +60,9 @@ export function AppShell({
       <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* Top bar */}
-        <div className="flex items-center gap-3 px-4 h-12 bg-[#08080a] border-b border-white/[0.04] shrink-0 relative anim-slide-down">
-          {/* linha de acento inferior sutil */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/10 via-orange-500/5 to-transparent" />
+        <div className="flex items-center gap-3 px-4 h-12 border-b border-white/[0.06] shrink-0 relative anim-slide-down" style={{ background: 'rgba(8,8,11,0.95)', backdropFilter: 'blur(8px)' }}>
+          {/* linha de acento inferior laranja */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/40 via-orange-500/15 to-transparent" />
 
           {/* Hamburguer mobile */}
           <button
