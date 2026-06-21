@@ -2,18 +2,20 @@ import { redirect } from 'next/navigation';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
 import { CalendarioClient } from './CalendarioClient';
-import type { CalendarioEvent } from './CalendarioClient';
+import type { CalendarioEvent, CustomEvent } from './CalendarioClient';
 
 export default async function CalendarioPage() {
   const ctx = await getAuthContext();
   if (!ctx) redirect('/');
 
-  const supabase = await createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = (await createClient()) as any;
   const opId = ctx.profile.operation_id;
   const canSeeFinancial = ctx.permissions.pode_ver_financeiro;
+  const isHeadOrDono = ctx.profile.role === 'head' || ctx.profile.role === 'dono';
 
-  // Busca os 3 meses ao redor do atual para navegação sem refetch
-  const now = new Date();
+  // Busca 3 meses ao redor do atual
+  const now  = new Date();
   const from = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString().split('T')[0];
   const to   = new Date(now.getFullYear(), now.getMonth() + 2, 0).toISOString().split('T')[0];
 
@@ -64,7 +66,7 @@ export default async function CalendarioPage() {
     }
   }
 
-  // Recursos monitorados com last_checked_at (vencimento técnico = cheque mais antigo)
+  // Recursos monitorados
   const { data: resources } = await supabase
     .from('monitored_resources')
     .select('id, label, last_checked_at, status')
@@ -84,8 +86,44 @@ export default async function CalendarioPage() {
     });
   }
 
+  // Eventos customizados do calendário
+  const { data: customRaw } = await supabase
+    .from('calendar_events')
+    .select('id, title, description, event_date, event_time, event_type, color, created_by')
+    .eq('operation_id', opId)
+    .gte('event_date', from)
+    .lte('event_date', to)
+    .order('event_date', { ascending: true });
+
+  const customEvents: CustomEvent[] = (customRaw ?? []).map((c: {
+    id: string; title: string; description: string | null;
+    event_date: string; event_time: string | null;
+    event_type: string; color: string; created_by: string;
+  }) => ({
+    id:          c.id,
+    title:       c.title,
+    description: c.description,
+    event_date:  c.event_date,
+    event_time:  c.event_time,
+    event_type:  c.event_type,
+    color:       c.color,
+    created_by:  c.created_by,
+  }));
+
+  // Adiciona eventos custom na lista principal
+  for (const c of customEvents) {
+    events.push({
+      id:    c.id,
+      date:  c.event_date,
+      label: c.title,
+      layer: 'custom',
+      meta:  c.event_type,
+    });
+  }
+
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      {/* Header */}
       <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down border-bottom-run overflow-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
         <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
@@ -93,7 +131,7 @@ export default async function CalendarioPage() {
           <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
           <div>
             <h1 className="text-3xl font-black text-white tracking-tight">Calendário</h1>
-            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Eventos · prazos · reuniões</p>
+            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Eventos · Prazos · Reuniões</p>
           </div>
         </div>
       </div>
@@ -101,7 +139,11 @@ export default async function CalendarioPage() {
       <div className="anim-fade-in delay-200">
         <CalendarioClient
           events={events}
+          customEvents={customEvents}
           canSeeFinancial={canSeeFinancial}
+          canCreate={isHeadOrDono || true}
+          currentUserId={ctx.profile.id}
+          isHeadOrDono={isHeadOrDono}
         />
       </div>
     </div>
