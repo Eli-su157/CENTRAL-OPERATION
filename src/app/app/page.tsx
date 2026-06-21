@@ -403,147 +403,238 @@ export default async function AppPage() {
 
   const hasUpcoming = upcomingTasks.length > 0 || upcomingFinanceEntries.length > 0;
 
+  // ── Cálculos adicionais para a visão geral ────────────────────────────────────
+
+  const margem = canSeeFinancial && consolidated.faturamento > 0
+    ? (consolidated.lucro_liquido / consolidated.faturamento) * 100
+    : null;
+
+  const tasksUrgentes = upcomingTasks.filter(t => t.priority === 'alta');
+  const totalTarefasVencendo = upcomingTasks.length;
+
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      {/* Page header */}
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+
+      {/* ── Page header ─────────────────────────────────────────────────────── */}
       <div className="mb-8 pb-6 border-b border-white/[0.06] relative anim-slide-down overflow-hidden border-bottom-run">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/30 via-orange-500/8 to-transparent" />
-        <div className="absolute -top-8 -left-8 w-48 h-48 bg-orange-500/[0.04] blur-3xl rounded-full pointer-events-none" />
-        <div className="flex items-center gap-4 relative">
-          <div className="w-1.5 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
-          <div>
-            <h1 className="text-3xl font-black text-white tracking-tight">Visão Geral</h1>
-            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Mês atual · dados consolidados</p>
+        <div className="absolute -top-8 -left-8 w-64 h-64 bg-orange-500/[0.03] blur-3xl rounded-full pointer-events-none" />
+        <div className="flex items-center justify-between flex-wrap gap-4 relative">
+          <div className="flex items-center gap-4">
+            <div className="w-1.5 h-10 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shrink-0 shadow-[0_0_16px_rgba(249,115,22,0.8)]" />
+            <div>
+              <h1 className="text-3xl font-black text-white tracking-tight">Visão Geral</h1>
+              <p className="text-[11px] text-zinc-500 font-mono mt-0.5 tracking-widest uppercase">Mês atual · dados consolidados</p>
+            </div>
+          </div>
+          {/* Mini status strip no header */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+              </span>
+              <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Ao vivo</span>
+            </div>
+            <div className="text-[10px] text-zinc-700 font-mono">
+              {dashboards.length} produto{dashboards.length !== 1 ? 's' : ''} · {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Alertas ativos em destaque */}
+      {/* ── Alertas ativos ──────────────────────────────────────────────────── */}
       {activeAlerts.length > 0 && (
-        <div className="mb-8 anim-slide-up delay-100">
+        <div className="mb-6 anim-slide-up delay-100">
           <AlertBannerList alerts={activeAlerts} />
         </div>
       )}
 
-      {/* KPIs consolidados */}
+      {/* ── KPIs consolidados — 4 cards ─────────────────────────────────────── */}
       {dashboards.length > 0 && canSeeFinancial && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="anim-slide-up delay-150 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '0.5s' } as React.CSSProperties}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 anim-slide-up delay-150">
           <KPICard
             label="Faturamento"
             value={formatCurrency(consolidated.faturamento)}
             accent="brand"
             sub={`A receber: ${formatCurrency(consolidated.a_receber)}`}
           />
-          </div>
-          <div className="anim-slide-up delay-200 line-sweep-emerald rounded-2xl" style={{ '--sweep-delay': '1.5s' } as React.CSSProperties}>
           <KPICard
             label="Lucro Líquido"
             value={formatCurrency(consolidated.lucro_liquido)}
             accent={consolidated.lucro_liquido >= 0 ? 'positive' : 'negative'}
             sub={`A pagar: ${formatCurrency(consolidated.a_pagar)}`}
           />
-          </div>
-          <div className="anim-slide-up delay-250 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '2.5s' } as React.CSSProperties}>
           <KPICard
-            label="Produtos ativos"
-            value={String(dashboards.length)}
-            sub="Mês atual · lançamentos manuais"
+            label="Margem Líquida"
+            value={margem !== null ? `${margem.toFixed(1)}%` : '—'}
+            accent={margem !== null ? (margem >= 20 ? 'positive' : margem >= 0 ? 'neutral' : 'negative') : 'neutral'}
+            sub={margem !== null ? (margem >= 20 ? 'Margem saudável' : margem >= 0 ? 'Margem baixa' : 'Resultado negativo') : 'Sem lançamentos'}
           />
+          <KPICard
+            label="Produtos"
+            value={String(dashboards.length)}
+            accent="neutral"
+            sub={`${maxDashboards - dashboards.length} slot${maxDashboards - dashboards.length !== 1 ? 's' : ''} disponível`}
+          />
+        </div>
+      )}
+
+      {/* ── Linha de saúde rápida ────────────────────────────────────────────── */}
+      {canSeeFinancial && dashboards.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8 anim-slide-up delay-200">
+          {/* A receber */}
+          <div className="bg-[#0c0c0f] border border-emerald-500/15 rounded-xl p-3.5 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono">A Receber</p>
+              <p className="text-sm font-bold text-emerald-400 num truncate">{formatCurrency(consolidated.a_receber)}</p>
+            </div>
+          </div>
+          {/* A pagar */}
+          <div className="bg-[#0c0c0f] border border-red-500/15 rounded-xl p-3.5 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2">
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono">A Pagar</p>
+              <p className="text-sm font-bold text-red-400 num truncate">{formatCurrency(consolidated.a_pagar)}</p>
+            </div>
+          </div>
+          {/* Tarefas urgentes */}
+          <div className={`bg-[#0c0c0f] border rounded-xl p-3.5 flex items-center gap-3 ${tasksUrgentes.length > 0 ? 'border-orange-500/20' : 'border-white/[0.06]'}`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${tasksUrgentes.length > 0 ? 'bg-orange-500/10' : 'bg-white/[0.03]'}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tasksUrgentes.length > 0 ? '#f97316' : '#52525b'} strokeWidth="2">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono">Tarefas/7d</p>
+              <p className={`text-sm font-bold num ${tasksUrgentes.length > 0 ? 'text-orange-400' : 'text-zinc-400'}`}>
+                {totalTarefasVencendo} tarefa{totalTarefasVencendo !== 1 ? 's' : ''}
+              </p>
+            </div>
+          </div>
+          {/* Produtos com lucro positivo */}
+          <div className="bg-[#0c0c0f] border border-white/[0.06] rounded-xl p-3.5 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center shrink-0">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2">
+                <rect x="2" y="3" width="6" height="4" rx="1"/><rect x="9" y="3" width="6" height="4" rx="1"/>
+                <rect x="16" y="3" width="6" height="4" rx="1"/><rect x="2" y="10" width="6" height="4" rx="1"/>
+                <rect x="9" y="10" width="6" height="7" rx="1"/><rect x="16" y="10" width="6" height="7" rx="1"/>
+              </svg>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono">Lucrativos</p>
+              <p className="text-sm font-bold text-zinc-300 num">
+                {dashboardsWithSummary.filter(d => d.summary.lucro_liquido > 0).length} / {dashboards.length}
+              </p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Gráfico de evolução dos últimos 6 meses */}
-      {canSeeFinancial && evolutionSeries.length > 1 && (
-        <div className="mb-8 anim-slide-up delay-300 line-sweep-brand rounded-2xl" style={{ '--sweep-delay': '3s' } as React.CSSProperties}>
-          <EvolutionChart
-            title="EVOLUÇÃO — RECEITA E LUCRO"
-            data={evolutionSeries.map(p => ({
-              mes: p.month_label,
-              receita: p.receita,
-              lucro: p.lucro,
-            }))}
-            xKey="mes"
-            bars={[
-              { dataKey: 'receita', label: 'Receita', color: '#22c55e', fillOpacity: 0.5 },
-            ]}
-            lines={[
-              { dataKey: 'lucro', label: 'Lucro', color: '#f97316', strokeWidth: 2 },
-            ]}
-            height={200}
-            footnote="Últimos 6 meses · lançamentos manuais + integrações"
-          />
-        </div>
-      )}
-
-      {/* Ações pendentes + O que vem aí — lado a lado em telas maiores */}
-      {(pendingActions.length > 0 || hasUpcoming) && (
-        <div className={`grid gap-4 mb-8 anim-slide-up delay-400 ${pendingActions.length > 0 && hasUpcoming ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
-          {/* Ações sugeridas — só dono/head */}
-          {pendingActions.length > 0 && (
-            <PendingActions actions={pendingActions} />
-          )}
-
-          {/* O que vem aí — próximos 7 dias */}
-          {hasUpcoming && (
-            <div className="relative border border-white/[0.07] rounded-2xl overflow-hidden line-sweep-brand" style={{ background: 'linear-gradient(135deg, #0f0f13 0%, #0c0c10 100%)', '--sweep-delay': '2s' } as React.CSSProperties}>
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/20 via-blue-500/5 to-transparent" />
-              <div className="px-5 py-4 border-b border-white/[0.05]">
-                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] font-mono">
-                  O que vem aí · próximos 7 dias
-                </p>
-              </div>
-              <div className="divide-y divide-white/[0.04]">
-                {/* Tarefas com prazo */}
-                {upcomingTasks.map(task => (
-                  <div key={task.id} className="flex items-center gap-3 px-5 py-3">
-                    <span className="text-sm shrink-0">✅</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-zinc-200 truncate">{task.title}</p>
-                      <p className="text-[10px] text-zinc-600 mt-0.5">
-                        Prazo: {labelDate(task.due_date)} · {PRIORITY_LABEL[task.priority] ?? task.priority}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                {/* Financeiro a receber/pagar */}
-                {canSeeFinancial && upcomingFinanceEntries.map(entry => (
-                  <div key={entry.id} className="flex items-center gap-3 px-5 py-3">
-                    <span className="text-sm shrink-0">
-                      {entry.status === 'a_receber' ? '💰' : '📤'}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-xs font-medium ${entry.status === 'a_receber' ? 'text-emerald-400' : 'text-amber-400'}`}>
-                        {entry.status === 'a_receber' ? 'A receber' : 'A pagar'}: {formatCurrency(Number(entry.amount))}
-                      </p>
-                      <p className="text-[10px] text-zinc-600 mt-0.5">
-                        {entry.category} · vence {labelDate(entry.entry_date)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-                {upcomingTasks.length === 0 && (!canSeeFinancial || upcomingFinanceEntries.length === 0) && (
-                  <div className="px-5 py-8 text-center">
-                    <p className="text-xs text-zinc-600">Nenhum evento nos próximos 7 dias.</p>
-                  </div>
-                )}
-              </div>
+      {/* ── Gráfico + Sidebar de eventos ────────────────────────────────────── */}
+      {canSeeFinancial && evolutionSeries.length > 1 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4 mb-8 anim-slide-up delay-300">
+          {/* Gráfico de evolução */}
+          <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden relative">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+            <div className="flex items-center justify-between mb-4">
+              <p className="kpi-label">EVOLUÇÃO MENSAL · RECEITA E LUCRO</p>
+              <span className="text-[10px] text-zinc-600 font-mono">últimos 6 meses</span>
             </div>
-          )}
+            <EvolutionChart
+              data={evolutionSeries.map(p => ({
+                mes: p.month_label,
+                receita: p.receita,
+                lucro: p.lucro,
+              }))}
+              xKey="mes"
+              bars={[{ dataKey: 'receita', label: 'Receita', color: '#22c55e', fillOpacity: 0.45 }]}
+              lines={[{ dataKey: 'lucro', label: 'Lucro', color: '#f97316', strokeWidth: 2 }]}
+              height={200}
+              footnote="Barra: receita · Linha: lucro líquido"
+            />
+          </div>
+
+          {/* Painel lateral: próximos 7 dias */}
+          <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl overflow-hidden flex flex-col">
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent pointer-events-none" />
+            <div className="px-4 py-3.5 border-b border-white/[0.05] flex items-center gap-2 shrink-0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest font-mono">Próximos 7 dias</p>
+            </div>
+            <div className="flex-1 overflow-y-auto divide-y divide-white/[0.04]">
+              {upcomingTasks.map(task => (
+                <div key={task.id} className="flex items-start gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors group">
+                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+                    task.priority === 'alta' ? 'bg-orange-400' :
+                    task.priority === 'media' ? 'bg-amber-400' : 'bg-zinc-600'
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-zinc-300 font-medium truncate group-hover:text-white transition-colors">{task.title}</p>
+                    <p className="text-[10px] text-zinc-600 mt-0.5">vence {labelDate(task.due_date)}</p>
+                  </div>
+                </div>
+              ))}
+              {canSeeFinancial && upcomingFinanceEntries.map(entry => (
+                <div key={entry.id} className="flex items-start gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
+                  <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${entry.status === 'a_receber' ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-xs font-medium ${entry.status === 'a_receber' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      {entry.status === 'a_receber' ? '+' : '-'}{formatCurrency(Number(entry.amount))}
+                    </p>
+                    <p className="text-[10px] text-zinc-600 mt-0.5">{entry.category} · {labelDate(entry.entry_date)}</p>
+                  </div>
+                </div>
+              ))}
+              {upcomingTasks.length === 0 && upcomingFinanceEntries.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-10 gap-2">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f3f46" strokeWidth="1.5">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  <p className="text-xs text-zinc-700">Agenda limpa 🎉</p>
+                </div>
+              )}
+            </div>
+            {/* Ações pendentes embaixo */}
+            {pendingActions.length > 0 && (
+              <div className="border-t border-white/[0.05] shrink-0">
+                <PendingActions actions={pendingActions} />
+              </div>
+            )}
+          </div>
         </div>
+      ) : (
+        /* Sem gráfico: só painel de eventos se houver */
+        (pendingActions.length > 0 || hasUpcoming) && (
+          <div className="mb-8 anim-slide-up delay-300">
+            <PendingActions actions={pendingActions} />
+          </div>
+        )
       )}
 
-      {/* Dashboards de produtos */}
-      <div className="mb-10 anim-slide-up delay-500">
-        <div className="flex items-center justify-between mb-5">
+      {/* ── Produtos ─────────────────────────────────────────────────────────── */}
+      <div className="mb-8 anim-slide-up delay-400">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-1 h-5 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
             <div>
               <h2 className="text-base font-bold text-white tracking-tight">Produtos</h2>
-              <p className="text-[10px] text-zinc-600 mt-0.5 font-mono tracking-wide">
+              <p className="text-[10px] text-zinc-600 mt-0.5 font-mono">
                 {dashboards.length} / {maxDashboards} dashboards
               </p>
             </div>
@@ -576,8 +667,8 @@ export default async function AppPage() {
         )}
       </div>
 
-      {/* Feed de Atividade */}
-      <div className="anim-slide-up delay-600">
+      {/* ── Feed de Atividade ────────────────────────────────────────────────── */}
+      <div className="anim-slide-up delay-500">
         <ActivityFeed events={feedEvents.slice(0, 20)} />
       </div>
     </div>
