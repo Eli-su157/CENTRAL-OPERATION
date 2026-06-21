@@ -138,13 +138,19 @@ export function MemberCard({ member, currentUserId, stats, custoMes, dashboards 
   const perf = member.sector ? SECTOR_PERF[member.sector] : null;
 
   return (
-    <div className={`bg-[#0f0f12] rounded-xl border overflow-hidden shimmer-sweep hover:-translate-y-0.5 transition-all duration-300 ${
+    <div className={`bg-[#0c0c0f] rounded-2xl border overflow-hidden shimmer-sweep transition-all duration-300 ${
       stats.atrasadas > 0
-        ? 'border-red-900/30 hover:border-red-800/40'
-        : 'border-white/[0.06] hover:border-orange-500/20'
+        ? 'border-red-900/30 hover:border-red-700/50 hover:shadow-[0_0_30px_-8px_rgba(248,113,113,0.15)] hover:-translate-y-0.5'
+        : 'border-white/[0.07] hover:border-orange-500/25 hover:shadow-[0_0_30px_-8px_rgba(249,115,22,0.12)] hover:-translate-y-0.5'
     }`}>
+      {/* Linha no topo */}
+      <div className={`h-[2px] w-full ${
+        stats.atrasadas > 0
+          ? 'bg-gradient-to-r from-transparent via-red-500/50 to-transparent'
+          : 'bg-gradient-to-r from-transparent via-orange-500/30 to-transparent'
+      }`} />
       {/* ── Linha principal ──────────────────────────────────── */}
-      <div className="flex items-start gap-3 p-4">
+      <div className="flex items-start gap-3 p-4 cursor-pointer" onClick={() => setSection(prev => prev === 'edit' ? null : null)}>
         {/* Avatar */}
         <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-white ${
           stats.atrasadas > 0 ? 'bg-red-900/50' : 'bg-gradient-to-br from-zinc-600 to-zinc-800'

@@ -336,38 +336,50 @@ export default async function IntegracoesPage() {
                   const isConnected = !!conn && conn.count > 0;
                   const isAvailable = platform.status === 'disponivel';
 
+                  const cardHref = isAvailable && firstDashboardId ? `/app/d/${firstDashboardId}/dev` : null;
+                  const CardTag = cardHref ? 'a' : 'div';
+
                   return (
-                    <div
+                    <CardTag
                       key={platform.key}
-                      className={`relative bg-[#0f0f12] border rounded-xl p-5 flex flex-col gap-4 transition-all duration-200 overflow-hidden ${
+                      {...(cardHref ? { href: cardHref } : {})}
+                      className={`group relative bg-[#0c0c0f] border rounded-2xl p-5 flex flex-col gap-4 overflow-hidden shimmer-sweep transition-all duration-300 ${
+                        cardHref ? 'cursor-pointer' : ''
+                      } ${
                         isConnected
-                          ? 'border-orange-500/25 shadow-[0_0_20px_rgba(249,115,22,0.06)]'
-                          : 'border-white/[0.06] hover:border-white/[0.1]'
+                          ? 'border-orange-500/30 shadow-[0_0_30px_-8px_rgba(249,115,22,0.2)] hover:border-orange-500/50 hover:shadow-[0_0_45px_-8px_rgba(249,115,22,0.35)] hover:-translate-y-1'
+                          : isAvailable
+                          ? 'border-white/[0.07] hover:border-white/[0.14] hover:-translate-y-1 hover:shadow-[0_0_20px_-8px_rgba(255,255,255,0.05)]'
+                          : 'border-white/[0.04] opacity-60'
                       }`}
                     >
-                      {/* Top gradient line */}
-                      <div className={`absolute top-0 left-0 right-0 h-px ${
+                      {/* Linha sweep no topo */}
+                      <div className={`absolute top-0 left-0 right-0 h-[2px] transition-all duration-500 ${
                         isConnected
-                          ? 'bg-gradient-to-r from-transparent via-orange-500/40 to-transparent'
-                          : 'bg-gradient-to-r from-transparent via-white/[0.05] to-transparent'
+                          ? 'bg-gradient-to-r from-transparent via-orange-500/70 group-hover:via-orange-500/90 to-transparent'
+                          : isAvailable
+                          ? 'bg-gradient-to-r from-transparent via-white/[0.06] group-hover:via-white/[0.12] to-transparent'
+                          : 'bg-gradient-to-r from-transparent via-white/[0.02] to-transparent'
                       }`} />
 
                       <div className="flex items-start justify-between gap-3">
-                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${
+                        <div className={`w-11 h-11 rounded-xl border flex items-center justify-center shrink-0 transition-all duration-300 ${
                           isConnected
-                            ? 'bg-orange-500/10 border-orange-500/20 text-orange-400'
+                            ? 'bg-orange-500/15 border-orange-500/30 text-orange-400 group-hover:bg-orange-500/25 group-hover:shadow-[0_0_14px_-2px_rgba(249,115,22,0.4)]'
                             : isAvailable
-                            ? 'bg-white/[0.04] border-white/[0.08] text-zinc-400'
+                            ? 'bg-white/[0.04] border-white/[0.08] text-zinc-400 group-hover:bg-white/[0.07] group-hover:text-zinc-200'
                             : 'bg-white/[0.02] border-white/[0.04] text-zinc-700'
                         }`}>
                           {platform.icon}
                         </div>
 
                         <div className="flex flex-col items-end gap-1.5">
-                          {/* Status badge */}
                           {isConnected ? (
                             <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                              </span>
                               Ativo
                             </span>
                           ) : isAvailable ? (
@@ -379,7 +391,6 @@ export default async function IntegracoesPage() {
                               Em breve
                             </span>
                           )}
-                          {/* Category badge */}
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${platform.categoryColor}`}>
                             {platform.category}
                           </span>
@@ -387,7 +398,9 @@ export default async function IntegracoesPage() {
                       </div>
 
                       <div>
-                        <p className={`text-sm font-semibold mb-1 ${isAvailable ? 'text-white' : 'text-zinc-600'}`}>
+                        <p className={`text-sm font-bold mb-1.5 transition-colors duration-200 ${
+                          isAvailable ? 'text-white group-hover:text-orange-50' : 'text-zinc-600'
+                        }`}>
                           {platform.name}
                         </p>
                         <p className={`text-xs leading-relaxed ${isAvailable ? 'text-zinc-500' : 'text-zinc-700'}`}>
@@ -409,28 +422,30 @@ export default async function IntegracoesPage() {
                         </div>
                       )}
 
-                      {/* CTA */}
-                      {isAvailable && firstDashboardId && (
-                        <a
-                          href={`/app/d/${firstDashboardId}/dev`}
-                          className={`mt-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                      {/* Rodapé */}
+                      <div className={`mt-auto flex items-center justify-between pt-3 border-t transition-colors duration-300 ${
+                        isConnected ? 'border-orange-500/15' : 'border-white/[0.04]'
+                      }`}>
+                        {cardHref ? (
+                          <span className={`text-xs font-semibold transition-all duration-200 ${
                             isConnected
-                              ? 'bg-orange-500/10 hover:bg-orange-500/15 text-orange-400 border border-orange-500/20'
-                              : 'bg-white/[0.04] hover:bg-white/[0.07] text-zinc-400 hover:text-zinc-200 border border-white/[0.06]'
-                          }`}
-                        >
-                          {isConnected ? 'Gerenciar' : 'Conectar'}
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <polyline points="9 18 15 12 9 6" />
-                          </svg>
-                        </a>
-                      )}
-                      {(!isAvailable || !firstDashboardId) && (
-                        <div className="mt-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-medium text-zinc-700 border border-white/[0.04] cursor-not-allowed">
-                          {!firstDashboardId ? 'Crie um produto primeiro' : 'Em desenvolvimento'}
-                        </div>
-                      )}
-                    </div>
+                              ? 'text-orange-400 group-hover:text-orange-300'
+                              : 'text-zinc-500 group-hover:text-zinc-200'
+                          }`}>
+                            {isConnected ? 'Gerenciar →' : 'Conectar →'}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-zinc-700">
+                            {!firstDashboardId ? 'Crie um produto primeiro' : 'Em desenvolvimento'}
+                          </span>
+                        )}
+                        {isConnected && (
+                          <span className="text-[10px] text-zinc-600 font-mono">
+                            {conn.count} {conn.count === 1 ? 'conexão' : 'conexões'}
+                          </span>
+                        )}
+                      </div>
+                    </CardTag>
                   );
                 })}
               </div>

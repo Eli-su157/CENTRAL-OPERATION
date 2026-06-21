@@ -82,16 +82,23 @@ function BlockCard({
   label: string; badge: string; icon?: React.ReactNode; children: React.ReactNode;
 }) {
   return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 shadow-card overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+    <div className="relative bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden shimmer-sweep transition-all duration-300 hover:border-orange-500/20 hover:shadow-[0_0_30px_-10px_rgba(249,115,22,0.12)]">
+      {/* Linha de acento verde se real, neutra se sem dados */}
+      <div className={`absolute top-0 left-0 right-0 h-[2px] ${
+        badge === 'real'
+          ? 'bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent'
+          : 'bg-gradient-to-r from-transparent via-white/[0.06] to-transparent'
+      }`} />
       <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {icon && (
-            <span className="text-zinc-500 bg-white/[0.04] rounded-lg p-1.5">{icon}</span>
+            <span className={`rounded-lg p-1.5 transition-colors ${
+              badge === 'real' ? 'text-orange-400 bg-orange-500/10' : 'text-zinc-500 bg-white/[0.04]'
+            }`}>{icon}</span>
           )}
-          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.1em]">{label}</p>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-[0.12em] font-mono">{label}</p>
         </div>
-        <span className={`text-[10px] px-1.5 py-px rounded font-semibold ${
+        <span className={`text-[10px] px-1.5 py-px rounded font-bold font-mono ${
           badge === 'real'
             ? 'bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20'
             : 'bg-zinc-500/10 text-zinc-500 ring-1 ring-zinc-500/15'

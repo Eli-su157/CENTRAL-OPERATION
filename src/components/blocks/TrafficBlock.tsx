@@ -18,21 +18,25 @@ interface Props {
 
 export function TrafficBlock({ dashboardId, real }: Props) {
   return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 shadow-card overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+    <div className="relative bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden shimmer-sweep transition-all duration-300 hover:border-blue-500/20 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.10)]">
+      <div className={`absolute top-0 left-0 right-0 h-[2px] ${
+        real
+          ? 'bg-gradient-to-r from-transparent via-blue-500/40 to-transparent'
+          : 'bg-gradient-to-r from-transparent via-white/[0.06] to-transparent'
+      }`} />
 
       <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 bg-white/[0.04] rounded-lg p-1.5">
+        <div className="flex items-center gap-2.5">
+          <span className={`rounded-lg p-1.5 transition-colors ${real ? 'text-blue-400 bg-blue-500/10' : 'text-zinc-500 bg-white/[0.04]'}`}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
             </svg>
           </span>
-          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.1em]">Tráfego</p>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-[0.12em] font-mono">Tráfego</p>
         </div>
         {real && (
           <Link href={`/app/d/${real.dashboardId}/trafego`}
-            className="text-[11px] link-action transition-colors font-medium">
+            className="text-[11px] text-zinc-600 hover:text-orange-400 transition-colors font-mono font-medium">
             Painel completo →
           </Link>
         )}

@@ -24,14 +24,25 @@ export function TaskCard({ task, currentUserId, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left bg-[#0f0f12] hover:bg-[#141414] border rounded-lg p-3.5 transition-all duration-300 group shimmer-sweep hover:-translate-y-0.5 ${
+      className={`w-full text-left bg-[#0c0c0f] border rounded-xl p-3.5 transition-all duration-300 group shimmer-sweep hover:-translate-y-1 relative overflow-hidden ${
         overdue
-          ? 'border-red-900/50 hover:border-red-800/70 hover:shadow-[0_0_20px_-8px_rgba(248,113,113,0.2)]'
-          : 'border-white/[0.06] hover:border-orange-500/20 hover:shadow-[0_0_20px_-8px_rgba(249,115,22,0.2)]'
+          ? 'border-red-900/40 hover:border-red-700/60 hover:shadow-[0_0_25px_-8px_rgba(248,113,113,0.25)]'
+          : 'border-white/[0.07] hover:border-orange-500/25 hover:shadow-[0_0_25px_-8px_rgba(249,115,22,0.2)]'
       }`}
     >
+      {/* Linha de acento no topo por prioridade */}
+      <div className={`absolute top-0 left-0 right-0 h-[2px] transition-all duration-300 ${
+        overdue
+          ? 'bg-gradient-to-r from-transparent via-red-500/60 group-hover:via-red-400/80 to-transparent'
+          : task.priority === 'alta'
+          ? 'bg-gradient-to-r from-transparent via-orange-500/50 group-hover:via-orange-400/70 to-transparent'
+          : task.priority === 'media'
+          ? 'bg-gradient-to-r from-transparent via-amber-500/40 group-hover:via-amber-400/60 to-transparent'
+          : 'bg-gradient-to-r from-transparent via-white/[0.08] group-hover:via-white/[0.14] to-transparent'
+      }`} />
+
       {/* Priority + sector */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2 mt-0.5">
         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${PRIORITY_COLORS[task.priority]}`} />
         <span className="text-xs text-zinc-500">{SECTOR_LABELS[task.sector] ?? task.sector}</span>
         {task.dashboard && (

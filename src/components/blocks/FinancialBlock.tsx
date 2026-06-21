@@ -14,20 +14,24 @@ export function FinancialBlock({ realFinance }: Props) {
   const isReal   = !!realFinance;
 
   return (
-    <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl p-5 shadow-card overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+    <div className="relative bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden shimmer-sweep transition-all duration-300 hover:border-emerald-500/20 hover:shadow-[0_0_30px_-10px_rgba(52,211,153,0.08)]">
+      <div className={`absolute top-0 left-0 right-0 h-[2px] ${
+        isReal
+          ? 'bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent'
+          : 'bg-gradient-to-r from-transparent via-amber-500/20 to-transparent'
+      }`} />
 
       <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="text-zinc-500 bg-white/[0.04] rounded-lg p-1.5">
+        <div className="flex items-center gap-2.5">
+          <span className={`rounded-lg p-1.5 ${isReal ? 'text-emerald-400 bg-emerald-500/10' : 'text-zinc-500 bg-white/[0.04]'}`}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="1" x2="12" y2="23"/>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
             </svg>
           </span>
-          <p className="text-xs font-semibold text-zinc-400 uppercase tracking-[0.1em]">Financeiro</p>
+          <p className="text-xs font-bold text-zinc-400 uppercase tracking-[0.12em] font-mono">Financeiro</p>
         </div>
-        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20">
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20 font-mono">
           Restrito
         </span>
       </div>
