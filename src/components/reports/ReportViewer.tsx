@@ -1,6 +1,5 @@
 import { formatCurrency, formatPercent, formatDelta, deltaColor } from '@/lib/utils/format';
 import { formatPeriodLabel } from '@/lib/reports/periods';
-import { KPICard, MetricBlock, SectionHeader } from '@/components/ui';
 import type { ReportData } from '@/lib/reports/types';
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
     frozen_at: string | null;
     created_at: string;
   };
-  /** Snapshot do período anterior para cálculo de variação */
   prevData?: ReportData;
 }
 
@@ -32,52 +30,99 @@ function pct(current: number, prev: number | undefined): number | null {
   return ((current - prev) / Math.abs(prev)) * 100;
 }
 
-function deltaSub(val: number | null, invertLogic = false): { sub?: string; subClass?: string } {
-  if (val == null) return {};
-  return {
-    sub: formatDelta(val) + ' vs período ant.',
-    subClass: deltaColor(val, invertLogic),
-  };
+function DeltaBadge({ val, invert = false }: { val: number | null; invert?: boolean }) {
+  if (val == null) return null;
+  const positive = invert ? val < 0 : val > 0;
+  const neutral = Math.abs(val) < 0.5;
+  return (
+    <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold num px-1.5 py-0.5 rounded-md ${
+      neutral ? 'text-zinc-600 bg-zinc-800/50' :
+      positive ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'
+    }`}>
+      {val > 0 ? '↑' : val < 0 ? '↓' : '·'}{Math.abs(val).toFixed(1)}%
+    </span>
+  );
 }
 
-function AreaCard({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+function SectionCard({
+  title, icon, accent = 'neutral', children,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  accent?: 'emerald' | 'blue' | 'orange' | 'purple' | 'neutral';
+  children: React.ReactNode;
+}) {
+  const accentLine = {
+    emerald: 'via-emerald-500/30',
+    blue:    'via-blue-500/30',
+    orange:  'via-orange-500/30',
+    purple:  'via-purple-500/30',
+    neutral: 'via-white/[0.08]',
+  }[accent];
+
+  const iconCls = {
+    emerald: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    blue:    'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    orange:  'text-orange-400 bg-orange-500/10 border-orange-500/20',
+    purple:  'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    neutral: 'text-zinc-500 bg-white/[0.04] border-white/[0.06]',
+  }[accent];
+
   return (
-    <div className="bg-[#0f0f12] border border-white/[0.06] rounded-xl overflow-hidden">
-      <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-white/[0.05]">
-        <span className="text-zinc-500">{icon}</span>
-        <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.12em]">{title}</p>
+    <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl overflow-hidden">
+      <div className={`h-[2px] bg-gradient-to-r from-transparent ${accentLine} to-transparent`} />
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.05]">
+        <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${iconCls}`}>
+          {icon}
+        </div>
+        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest font-mono">{title}</p>
       </div>
       <div className="p-5">{children}</div>
     </div>
   );
 }
 
-function Row({ label, value, valueClass = 'text-white', indent = false, sub, subClass }: {
-  label: string; value: string; valueClass?: string; indent?: boolean; sub?: string; subClass?: string;
+function StatRow({ label, value, valueClass = 'text-zinc-200', indent = false, delta = null, invertDelta = false }: {
+  label: string; value: string; valueClass?: string; indent?: boolean;
+  delta?: number | null; invertDelta?: boolean;
 }) {
   return (
-    <div className={`flex items-center justify-between py-2 border-b border-white/[0.04] last:border-0 ${indent ? 'pl-4' : ''}`}>
-      <span className={`text-sm ${indent ? 'text-zinc-500' : 'text-zinc-300'}`}>{label}</span>
-      <div className="text-right">
-        <span className={`text-sm font-semibold tabular-nums ${valueClass}`}>{value}</span>
-        {sub && <p className={`text-[11px] tabular-nums ${subClass ?? 'text-zinc-600'}`}>{sub}</p>}
+    <div className={`flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0 ${indent ? 'pl-5' : ''}`}>
+      <span className={`text-sm ${indent ? 'text-zinc-600' : 'text-zinc-400'}`}>{label}</span>
+      <div className="flex items-center gap-2">
+        {delta !== null && <DeltaBadge val={delta} invert={invertDelta} />}
+        <span className={`text-sm font-semibold tabular-nums num ${valueClass}`}>{value}</span>
       </div>
     </div>
   );
 }
 
-function TaskBar({ done, total }: { done: number; total: number }) {
-  const pct = total > 0 ? (done / total) * 100 : 0;
+function KPITile({ label, value, sub, valueClass = 'text-white', accentColor = '#71717a' }: {
+  label: string; value: string; sub?: string; valueClass?: string; accentColor?: string;
+}) {
   return (
-    <div className="mt-3">
-      <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-        <span>{done} concluídas de {total}</span>
-        <span>{pct.toFixed(0)}%</span>
+    <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-[1.5px]" style={{ background: `linear-gradient(to right, transparent, ${accentColor}40, transparent)` }} />
+      <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-2">{label}</p>
+      <p className={`text-2xl font-black num leading-none ${valueClass}`}>{value}</p>
+      {sub && <p className="text-[10px] text-zinc-600 mt-1.5 num">{sub}</p>}
+    </div>
+  );
+}
+
+function TaskProgressBar({ done, total }: { done: number; total: number }) {
+  const p = total > 0 ? (done / total) * 100 : 0;
+  const color = p >= 80 ? '#34d399' : p >= 50 ? '#f97316' : '#f87171';
+  return (
+    <div className="mt-4 p-3.5 bg-white/[0.02] rounded-xl border border-white/[0.04]">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs text-zinc-500">{done} concluídas de {total}</span>
+        <span className="text-xs font-bold num" style={{ color }}>{p.toFixed(0)}%</span>
       </div>
       <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-orange-500 to-emerald-500 transition-all"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${p}%`, background: `linear-gradient(to right, ${color}99, ${color})` }}
         />
       </div>
     </div>
@@ -91,273 +136,283 @@ export function ReportViewer({ report, prevData }: Props) {
   const pt = prevData?.trafego;
   const po = prevData?.operacao;
 
-  // Cálculos derivados
   const margem = f.receita_bruta > 0 ? (f.lucro_liquido / f.receita_bruta) * 100 : 0;
   const prevMargem = pf && pf.receita_bruta > 0 ? (pf.lucro_liquido / pf.receita_bruta) * 100 : undefined;
   const margemDelta = prevMargem != null ? margem - prevMargem : null;
 
-  const receitaDelta   = pct(f.receita_bruta,      pf?.receita_bruta);
-  const lucroDelta     = pct(f.lucro_liquido,      pf?.lucro_liquido);
-  const gastoTrafDelta = t ? pct(t.gasto_total,    pt?.gasto_total)    : null;
-  const roasDelta      = t ? pct(t.roas_confirmado, pt?.roas_confirmado) : null;
-  const tasksDelta     = pct(o.tarefas_concluidas, po?.tarefas_concluidas);
+  const receitaDelta   = pct(f.receita_bruta,       pf?.receita_bruta);
+  const lucroDelta     = pct(f.lucro_liquido,        pf?.lucro_liquido);
+  const gastoTrafDelta = t ? pct(t.gasto_total,      pt?.gasto_total)      : null;
+  const roasDelta      = t ? pct(t.roas_confirmado,  pt?.roas_confirmado)  : null;
+  const tasksDelta     = pct(o.tarefas_concluidas,   po?.tarefas_concluidas);
 
   const lucroPositivo = f.lucro_liquido >= 0;
 
   return (
-    <article className="max-w-3xl space-y-5">
-      {/* ── Cabeçalho ─────────────────────────────────────────── */}
-      <div className="pb-5 border-b border-white/[0.05] relative">
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/15 via-orange-500/5 to-transparent" />
-        <div className="flex flex-wrap items-center gap-3 mb-1">
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            {formatPeriodLabel(report.period_type, report.period_ref)}
-          </h2>
-          <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${
-            report.status === 'congelado'
-              ? 'bg-emerald-950/60 border-emerald-800/60 text-emerald-400'
-              : 'bg-amber-950/60 border-amber-800/60 text-amber-400'
-          }`}>
-            {report.status === 'congelado' ? '🔒 Congelado' : '✏️ Rascunho'}
-          </span>
+    <article className="space-y-5">
+      {/* ── Cabeçalho do relatório ─────────────────────────────── */}
+      <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
+        <div className="absolute -top-8 -right-8 w-40 h-40 bg-orange-500/[0.03] blur-3xl rounded-full pointer-events-none" />
+
+        <div className="flex flex-wrap items-start justify-between gap-3 relative">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <h2 className="text-2xl font-black text-white tracking-tight">
+                {formatPeriodLabel(report.period_type, report.period_ref)}
+              </h2>
+              <span className={`text-[11px] px-2.5 py-0.5 rounded-full border font-bold font-mono ${
+                report.status === 'congelado'
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                  : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+              }`}>
+                {report.status === 'congelado' ? '🔒 Congelado' : '✏️ Rascunho'}
+              </span>
+            </div>
+            <p className="text-[11px] text-zinc-600 font-mono">
+              {d.period_start} → {d.period_end}
+              {report.frozen_at && ` · congelado ${new Date(report.frozen_at).toLocaleDateString('pt-BR')}`}
+            </p>
+          </div>
+          {/* Score de saúde rápido */}
+          <div className="flex items-center gap-2">
+            <div className={`px-3 py-1.5 rounded-xl border text-sm font-black num ${
+              lucroPositivo && margem >= 20
+                ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                : lucroPositivo
+                ? 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+                : 'bg-red-500/10 border-red-500/20 text-red-300'
+            }`}>
+              {lucroPositivo && margem >= 20 ? '● Saudável' : lucroPositivo ? '● Atenção' : '● Prejuízo'}
+            </div>
+          </div>
         </div>
-        <p className="text-sm text-zinc-500">
-          {d.period_start} → {d.period_end}
-          {report.frozen_at && ` · congelado em ${new Date(report.frozen_at).toLocaleDateString('pt-BR')}`}
-        </p>
       </div>
 
-      {/* ── Resumo do período — KPIs principais ───────────────── */}
-      <div>
-        <SectionHeader title="Resumo do Período" variant="section" />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
-          <KPICard
-            label="Receita Bruta"
-            value={formatCurrency(f.receita_bruta)}
-            accent="positive"
-            {...deltaSub(receitaDelta)}
+      {/* ── Resumo do período — 4 KPIs ─────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <KPITile
+          label="Receita Bruta"
+          value={formatCurrency(f.receita_bruta)}
+          sub={receitaDelta != null ? `${formatDelta(receitaDelta)} vs ant.` : undefined}
+          valueClass="text-emerald-300"
+          accentColor="#34d399"
+        />
+        <KPITile
+          label="Lucro Líquido"
+          value={formatCurrency(f.lucro_liquido)}
+          sub={lucroDelta != null ? `${formatDelta(lucroDelta)} vs ant.` : undefined}
+          valueClass={lucroPositivo ? 'text-emerald-200' : 'text-red-300'}
+          accentColor={lucroPositivo ? '#34d399' : '#f87171'}
+        />
+        <KPITile
+          label="Margem"
+          value={formatPercent(margem)}
+          sub={margemDelta != null ? `${margemDelta > 0 ? '+' : ''}${margemDelta.toFixed(1)}pp vs ant.` : undefined}
+          valueClass={margem >= 20 ? 'text-emerald-300' : margem >= 0 ? 'text-amber-300' : 'text-red-300'}
+          accentColor={margem >= 20 ? '#34d399' : margem >= 0 ? '#f59e0b' : '#f87171'}
+        />
+        {t ? (
+          <KPITile
+            label="ROAS"
+            value={`${t.roas_confirmado.toFixed(2)}x`}
+            sub={roasDelta != null ? `${formatDelta(roasDelta)} vs ant.` : undefined}
+            valueClass={t.roas_confirmado >= 2 ? 'text-emerald-300' : t.roas_confirmado >= 1 ? 'text-amber-300' : 'text-red-300'}
+            accentColor={t.roas_confirmado >= 2 ? '#34d399' : '#f59e0b'}
           />
-          <KPICard
-            label="Lucro Líquido"
-            value={formatCurrency(f.lucro_liquido)}
-            accent={lucroPositivo ? 'positive' : 'negative'}
-            {...deltaSub(lucroDelta)}
-          />
-          <KPICard
-            label="Margem"
-            value={formatPercent(margem)}
-            accent={margem >= 20 ? 'positive' : margem >= 0 ? 'brand' : 'negative'}
-            sub={margemDelta != null
-              ? formatDelta(margemDelta, 'pp') + ' vs período ant.'
-              : undefined}
-            subClass={margemDelta != null ? deltaColor(margemDelta) : undefined}
-          />
-          {t ? (
-            <KPICard
-              label="ROAS"
-              value={`${t.roas_confirmado.toFixed(2)}x`}
-              accent={t.roas_confirmado >= 2 ? 'positive' : t.roas_confirmado >= 1 ? 'brand' : 'negative'}
-              {...deltaSub(roasDelta)}
-            />
-          ) : (
-            <KPICard label="ROAS" value="—" accent="neutral" sub="sem tracker conectado" />
-          )}
-        </div>
+        ) : (
+          <KPITile label="ROAS" value="—" sub="sem tracker" accentColor="#52525b" valueClass="text-zinc-600" />
+        )}
       </div>
 
       {/* ── Análise do Head ───────────────────────────────────── */}
       {report.head_comment && (
-        <div className="bg-white/[0.02] border border-orange-500/10 rounded-xl p-5">
-          <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-[0.12em] mb-2">
-            Análise do Head
-          </p>
-          <p className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">
-            {report.head_comment}
-          </p>
+        <div className="bg-orange-500/[0.04] border border-orange-500/15 rounded-2xl p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
+          <div className="flex items-center gap-2 mb-3">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <p className="text-[10px] font-bold text-orange-400/80 uppercase tracking-widest font-mono">Análise do Head</p>
+          </div>
+          <p className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">{report.head_comment}</p>
         </div>
       )}
 
-      {/* ── Área: Financeiro ──────────────────────────────────── */}
-      <AreaCard
-        title="Financeiro"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-          </svg>
-        }
-      >
-        <div className="grid sm:grid-cols-2 gap-x-8">
+      {/* ── Financeiro ────────────────────────────────────────── */}
+      <SectionCard title="Financeiro" accent="emerald" icon={
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      }>
+        <div className="grid sm:grid-cols-2 gap-x-6 gap-y-0">
           <div>
-            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.1em] mb-2">Receitas</p>
-            <Row label="Receita Bruta"   value={formatCurrency(f.receita_bruta)}    valueClass="text-emerald-400" />
-            <Row label="↳ Taxas"         value={`-${formatCurrency(f.taxas_plataforma)}`}  valueClass="text-red-400" indent />
-            <Row label="↳ Reembolsos"    value={`-${formatCurrency(f.reembolsos)}`}         valueClass="text-red-400" indent />
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Receitas</p>
+            <StatRow label="Receita Bruta" value={formatCurrency(f.receita_bruta)} valueClass="text-emerald-400" delta={receitaDelta} />
+            {f.taxas_plataforma > 0 && <StatRow label="↳ Taxas de plataforma" value={`-${formatCurrency(f.taxas_plataforma)}`} valueClass="text-red-400" indent />}
+            {f.reembolsos > 0 && <StatRow label="↳ Reembolsos" value={`-${formatCurrency(f.reembolsos)}`} valueClass="text-red-400" indent />}
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-[0.1em] mb-2">Custos</p>
-            <Row label="Gasto Tráfego"   value={`-${formatCurrency(f.gasto_trafego)}`}  valueClass="text-red-400" />
-            <Row label="Comissões"        value={`-${formatCurrency(f.comissoes)}`}       valueClass="text-red-400" />
-            <Row label="Custos Fixos"     value={`-${formatCurrency(f.custos_fixos + f.outros_custos)}`} valueClass="text-red-400" />
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Custos</p>
+            {f.gasto_trafego > 0 && <StatRow label="Gasto Tráfego" value={`-${formatCurrency(f.gasto_trafego)}`} valueClass="text-red-400" />}
+            {f.comissoes > 0 && <StatRow label="Comissões" value={`-${formatCurrency(f.comissoes)}`} valueClass="text-red-400" />}
+            {(f.custos_fixos + f.outros_custos) > 0 && <StatRow label="Custos Fixos + Outros" value={`-${formatCurrency(f.custos_fixos + f.outros_custos)}`} valueClass="text-red-400" />}
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-          <span className="text-sm font-bold text-white">Lucro Líquido</span>
-          <div className="text-right">
-            <p className={`text-2xl font-bold tabular-nums num ${lucroPositivo ? 'text-emerald-300' : 'text-red-300'}`}>
+        {/* Resultado */}
+        <div className={`mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between rounded-xl p-4 ${lucroPositivo ? 'bg-emerald-500/[0.04] border border-emerald-500/10' : 'bg-red-500/[0.04] border border-red-500/10'}`}>
+          <div>
+            <p className="text-[9px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Lucro Líquido</p>
+            <p className={`text-3xl font-black tabular-nums num ${lucroPositivo ? 'text-emerald-300' : 'text-red-300'}`}>
               {formatCurrency(f.lucro_liquido)}
             </p>
+          </div>
+          <div className="text-right">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Margem</p>
+            <p className={`text-xl font-black num ${margem >= 20 ? 'text-emerald-400' : margem >= 0 ? 'text-amber-400' : 'text-red-400'}`}>
+              {margem.toFixed(1)}%
+            </p>
             {lucroDelta != null && (
-              <p className={`text-xs tabular-nums ${deltaColor(lucroDelta)}`}>
-                {formatDelta(lucroDelta)} vs período ant.
-              </p>
+              <DeltaBadge val={lucroDelta} />
             )}
           </div>
         </div>
 
         {(f.a_receber > 0 || f.a_pagar > 0) && (
-          <div className="mt-3 pt-3 border-t border-white/[0.04] grid grid-cols-2 gap-4">
-            <MetricBlock label="A receber" value={formatCurrency(f.a_receber)} valueClass="text-emerald-400" />
-            <MetricBlock label="A pagar"   value={formatCurrency(f.a_pagar)}   valueClass="text-red-400" />
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="bg-emerald-500/[0.04] border border-emerald-500/10 rounded-xl p-3">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">A receber</p>
+              <p className="text-sm font-bold text-emerald-400 num">{formatCurrency(f.a_receber)}</p>
+            </div>
+            <div className="bg-red-500/[0.04] border border-red-500/10 rounded-xl p-3">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">A pagar</p>
+              <p className="text-sm font-bold text-red-400 num">{formatCurrency(f.a_pagar)}</p>
+            </div>
           </div>
         )}
-      </AreaCard>
+      </SectionCard>
 
-      {/* ── Área: Tráfego — omitida quando sem tracker ─────────── */}
+      {/* ── Tráfego ───────────────────────────────────────────── */}
       {t && (
-        <AreaCard
-          title="Tráfego"
-          icon={
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-          }
-        >
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-            <MetricBlock
-              label="Gasto Total"
-              value={formatCurrency(t.gasto_total)}
-              delta={gastoTrafDelta != null ? formatDelta(gastoTrafDelta) + ' vs ant.' : undefined}
-              deltaClass={gastoTrafDelta != null ? deltaColor(gastoTrafDelta, true) : undefined}
-            />
-            <MetricBlock
-              label="Faturamento"
-              value={formatCurrency(t.faturamento_total)}
-              valueClass="text-emerald-400"
-            />
-            <MetricBlock
-              label="Campanhas Ativas"
-              value={String(t.campanhas_ativas)}
-            />
+        <SectionCard title="Tráfego" accent="blue" icon={
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        }>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.04]">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Gasto Total</p>
+              <p className="text-sm font-bold text-red-400 num">{formatCurrency(t.gasto_total)}</p>
+              {gastoTrafDelta !== null && <DeltaBadge val={gastoTrafDelta} invert />}
+            </div>
+            <div className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.04]">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Faturamento</p>
+              <p className="text-sm font-bold text-emerald-400 num">{formatCurrency(t.faturamento_total)}</p>
+            </div>
+            <div className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.04]">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">ROAS conf.</p>
+              <p className={`text-sm font-bold num ${t.roas_confirmado >= 2 ? 'text-emerald-400' : 'text-amber-400'}`}>{t.roas_confirmado.toFixed(2)}x</p>
+            </div>
+            <div className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.04]">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Campanhas</p>
+              <p className="text-sm font-bold text-zinc-300 num">{t.campanhas_ativas}</p>
+            </div>
           </div>
-          <Row
-            label="ROAS confirmado"
-            value={`${t.roas_confirmado.toFixed(2)}x`}
-            valueClass={t.roas_confirmado >= 2 ? 'text-emerald-400' : 'text-amber-400'}
-            sub={roasDelta != null ? formatDelta(roasDelta) + ' vs período ant.' : undefined}
-            subClass={roasDelta != null ? deltaColor(roasDelta) : undefined}
-          />
-          <Row
-            label="ROAS projetado"
-            value={`${t.roas_projetado.toFixed(2)}x`}
-            valueClass="text-zinc-400"
-          />
-        </AreaCard>
+          <StatRow label="ROAS projetado" value={`${t.roas_projetado.toFixed(2)}x`} valueClass="text-zinc-400" />
+        </SectionCard>
       )}
 
-      {/* ── Área: Tarefas & Operação ──────────────────────────── */}
-      <AreaCard
-        title="Tarefas"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <polyline points="9 11 12 14 22 4"/>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-          </svg>
-        }
-      >
-        <div className="grid grid-cols-3 gap-3 mb-3">
-          <MetricBlock
-            label="Concluídas"
-            value={String(o.tarefas_concluidas)}
-            valueClass="text-emerald-400"
-            delta={tasksDelta != null ? formatDelta(tasksDelta) + ' vs ant.' : undefined}
-            deltaClass={tasksDelta != null ? deltaColor(tasksDelta) : undefined}
-          />
-          <MetricBlock label="Pendentes" value={String(o.tarefas_pendentes)} />
-          <MetricBlock
-            label="Atrasadas"
-            value={String(o.tarefas_atrasadas)}
-            valueClass={o.tarefas_atrasadas > 0 ? 'text-red-400' : 'text-zinc-400'}
-            highlight={o.tarefas_atrasadas > 2}
-          />
+      {/* ── Tarefas & Operação ────────────────────────────────── */}
+      <SectionCard title="Tarefas & Operação" accent="orange" icon={
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="9 11 12 14 22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      }>
+        <div className="grid grid-cols-3 gap-3 mb-1">
+          <div className="bg-emerald-500/[0.04] border border-emerald-500/10 rounded-xl p-3 text-center">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Concluídas</p>
+            <p className="text-xl font-black text-emerald-400 num">{o.tarefas_concluidas}</p>
+            {tasksDelta !== null && <DeltaBadge val={tasksDelta} />}
+          </div>
+          <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3 text-center">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Pendentes</p>
+            <p className="text-xl font-black text-zinc-400 num">{o.tarefas_pendentes}</p>
+          </div>
+          <div className={`border rounded-xl p-3 text-center ${o.tarefas_atrasadas > 0 ? 'bg-red-500/[0.04] border-red-500/10' : 'bg-white/[0.02] border-white/[0.04]'}`}>
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Atrasadas</p>
+            <p className={`text-xl font-black num ${o.tarefas_atrasadas > 0 ? 'text-red-400' : 'text-zinc-600'}`}>{o.tarefas_atrasadas}</p>
+          </div>
         </div>
 
-        {o.total_tarefas > 0 && (
-          <TaskBar done={o.tarefas_concluidas} total={o.total_tarefas} />
-        )}
+        {o.total_tarefas > 0 && <TaskProgressBar done={o.tarefas_concluidas} total={o.total_tarefas} />}
 
         {o.gargalos.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-white/[0.04]">
-            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em] mb-2">
-              Gargalos
-            </p>
+          <div className="mt-4 pt-4 border-t border-white/[0.05]">
+            <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest font-mono mb-3">Gargalos</p>
             <div className="flex flex-wrap gap-2">
               {o.gargalos.map(g => (
-                <span
-                  key={g.setor}
-                  className="text-xs bg-red-950/30 border border-red-800/40 text-red-400 px-2.5 py-1 rounded-full"
-                >
+                <span key={g.setor} className="flex items-center gap-1.5 text-xs bg-red-950/20 border border-red-800/30 text-red-400 px-3 py-1.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                   {SECTOR_LABEL[g.setor] ?? g.setor}: {g.quantidade} atrasad{g.quantidade !== 1 ? 'as' : 'a'}
                 </span>
               ))}
             </div>
           </div>
         )}
-      </AreaCard>
+      </SectionCard>
 
-      {/* ── Área: Produção ────────────────────────────────────── */}
-      <AreaCard
-        title="Produção de Conteúdo"
-        icon={
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-          </svg>
-        }
-      >
+      {/* ── Produção de Conteúdo ──────────────────────────────── */}
+      <SectionCard title="Produção de Conteúdo" accent="purple" icon={
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      }>
         <div className="grid grid-cols-3 gap-3">
-          <MetricBlock label="Entregues"    value={String(p.materiais_entregues)} valueClass="text-emerald-400" />
-          <MetricBlock label="No ar"        value={String(p.materiais_no_ar)} />
-          <MetricBlock label="Em produção"  value={String(p.materiais_em_producao)} valueClass="text-amber-400" />
+          <div className="bg-emerald-500/[0.04] border border-emerald-500/10 rounded-xl p-3 text-center">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Entregues</p>
+            <p className="text-xl font-black text-emerald-400 num">{p.materiais_entregues}</p>
+          </div>
+          <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3 text-center">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">No ar</p>
+            <p className="text-xl font-black text-zinc-300 num">{p.materiais_no_ar}</p>
+          </div>
+          <div className="bg-amber-500/[0.04] border border-amber-500/10 rounded-xl p-3 text-center">
+            <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-1">Em produção</p>
+            <p className="text-xl font-black text-amber-400 num">{p.materiais_em_producao}</p>
+          </div>
         </div>
 
         {p.criativo_destaque && p.roas_criativo_destaque !== null && (
-          <div className="mt-4 pt-4 border-t border-white/[0.04]">
-            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em] mb-1.5">
-              Criativo destaque
-            </p>
-            <p className="text-sm text-white font-medium">
-              {p.criativo_destaque.slice(0, 8)}…
-              <span className="text-zinc-500 font-normal"> · ROAS </span>
-              <span className="text-emerald-400">{p.roas_criativo_destaque.toFixed(1)}x</span>
-            </p>
+          <div className="mt-4 p-3.5 bg-orange-500/[0.04] border border-orange-500/10 rounded-xl flex items-center justify-between">
+            <div>
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-0.5">Criativo destaque</p>
+              <p className="text-sm text-zinc-300 font-medium">{p.criativo_destaque.slice(0, 12)}…</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-mono mb-0.5">ROAS</p>
+              <p className="text-lg font-black text-emerald-400 num">{p.roas_criativo_destaque.toFixed(1)}x</p>
+            </div>
           </div>
         )}
 
         {Object.keys(p.por_tipo).length > 0 && (
-          <div className="mt-4 pt-4 border-t border-white/[0.04]">
-            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em] mb-2">Por tipo</p>
+          <div className="mt-4 pt-4 border-t border-white/[0.05]">
+            <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest font-mono mb-3">Por tipo</p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(p.por_tipo).map(([tipo, n]) => (
-                <span key={tipo} className="text-xs bg-white/[0.04] border border-white/[0.06] text-zinc-400 px-2.5 py-1 rounded-full">
+                <span key={tipo} className="text-xs bg-white/[0.03] border border-white/[0.06] text-zinc-400 px-3 py-1.5 rounded-full">
                   {TYPE_LABEL[tipo] ?? tipo}: {n}
                 </span>
               ))}
             </div>
           </div>
         )}
-      </AreaCard>
+      </SectionCard>
 
-      <p className="text-[11px] text-zinc-700 pt-1">
+      <p className="text-[10px] text-zinc-700 font-mono pt-1">
         Snapshot gerado em {new Date(d.gerado_em).toLocaleString('pt-BR')}
       </p>
     </article>

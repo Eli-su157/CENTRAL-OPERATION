@@ -6,7 +6,7 @@ import { generateReportAction } from '@/app/app/relatorios/actions';
 import { getCurrentPeriodRef, getRecentPeriods, formatPeriodLabel } from '@/lib/reports/periods';
 
 interface Props {
-  existingRefs: Set<string>; // 'mensal:2026-06' etc.
+  existingRefs: Set<string>;
 }
 
 export function GenerateReportForm({ existingRefs }: Props) {
@@ -38,22 +38,33 @@ export function GenerateReportForm({ existingRefs }: Props) {
     });
   }
 
-  const selectCls = 'sel';
-
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-      <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-4">Gerar relatório</p>
+    <div className="bg-[#0c0c0f] border border-white/[0.07] rounded-2xl p-5 overflow-hidden relative">
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
+
+      <div className="flex items-center gap-2.5 mb-5">
+        <div className="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest font-mono">Gerar Relatório</p>
+      </div>
 
       <div className="flex flex-col gap-3">
         {/* Tipo */}
-        <div className="flex gap-1 bg-zinc-800/60 rounded-lg p-1 w-fit">
+        <div className="flex gap-1 bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
           {(['mensal', 'semanal'] as const).map(t => (
             <button
               key={t}
               type="button"
               onClick={() => handleTypeChange(t)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                periodType === t ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-zinc-300'
+              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                periodType === t
+                  ? 'bg-orange-500/15 text-orange-300 border border-orange-500/25'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               {t === 'mensal' ? 'Mensal' : 'Semanal'}
@@ -62,7 +73,11 @@ export function GenerateReportForm({ existingRefs }: Props) {
         </div>
 
         {/* Período */}
-        <select value={periodRef} onChange={e => setPeriodRef(e.target.value)} className={selectCls}>
+        <select
+          value={periodRef}
+          onChange={e => setPeriodRef(e.target.value)}
+          className="sel"
+        >
           {periods.map(p => (
             <option key={p} value={p}>
               {formatPeriodLabel(periodType, p)}
@@ -72,20 +87,30 @@ export function GenerateReportForm({ existingRefs }: Props) {
         </select>
 
         {error && (
-          <p className="text-xs text-red-400 bg-red-950/40 border border-red-800/50 rounded px-2 py-1">{error}</p>
+          <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-950/30 border border-red-800/40">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" className="shrink-0 mt-0.5">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <p className="text-xs text-red-400">{error}</p>
+          </div>
         )}
 
         <button
           onClick={handleGenerate}
           disabled={isPending}
-          className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-orange-500 hover:bg-orange-400 text-white transition-colors disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-orange-500 hover:bg-orange-400 text-white transition-all shadow-[0_0_20px_-4px_rgba(249,115,22,0.5)] disabled:opacity-50 disabled:shadow-none"
         >
           {isPending ? (
-            <span className="animate-pulse">Gerando…</span>
+            <>
+              <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              Gerando…
+            </>
           ) : (
             <>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
               </svg>
               Gerar rascunho
             </>
