@@ -408,17 +408,17 @@ export default async function AppPage() {
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       {/* Page header */}
-      <div className="mb-8 pb-6 border-b border-white/[0.05] relative">
+      <div className="mb-8 pb-6 border-b border-white/[0.05] relative anim-slide-down">
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/20 via-orange-500/5 to-transparent" />
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0" />
+          <div className="w-1 h-6 bg-orange-500 rounded-full shrink-0 shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
           <h1 className="text-2xl font-bold text-white tracking-tight">Visão Geral</h1>
         </div>
       </div>
 
       {/* Alertas ativos em destaque */}
       {activeAlerts.length > 0 && (
-        <div className="mb-8">
+        <div className="mb-8 anim-slide-up delay-100">
           <AlertBannerList alerts={activeAlerts} />
         </div>
       )}
@@ -426,29 +426,35 @@ export default async function AppPage() {
       {/* KPIs consolidados */}
       {dashboards.length > 0 && canSeeFinancial && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="anim-slide-up delay-150">
           <KPICard
             label="Faturamento"
             value={formatCurrency(consolidated.faturamento)}
             accent="brand"
             sub={`A receber: ${formatCurrency(consolidated.a_receber)}`}
           />
+          </div>
+          <div className="anim-slide-up delay-200">
           <KPICard
             label="Lucro Líquido"
             value={formatCurrency(consolidated.lucro_liquido)}
             accent={consolidated.lucro_liquido >= 0 ? 'positive' : 'negative'}
             sub={`A pagar: ${formatCurrency(consolidated.a_pagar)}`}
           />
+          </div>
+          <div className="anim-slide-up delay-250">
           <KPICard
             label="Produtos ativos"
             value={String(dashboards.length)}
             sub="Mês atual · lançamentos manuais"
           />
+          </div>
         </div>
       )}
 
       {/* Gráfico de evolução dos últimos 6 meses */}
       {canSeeFinancial && evolutionSeries.length > 1 && (
-        <div className="mb-8">
+        <div className="mb-8 anim-slide-up delay-300">
           <EvolutionChart
             title="EVOLUÇÃO — RECEITA E LUCRO"
             data={evolutionSeries.map(p => ({
@@ -471,7 +477,7 @@ export default async function AppPage() {
 
       {/* Ações pendentes + O que vem aí — lado a lado em telas maiores */}
       {(pendingActions.length > 0 || hasUpcoming) && (
-        <div className={`grid gap-4 mb-8 ${pendingActions.length > 0 && hasUpcoming ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
+        <div className={`grid gap-4 mb-8 anim-slide-up delay-400 ${pendingActions.length > 0 && hasUpcoming ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}>
           {/* Ações sugeridas — só dono/head */}
           {pendingActions.length > 0 && (
             <PendingActions actions={pendingActions} />
@@ -527,7 +533,7 @@ export default async function AppPage() {
       )}
 
       {/* Dashboards de produtos */}
-      <div className="mb-10">
+      <div className="mb-10 anim-slide-up delay-500">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-sm font-semibold text-white">Produtos</h2>
@@ -564,7 +570,9 @@ export default async function AppPage() {
       </div>
 
       {/* Feed de Atividade */}
-      <ActivityFeed events={feedEvents.slice(0, 20)} />
+      <div className="anim-slide-up delay-600">
+        <ActivityFeed events={feedEvents.slice(0, 20)} />
+      </div>
     </div>
   );
 }

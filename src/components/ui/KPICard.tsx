@@ -46,13 +46,16 @@ export function KPICard({
   const shadowClass = glowClass[accent];
 
   return (
-    <div className={`relative bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5 overflow-hidden transition-all duration-200 hover:border-white/[0.09] ${shadowClass}`}>
+    <div className={`relative bg-[#0f0f12] border border-white/[0.06] rounded-xl p-5 overflow-hidden transition-all duration-300 hover:border-white/[0.12] group shimmer-sweep ${shadowClass} hover:scale-[1.015] hover:-translate-y-0.5`}>
       {/* acento top */}
-      <div className={`absolute top-0 left-0 right-0 h-px ${barClass}`} />
+      <div className={`absolute top-0 left-0 right-0 h-px ${barClass} transition-opacity duration-300 group-hover:opacity-150`} />
 
       {/* glow de fundo por acento */}
       {accent === 'brand' && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-12 bg-orange-500/[0.04] blur-2xl pointer-events-none rounded-full" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-12 bg-orange-500/[0.04] group-hover:bg-orange-500/[0.08] blur-2xl pointer-events-none rounded-full transition-all duration-500" />
+      )}
+      {accent === 'positive' && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-12 bg-emerald-500/[0.03] group-hover:bg-emerald-500/[0.07] blur-2xl pointer-events-none rounded-full transition-all duration-500" />
       )}
 
       <div className="flex items-start justify-between mb-4">
@@ -62,7 +65,7 @@ export function KPICard({
         )}
       </div>
 
-      <p className={`text-2xl sm:text-[1.7rem] font-bold num leading-none ${valClass}`}>
+      <p className={`text-2xl sm:text-[1.7rem] font-bold num leading-none transition-all duration-200 group-hover:tracking-tight ${valClass}`}>
         {value}
       </p>
 

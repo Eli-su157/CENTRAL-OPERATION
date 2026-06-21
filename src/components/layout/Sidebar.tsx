@@ -71,19 +71,19 @@ function NavItem({
     <Link
       href={href}
       onClick={onClick}
-      className={`group relative flex items-center gap-2.5 px-3 py-[7px] text-[13px] rounded-lg transition-all duration-150 ${
+      className={`group relative flex items-center gap-2.5 px-3 py-[7px] text-[13px] rounded-lg transition-all duration-200 ${
         active
-          ? 'text-white font-medium bg-white/[0.05] border border-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
-          : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.03] border border-transparent'
+          ? 'text-white font-medium bg-white/[0.05] border border-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] shadow-[0_0_12px_-4px_rgba(249,115,22,0.08)]'
+          : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.04] hover:shadow-[0_0_10px_-4px_rgba(255,255,255,0.04)]'
       }`}
     >
       {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-orange-500 rounded-full shadow-[0_0_6px_rgba(249,115,22,0.6)]" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
       )}
-      <span className={`shrink-0 transition-colors ${active ? 'text-orange-400' : 'text-zinc-600 group-hover:text-zinc-400'}`}>
+      <span className={`shrink-0 transition-all duration-200 ${active ? 'text-orange-400 scale-110' : 'text-zinc-600 group-hover:text-orange-400 group-hover:scale-110'}`}>
         {icon}
       </span>
-      {label}
+      <span className="transition-all duration-150 group-hover:translate-x-0.5">{label}</span>
     </Link>
   );
 }
@@ -92,13 +92,13 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex flex-col h-full bg-[#09090c] border-r border-white/[0.04]">
+    <aside className="w-64 flex flex-col h-full bg-[#09090c] border-r border-white/[0.04] anim-slide-right">
 
       {/* Brand */}
       <div className="px-4 py-4 border-b border-white/[0.04]">
         <div className="flex items-center gap-3">
-          {/* Logo com glow */}
-          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0 shadow-[0_0_16px_rgba(249,115,22,0.45)] ring-1 ring-orange-400/30">
+          {/* Logo com glow pulsante */}
+          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0 anim-logo-glow ring-1 ring-orange-400/30 anim-float">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <rect x="1" y="1" width="6" height="6" fill="white" />
               <rect x="9" y="1" width="6" height="6" fill="white" />
@@ -106,7 +106,7 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
               <rect x="1" y="9" width="6" height="6" fill="white" />
             </svg>
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 anim-slide-up delay-100">
             <p className="text-[11px] font-bold text-white uppercase tracking-[0.18em] leading-none font-mono">
               CENTRAL
             </p>
@@ -120,6 +120,7 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-2 py-3 flex flex-col gap-0.5">
 
+        <div className="anim-slide-right delay-150">
         <NavItem href="/app" exact onClick={onClose}
           icon={
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -129,6 +130,7 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
           }
           label="Visão Geral"
         />
+        </div>
 
         {dashboards.length > 0 && (
           <>
@@ -160,7 +162,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
           </>
         )}
 
+        <div className="anim-slide-right delay-200">
         <p className="section-title mt-2">Comando</p>
+        </div>
+        <div className="anim-slide-right delay-250">
         <NavItem href="/app/tarefas" onClick={onClose}
           icon={
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -170,6 +175,8 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
           }
           label="Tarefas"
         />
+        </div>
+        <div className="anim-slide-right delay-300">
         <NavItem href="/app/calendario" onClick={onClose}
           icon={
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -181,7 +188,9 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
           }
           label="Calendário"
         />
+        </div>
         {canSeeFinancial && (
+          <div className="anim-slide-right delay-400">
           <NavItem href="/app/financeiro" onClick={onClose}
             icon={
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -191,8 +200,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             }
             label="Financeiro"
           />
+          </div>
         )}
         {canSeeReports && (
+          <div className="anim-slide-right delay-500">
           <NavItem href="/app/relatorios" onClick={onClose}
             icon={
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -204,12 +215,16 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             }
             label="Relatórios"
           />
+          </div>
         )}
 
         {(canManageTeam || canSeeIntegrations) && (
+          <div className="anim-slide-right delay-500">
           <p className="section-title mt-2">Gestão</p>
+          </div>
         )}
         {canManageTeam && (
+          <div className="anim-slide-right delay-600">
           <NavItem href="/app/equipe" onClick={onClose}
             icon={
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -221,8 +236,10 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             }
             label="Equipe"
           />
+          </div>
         )}
         {canSeeIntegrations && (
+          <div className="anim-slide-right delay-700">
           <NavItem href="/app/integracoes" onClick={onClose}
             icon={
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
@@ -235,14 +252,15 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
             }
             label="Integrações"
           />
+          </div>
         )}
       </nav>
 
       {/* User footer */}
-      <div className="border-t border-white/[0.04] p-3 space-y-0.5">
+      <div className="border-t border-white/[0.04] p-3 space-y-0.5 anim-slide-up delay-500">
         <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
           {/* Avatar com glow */}
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shrink-0 text-[11px] font-bold text-white shadow-[0_0_10px_rgba(249,115,22,0.3)]">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shrink-0 text-[11px] font-bold text-white shadow-[0_0_10px_rgba(249,115,22,0.3)] hover:shadow-[0_0_18px_rgba(249,115,22,0.5)] transition-shadow duration-300">
             {user.name[0]?.toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">

@@ -16,14 +16,16 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
   return (
     <Link
       href={`/app/d/${dashboard.id}`}
-      className="group relative bg-[#161616] border border-white/[0.06] hover:border-orange-500/20 rounded-xl p-5 transition-all duration-200 hover:shadow-card-hover hover:shadow-orange-500/5 cursor-pointer block overflow-hidden"
+      className="group relative bg-[#161616] border border-white/[0.06] hover:border-orange-500/25 rounded-xl p-5 transition-all duration-300 hover:shadow-[0_0_30px_-8px_rgba(249,115,22,0.15)] hover:-translate-y-1 hover:scale-[1.01] cursor-pointer block overflow-hidden shimmer-sweep"
     >
       {/* Top shimmer on hover */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/0 group-hover:via-orange-500/20 to-transparent transition-all duration-300" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-500/0 group-hover:via-orange-500/30 to-transparent transition-all duration-400" />
+      {/* Bottom glow */}
+      <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/0 group-hover:via-orange-500/10 to-transparent transition-all duration-500" />
 
       <div className="flex items-start justify-between mb-5">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/15 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/15 flex items-center justify-center shrink-0 group-hover:bg-orange-500/20 group-hover:border-orange-500/30 group-hover:shadow-[0_0_12px_-2px_rgba(249,115,22,0.3)] transition-all duration-300">
             <span className="text-orange-400 font-bold text-sm">{dashboard.name[0]?.toUpperCase()}</span>
           </div>
           <h3 className="font-semibold text-zinc-200 group-hover:text-white transition-colors leading-tight">
@@ -31,7 +33,7 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
           </h3>
         </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-          className="text-zinc-700 group-hover:text-orange-400 transition-colors shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform">
+          className="text-zinc-700 group-hover:text-orange-400 transition-all duration-200 shrink-0 mt-0.5 group-hover:translate-x-1">
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </div>
@@ -54,9 +56,9 @@ export function DashboardCard({ dashboard, summary, canSeeFinancial }: Props) {
         </div>
       )}
 
-      <div className="mt-4 pt-3.5 border-t border-white/[0.04] flex items-center justify-between">
+      <div className="mt-4 pt-3.5 border-t border-white/[0.04] group-hover:border-orange-500/10 flex items-center justify-between transition-colors duration-300">
         <span className="text-[10px] text-zinc-600 tracking-wide">Mês atual</span>
-        <span className="text-[10px] text-zinc-600 group-hover:text-orange-500 transition-colors">Abrir →</span>
+        <span className="text-[10px] text-zinc-600 group-hover:text-orange-400 transition-all duration-200 group-hover:tracking-wide">Abrir →</span>
       </div>
     </Link>
   );

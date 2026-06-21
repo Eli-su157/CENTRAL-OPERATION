@@ -27,7 +27,9 @@ export function AppShell({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#08080a] overflow-hidden">
+    <div className="flex h-screen bg-[#08080a] overflow-hidden relative">
+      {/* Scanline de fundo sutil */}
+      <div className="app-scanline absolute inset-0 pointer-events-none z-0 opacity-40" />
       {/* overlay mobile */}
       {sidebarOpen && (
         <div
@@ -53,10 +55,10 @@ export function AppShell({
       </div>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 relative z-10">
 
         {/* Top bar */}
-        <div className="flex items-center gap-3 px-4 h-12 bg-[#08080a] border-b border-white/[0.04] shrink-0 relative">
+        <div className="flex items-center gap-3 px-4 h-12 bg-[#08080a] border-b border-white/[0.04] shrink-0 relative anim-slide-down">
           {/* linha de acento inferior sutil */}
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-orange-500/10 via-orange-500/5 to-transparent" />
 
@@ -91,7 +93,7 @@ export function AppShell({
           <NotificationBell notifications={notifications} unreadCount={unreadCount} />
         </div>
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto anim-fade-in delay-100">
           {children}
         </main>
       </div>

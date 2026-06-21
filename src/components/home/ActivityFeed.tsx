@@ -84,7 +84,11 @@ export function ActivityFeed({ events }: Props) {
     return (
       <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-        <div className="px-5 py-4 border-b border-white/[0.04]">
+        <div className="px-5 py-4 border-b border-white/[0.04] flex items-center gap-2.5">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-zinc-600 opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-700" />
+          </span>
           <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em]">Feed de Atividade</p>
         </div>
         <div className="px-5 py-10 text-center">
@@ -97,13 +101,21 @@ export function ActivityFeed({ events }: Props) {
   return (
     <div className="relative bg-[#161616] border border-white/[0.06] rounded-xl overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent" />
-      <div className="px-5 py-4 border-b border-white/[0.04]">
+      <div className="px-5 py-4 border-b border-white/[0.04] flex items-center gap-2.5">
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="dot-live absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+        </span>
         <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-[0.1em]">Feed de Atividade</p>
       </div>
       <div className="divide-y divide-white/[0.04] max-h-80 overflow-y-auto">
-        {events.map(ev => (
-          <div key={ev.id} className="flex items-start gap-3 px-5 py-3">
-            <span className="text-sm shrink-0 mt-0.5">{TYPE_ICON[ev.type] ?? '🔔'}</span>
+        {events.map((ev, i) => (
+          <div
+            key={ev.id}
+            className="flex items-start gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors duration-150 group anim-slide-up"
+            style={{ animationDelay: `${Math.min(i * 30, 300)}ms` }}
+          >
+            <span className="text-sm shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-150">{TYPE_ICON[ev.type] ?? '🔔'}</span>
             <div className="flex-1 min-w-0">
               <p className={`text-xs font-medium ${TYPE_COLOR[ev.type] ?? 'text-zinc-300'}`}>
                 {describeEvent(ev.type, ev.payload)}
