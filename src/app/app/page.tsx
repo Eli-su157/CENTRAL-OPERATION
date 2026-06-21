@@ -136,13 +136,13 @@ export default async function AppPage() {
             <KPICard label="Faturamento" value={formatCurrency(consolidated.faturamento)} accent="brand" />
             <KPICard label="Lucro Líquido" value={formatCurrency(consolidated.lucro_liquido)}
               accent={consolidated.lucro_liquido >= 0 ? 'positive' : 'negative'} />
-            <KPICard label="Produtos" value={String(DEMO_DASHBOARDS.length)} />
+            <KPICard label="Projetos" value={String(DEMO_DASHBOARDS.length)} />
           </div>
         )}
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-white">Produtos</h2>
+              <h2 className="text-sm font-semibold text-white">Projetos</h2>
               <p className="text-xs text-zinc-600 mt-0.5">{DEMO_DASHBOARDS.length} / 5 dashboards</p>
             </div>
           </div>
@@ -439,7 +439,7 @@ export default async function AppPage() {
               <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Ao vivo</span>
             </div>
             <div className="text-[10px] text-zinc-700 font-mono">
-              {dashboards.length} produto{dashboards.length !== 1 ? 's' : ''} · {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              {dashboards.length} projeto{dashboards.length !== 1 ? 's' : ''} · {new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </div>
           </div>
         </div>
@@ -474,7 +474,7 @@ export default async function AppPage() {
             sub={margem !== null ? (margem >= 20 ? 'Margem saudável' : margem >= 0 ? 'Margem baixa' : 'Resultado negativo') : 'Sem lançamentos'}
           />
           <KPICard
-            label="Produtos"
+            label="Projetos"
             value={String(dashboards.length)}
             accent="neutral"
             sub={`${maxDashboards - dashboards.length} slot${maxDashboards - dashboards.length !== 1 ? 's' : ''} disponível`}
@@ -633,7 +633,7 @@ export default async function AppPage() {
           <div className="flex items-center gap-3">
             <div className="w-1 h-5 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight">Produtos</h2>
+              <h2 className="text-base font-bold text-white tracking-tight">Projetos</h2>
               <p className="text-[10px] text-zinc-600 mt-0.5 font-mono">
                 {dashboards.length} / {maxDashboards} dashboards
               </p>
@@ -646,7 +646,7 @@ export default async function AppPage() {
 
         {dashboards.length === 0 ? (
           <EmptyState
-            title="Nenhum produto cadastrado"
+            title="Nenhum projeto cadastrado"
             description={
               ctx.permissions.pode_criar_dashboard
                 ? 'Crie seu primeiro dashboard para começar a monitorar vendas, tráfego e resultado financeiro.'

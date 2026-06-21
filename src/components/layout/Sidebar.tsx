@@ -152,7 +152,7 @@ export function Sidebar({ user, operation, dashboards, canManageTeam, canSeeFina
 
         {dashboards.length > 0 && (
           <>
-            <p className="section-title mt-2">Produtos</p>
+            <p className="section-title mt-2">Projetos</p>
             {dashboards.map(d => {
               const href = `/app/d/${d.id}`;
               const active = pathname.startsWith(href);
