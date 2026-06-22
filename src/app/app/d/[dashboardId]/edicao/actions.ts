@@ -80,7 +80,7 @@ export async function createMaterialAction(
     created_by: ctx.userId,
   });
 
-  if (error) return { error: 'Erro ao criar material.' };
+  if (error) return { error: `Erro ao criar material: ${error.message}` };
 
   revalidatePath(`/app/d/${dashboardId}/edicao`);
   revalidatePath(`/app/d/${dashboardId}`);
