@@ -92,7 +92,10 @@ export function TaskDetail({ task, currentUserId, canManage, onClose, onDelete }
     const file = e.target.files?.[0];
     if (!file) return;
     const supabase = createClient();
-    const path = `${task.id}/${Date.now()}-${file.name}`;
+    const safeName = file.name
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `${task.id}/${Date.now()}-${safeName}`;
     const { data, error } = await supabase.storage.from('task-attachments').upload(path, file);
     if (error || !data) { alert('Erro ao fazer upload.'); return; }
     // Salva o path (não URL pública) — o server gera signed URL ao buscar

@@ -57,7 +57,10 @@ export function MaterialForm({ dashboardId, operationId, editMaterial, onClose }
       }
 
       setUploading(true);
-      const path = `${operationId}/${dashboardId ?? 'global'}/${Date.now()}-${file.name}`;
+      const safeName = file.name
+        .normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `${operationId}/${dashboardId ?? 'global'}/${Date.now()}-${safeName}`;
       const supabase = createClient();
       const { error: uploadError } = await supabase.storage
         .from('materials')
