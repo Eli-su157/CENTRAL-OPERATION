@@ -205,7 +205,8 @@ export async function deleteMaterialAction(
   if (storagePath) {
     const { createAdminClient } = await import('@/lib/supabase/admin');
     const admin = createAdminClient();
-    await admin.storage.from('materials').remove([storagePath]);
+    const { error: storageError } = await admin.storage.from('materials').remove([storagePath]);
+    if (storageError) console.error('Storage removal failed:', storageError);
   }
 
   revalidatePath(`/app/d/${dashboardId}/edicao`);

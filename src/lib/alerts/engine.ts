@@ -298,7 +298,7 @@ export async function evaluateOperationAlerts(admin: any, operationId: string): 
   const dashboardIds = dashboards.map((d: { id: string }) => d.id);
 
   // 2. Bulk fetch (uma vez por operação)
-  const [salesRes, spendRes, goalsRes, connectionsRes, resourcesRes, adPerfRes] = await Promise.all([
+  const [salesRes, spendRes, goalsRes, connectionsRes, resourcesRes] = await Promise.all([
     // Vendas do mês por dashboard
     admin.from('sales')
       .select('dashboard_id, provider, status, amount')
@@ -329,11 +329,6 @@ export async function evaluateOperationAlerts(admin: any, operationId: string): 
       .eq('operation_id', operationId)
       .in('dashboard_id', dashboardIds),
 
-    // Ad performance para contas bloqueadas (hoje)
-    admin.from('ad_performance')
-      .select('dashboard_id, account_name, spend_date')
-      .eq('operation_id', operationId)
-      .eq('spend_date', now.toISOString().split('T')[0]),
   ]);
 
   const allSales       = (salesRes.data       ?? []) as { dashboard_id: string; provider: string; status: string; amount: number }[];
@@ -341,7 +336,6 @@ export async function evaluateOperationAlerts(admin: any, operationId: string): 
   const allGoals       = (goalsRes.data        ?? []) as { dashboard_id: string; meta_gasto: number | null; meta_faturamento: number | null; roas_alvo: number | null }[];
   const allConnections = (connectionsRes.data  ?? []) as { dashboard_id: string | null; provider: string; category: string; status: string; last_event_at: string | null }[];
   const allResources   = (resourcesRes.data    ?? []) as { dashboard_id: string | null; label: string; status: string }[];
-  void adPerfRes;
 
   let evaluated = 0;
 

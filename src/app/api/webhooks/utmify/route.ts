@@ -171,8 +171,14 @@ async function logWebhook(
   }).then(() => {});
 }
 
-// GET: últimos eventos (debug)
-export async function GET() {
+// GET: últimos eventos — restrito a requisições com CRON_SECRET
+export async function GET(request: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get('authorization') ?? '';
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const admin = createAdminClient() as any;
   const { data: logs } = await admin

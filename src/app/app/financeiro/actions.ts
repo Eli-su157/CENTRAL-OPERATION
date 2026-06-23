@@ -151,18 +151,32 @@ export async function updateEntryAction(
   const amount = amountStr ? parseFloat(amountStr) : undefined;
   if (amount !== undefined && (isNaN(amount) || amount <= 0)) return { error: 'Valor inválido.' };
 
+  const directionRaw = formData.get('direction') as string;
+  const categoryRaw = formData.get('category') as string;
+  const entryDateRaw = formData.get('entry_date') as string;
+  const statusRaw = formData.get('status') as string;
+
+  if (directionRaw && !['entrada', 'saida'].includes(directionRaw)) {
+    return { error: 'Direção inválida.' };
+  }
+  if (statusRaw && !['pago', 'a_pagar', 'a_receber'].includes(statusRaw)) {
+    return { error: 'Status inválido.' };
+  }
+
+  const updatePayload: Record<string, unknown> = {
+    description: (formData.get('description') as string)?.trim() || null,
+    dashboard_id: (formData.get('dashboard_id') as string) || null,
+  };
+  if (directionRaw) updatePayload.direction = directionRaw as 'entrada' | 'saida';
+  if (categoryRaw) updatePayload.category = categoryRaw;
+  if (amount !== undefined) updatePayload.amount = amount;
+  if (entryDateRaw) updatePayload.entry_date = entryDateRaw;
+  if (statusRaw) updatePayload.status = statusRaw as 'pago' | 'a_pagar' | 'a_receber';
+
   const supabase = await createClient();
   const { error } = await supabase
     .from('finance_entries')
-    .update({
-      direction: formData.get('direction') as 'entrada' | 'saida' || undefined,
-      category: (formData.get('category') as string) || undefined,
-      description: (formData.get('description') as string)?.trim() || null,
-      amount,
-      entry_date: (formData.get('entry_date') as string) || undefined,
-      status: (formData.get('status') as 'pago' | 'a_pagar' | 'a_receber') || undefined,
-      dashboard_id: (formData.get('dashboard_id') as string) || null,
-    })
+    .update(updatePayload)
     .eq('id', entryId)
     .eq('operation_id', ctx.profile.operation_id);
 

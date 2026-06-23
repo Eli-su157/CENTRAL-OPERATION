@@ -47,7 +47,7 @@ export function resolvePermissions(ctx: UserContext): Permissions {
 
   // Override restrito_a_dashboard
   const dashboardOverride = getOverride('restrito_a_dashboard');
-  const restricttoDashboard =
+  const restrictToDashboard =
     (dashboardOverride?.value as { dashboard_id?: string } | null)?.dashboard_id ?? null;
 
   return {
@@ -62,8 +62,8 @@ export function resolvePermissions(ctx: UserContext): Permissions {
     },
 
     pode_gerenciar_conta: role === 'dono',
-    pode_gerenciar_equipe: role === 'dono',
+    pode_gerenciar_equipe: role === 'dono' || role === 'head',
     pode_criar_dashboard: role === 'dono',
-    restrito_a_dashboard: restricttoDashboard,
+    restrito_a_dashboard: restrictToDashboard,
   };
 }

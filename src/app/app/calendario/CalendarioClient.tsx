@@ -480,6 +480,7 @@ export function CalendarioClient({ events, customEvents, canSeeFinancial, canCre
     : ALL_LAYERS.filter(l => l !== 'a_receber' && l !== 'a_pagar');
 
   // Próximos eventos (a partir de hoje, próximos 30 dias)
+  const todayDateStr = today.toDateString();
   const upcomingEvents = useMemo(() => {
     const todayIso = toIso(today.getFullYear(), today.getMonth(), today.getDate());
     const limit    = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
@@ -488,7 +489,8 @@ export function CalendarioClient({ events, customEvents, canSeeFinancial, canCre
       .filter(ev => active[ev.layer] && ev.date >= todayIso && ev.date <= limitIso)
       .sort((a, b) => a.date.localeCompare(b.date))
       .slice(0, 8);
-  }, [events, active, today]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events, active, todayDateStr]);
 
   function openNewEventModal(iso?: string) {
     setModalDefaultDate(iso ?? toIso(today.getFullYear(), today.getMonth(), today.getDate()));

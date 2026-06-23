@@ -148,7 +148,13 @@ export async function deleteTaskAction(
 
   if (!canDelete) return { error: 'Sem permissão.' };
 
-  await supabase.from('tasks').delete().eq('id', taskId);
+  const { error: deleteError } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', taskId)
+    .eq('operation_id', ctx.profile.operation_id);
+
+  if (deleteError) return { error: 'Erro ao excluir tarefa.' };
 
   revalidatePath('/app/tarefas');
   revalidatePath('/app');
@@ -248,11 +254,13 @@ export async function deleteCommentAction(
   if (!commentId) return { error: 'Dados inválidos.' };
 
   const supabase = await createClient();
-  await supabase
+  const { error } = await supabase
     .from('task_comments')
     .delete()
     .eq('id', commentId)
     .eq('operation_id', ctx.profile.operation_id);
+
+  if (error) return { error: 'Erro ao excluir comentário.' };
 
   revalidatePath('/app/tarefas');
   return { success: true };

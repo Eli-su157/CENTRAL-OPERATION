@@ -55,7 +55,13 @@ export async function createInviteAction(
 
   const { data: invite, error } = await admin
     .from('invites')
-    .insert({ operation_id: ctx.profile.operation_id, email, role, sector })
+    .insert({
+      operation_id: ctx.profile.operation_id,
+      email,
+      role,
+      sector,
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    })
     .select()
     .single();
 

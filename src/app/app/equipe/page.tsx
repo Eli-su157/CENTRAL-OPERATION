@@ -11,14 +11,15 @@ import { monthStart, monthEnd } from '@/lib/finance/calc';
 import { KPICard } from '@/components/ui';
 import { formatCurrency } from '@/lib/utils/format';
 
-const today = new Date().toISOString().split('T')[0];
-const mesStart = monthStart();
-const mesEnd   = monthEnd();
 
 export default async function EquipePage() {
   const ctx = await getAuthContext();
   if (!ctx) redirect('/');
   if (!ctx.permissions.pode_gerenciar_equipe) redirect('/app');
+
+  const today = new Date().toISOString().split('T')[0];
+  const mesStart = monthStart();
+  const mesEnd   = monthEnd();
 
   const supabase = await createClient();
   const admin = createAdminClient();
@@ -50,7 +51,7 @@ export default async function EquipePage() {
     // Todas as tarefas da operação (sem selecionar comentários/anexos — só campos de stats)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (supabase as any).from('tasks')
-      .select('id, assignee_user_id, status, due_date, created_at')
+      .select('id, assignee_user_id, status, due_date, created_at, updated_at')
       .eq('operation_id', ctx.profile.operation_id),
 
     supabase.from('dashboards').select('id, name')
@@ -80,7 +81,7 @@ export default async function EquipePage() {
   const rawOverrides = overridesResult.data ?? [];
   const tasks = (tasksResult.data ?? []) as {
     id: string; assignee_user_id: string | null;
-    status: string; due_date: string | null; created_at: string;
+    status: string; due_date: string | null; created_at: string; updated_at: string;
   }[];
   const dashboards = (dashboardsResult.data ?? []) as { id: string; name: string }[];
   const materialsRows = (materialsResult.data ?? []) as {
@@ -107,7 +108,7 @@ export default async function EquipePage() {
       t.due_date && t.due_date < today && t.status !== 'concluida'
     ).length;
     const concluida_mes = mine.filter(t =>
-      t.status === 'concluida' && t.created_at >= mesStart
+      t.status === 'concluida' && (t.updated_at ?? t.created_at) >= mesStart
     ).length;
     return {
       fazendo:       mine.filter(t => t.status === 'fazendo').length,
@@ -159,7 +160,7 @@ export default async function EquipePage() {
 
   const totalTasks      = tasks.filter(t => t.status !== 'concluida').length;
   const totalAtrasadas  = tasks.filter(t => t.due_date && t.due_date < today && t.status !== 'concluida').length;
-  const totalConclMes   = tasks.filter(t => t.status === 'concluida' && t.created_at >= mesStart).length;
+  const totalConclMes   = tasks.filter(t => t.status === 'concluida' && (t.updated_at ?? t.created_at) >= mesStart).length;
   const totalCustoMes   = Object.values(custoByMember).reduce((s, v) => s + v, 0);
 
   return (

@@ -32,7 +32,7 @@ export async function checkDuplicate(
   }
 
   // Check 2: fuzzy match por email + valor + janela de 5 min
-  if (candidate.buyer_email) {
+  if (candidate.buyer_email && candidate.amount > 0) {
     const window5min = new Date(new Date(candidate.occurred_at).getTime() - 5 * 60 * 1000).toISOString();
     const { data: byFuzzy } = await db
       .from('sales')
@@ -42,6 +42,8 @@ export async function checkDuplicate(
       .eq('buyer_email', candidate.buyer_email)
       .gte('occurred_at', window5min)
       .lte('occurred_at', candidate.occurred_at)
+      .gte('amount', candidate.amount * 0.99)
+      .lte('amount', candidate.amount * 1.01)
       .maybeSingle();
 
     if (byFuzzy) {

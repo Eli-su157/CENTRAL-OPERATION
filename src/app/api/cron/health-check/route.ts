@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     admin
       .from('integration_connections')
       .select('id, provider, category, status, last_event_at')
-      .in('category', ['venda', 'atribuicao'])
+      .in('category', ['venda', 'atribuicao', 'tracker'])
       .eq('status', 'conectada'),
     admin.from('operations').select('id'),
   ]);

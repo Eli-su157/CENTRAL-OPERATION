@@ -49,7 +49,7 @@ export async function createResourceAction(
   });
 
   if (error) return { error: 'Erro ao criar recurso.' };
-  revalidatePath(`/app/d/${dashboardId}/dev`);
+  if (dashboardId) revalidatePath(`/app/d/${dashboardId}/dev`);
   return { success: true };
 }
 
@@ -150,7 +150,7 @@ export async function createConnectionAction(
   });
 
   if (error) return { error: 'Erro ao criar conexão.' };
-  revalidatePath(`/app/d/${dashboardId}/dev`);
+  if (dashboardId) revalidatePath(`/app/d/${dashboardId}/dev`);
   return { success: true };
 }
 
@@ -195,7 +195,7 @@ export async function updateConnectionAction(
     .eq('operation_id', ctx.profile.operation_id);
 
   if (error) return { error: 'Erro ao atualizar conexão.' };
-  revalidatePath(`/app/d/${dashboardId}/dev`);
+  if (dashboardId) revalidatePath(`/app/d/${dashboardId}/dev`);
   return { success: true };
 }
 

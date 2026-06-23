@@ -45,17 +45,19 @@ export default async function FinanceiroPage() {
   }));
 
   // Seed categorias padrão se a operação não tiver nenhuma ainda
-  if ((categoriesRes.data ?? []).length === 0) {
-    await supabase.rpc('seed_default_categories', {
+  let categories = categoriesRes.data ?? [];
+  if (categories.length === 0) {
+    const { error: seedError } = await supabase.rpc('seed_default_categories', {
       p_operation_id: ctx.profile.operation_id,
     });
+    if (seedError) console.error('seed_default_categories failed:', seedError);
     // Re-busca
     const fresh = await supabase
       .from('finance_categories')
       .select('name, direction')
       .eq('operation_id', ctx.profile.operation_id)
       .order('name');
-    categoriesRes.data = fresh.data;
+    categories = fresh.data ?? [];
   }
 
   return (
@@ -74,7 +76,7 @@ export default async function FinanceiroPage() {
       <div className="anim-fade-in delay-200">
         <FinancePageClient
           entries={entries}
-          categories={(categoriesRes.data ?? []).map(c => ({
+          categories={categories.map(c => ({
             name: c.name,
             direction: c.direction as 'entrada' | 'saida',
           }))}

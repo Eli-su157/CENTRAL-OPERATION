@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { getAuthContext } from '@/lib/auth/getPermissions';
 import { createClient } from '@/lib/supabase/server';
@@ -9,7 +10,7 @@ const CATALOG: {
   category: string;
   categoryColor: string;
   status: 'disponivel' | 'em_breve';
-  icon: React.ReactNode;
+  icon: ReactNode;
 }[] = [
   // ── Vendas ──────────────────────────────────────────────────
   {

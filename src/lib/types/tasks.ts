@@ -1,8 +1,8 @@
-import type { UserSector } from './database';
+import type { UserSector, AttachmentType } from './database';
 
 export type TaskPriority = 'baixa' | 'media' | 'alta';
 export type TaskStatus = 'a_fazer' | 'fazendo' | 'concluida';
-export type AttachmentType = 'arquivo' | 'link';
+export type { AttachmentType };
 
 export interface TaskMember {
   id: string;

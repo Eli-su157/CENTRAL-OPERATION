@@ -76,8 +76,8 @@ export const hotmartAdapter: SaleAdapter = {
       amount,
       fees,
       buyer_email: (buyer['email'] as string) ?? null,
-      occurred_at: (purchase['date_next_charge'] as string)
-        ?? (purchase['approved_date'] as string)
+      occurred_at: (purchase['approved_date'] as string)
+        ?? (purchase['purchase_date'] as string)
         ?? new Date().toISOString(),
       utm: {
         source:   (tracking['source_sck'] as string) ?? null,

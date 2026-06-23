@@ -141,7 +141,7 @@ export default async function CalendarioPage() {
           events={events}
           customEvents={customEvents}
           canSeeFinancial={canSeeFinancial}
-          canCreate={isHeadOrDono || true}
+          canCreate={isHeadOrDono}
           currentUserId={ctx.profile.id}
           isHeadOrDono={isHeadOrDono}
         />

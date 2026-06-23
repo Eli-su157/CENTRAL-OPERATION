@@ -219,8 +219,14 @@ async function logWebhook(
   }).then(() => {}); // fire and forget
 }
 
-// GET: log de validação (só em dev ou para head/dono autenticado)
+// GET: log de validação — restrito a requisições com CRON_SECRET
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = request.headers.get('authorization') ?? '';
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { provider } = await params;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const admin = createAdminClient() as any;
